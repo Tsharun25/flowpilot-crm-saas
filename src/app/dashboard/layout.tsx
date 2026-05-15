@@ -1,10 +1,8 @@
 import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+
+import { getCurrentUserWithWorkspace } from "@/lib/current-user";
 import DashboardSidebar from "./sidebar";
 import MobileSidebar from "./mobile-sidebar";
-
 import LogoutButton from "./logout-button";
 
 export default async function DashboardLayout({
@@ -12,14 +10,9 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  const { user, workspace } = await getCurrentUserWithWorkspace();
 
-  if (!session?.user?.id) redirect("/login");
-
-  const membership = await prisma.membership.findFirst({
-    where: { userId: session.user.id },
-    include: { workspace: true },
-  });
+  if (!user?.id) redirect("/login");
 
   return (
     <div className="min-h-screen bg-[#f4f7fb]">
@@ -34,10 +27,10 @@ export default async function DashboardLayout({
 
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                    {membership?.workspace.name || "FlowPilot Workspace"}
+                    {workspace.name}
                   </p>
                   <h1 className="text-xl font-black text-slate-950 md:text-2xl">
-                    Welcome, {session.user.name || "User"}
+                    Welcome, {user.name || "User"}
                   </h1>
                 </div>
               </div>

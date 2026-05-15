@@ -11,9 +11,19 @@ export async function getCurrentUserWithWorkspace() {
     redirect("/login");
   }
 
+  const dbUser = await prisma.user.findUnique({
+    where: {
+      id: session.user.id,
+    },
+  });
+
+  if (!dbUser) {
+    redirect("/login");
+  }
+
   const membership = await prisma.membership.findFirst({
     where: {
-      userId: session.user.id,
+      userId: dbUser.id,
     },
     include: {
       workspace: true,
@@ -25,7 +35,7 @@ export async function getCurrentUserWithWorkspace() {
   }
 
   return {
-    user: session.user,
+    user: dbUser,
     workspace: membership.workspace,
     membership,
   };
