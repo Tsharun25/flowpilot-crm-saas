@@ -4,8 +4,6 @@ import "./globals.css";
 
 import { Toaster } from "sonner";
 
-import "./globals.css";
-
 export const metadata: Metadata = {
   title: "FlowPilot CRM",
   description: "SaaS CRM and project management dashboard",
@@ -28,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
 
         <Toaster

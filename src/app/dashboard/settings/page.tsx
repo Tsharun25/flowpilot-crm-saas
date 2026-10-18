@@ -132,7 +132,7 @@ export default async function SettingsPage() {
                 <span className="font-medium">{user.email}</span>
               </div>
               <p className="mt-2 text-xs font-medium text-slate-400">
-                Email change is disabled for this demo project.
+                Contact an administrator to change the account email.
               </p>
             </div>
 
@@ -204,18 +204,18 @@ export default async function SettingsPage() {
             <div className="rounded-3xl bg-slate-50 p-5">
               <p className="text-sm font-bold text-slate-500">Plan</p>
               <p className="mt-2 text-xl font-black text-slate-950">
-                Free Demo
+                Self-hosted
               </p>
             </div>
           </div>
         </div>
 
         <div className="rounded-[2rem] bg-gradient-to-br from-slate-950 to-slate-800 p-6 text-white shadow-xl shadow-slate-300">
-          <p className="text-sm font-black text-cyan-300">Portfolio Note</p>
-          <h3 className="mt-3 text-2xl font-black">Almost production-ready</h3>
+          <p className="text-sm font-black text-cyan-300">Deployment Note</p>
+          <h3 className="mt-3 text-2xl font-black">Ready for your workflow</h3>
           <p className="mt-3 text-sm leading-6 text-slate-300">
-            Add team invites, billing, and audit logs later to make this feel
-            like a complete B2B SaaS product.
+            Customize the brand, seed your workspace, and deploy with the
+            included guides.
           </p>
         </div>
       </section>

@@ -83,7 +83,7 @@ export default function HomePage() {
           <div>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-cyan-300 backdrop-blur">
               <Sparkles size={16} />
-              Portfolio-ready SaaS CRM & Project Management App
+              Complete SaaS CRM & Project Management Platform
             </div>
 
             <h1 className="max-w-4xl text-5xl font-black leading-tight tracking-tight md:text-7xl">
@@ -91,7 +91,7 @@ export default function HomePage() {
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-              FlowPilot is a full-stack SaaS portfolio project built with Next.js,
+              FlowPilot is a full-stack SaaS platform built with Next.js,
               MongoDB, Auth, CRM pipeline, Kanban tasks, analytics, and a premium
               dashboard experience.
             </p>
@@ -123,7 +123,7 @@ export default function HomePage() {
                   <span className="font-bold text-white">demo@flowpilot.com</span>
                 </p>
                 <p>
-                  Password: <span className="font-bold text-white">123456</span>
+                  Password: <span className="font-bold text-white">DemoFlow2026!</span>
                 </p>
               </div>
             </div>
@@ -193,7 +193,7 @@ export default function HomePage() {
           {[
             ["Full-stack", "Next.js, MongoDB, Prisma, Auth"],
             ["Business-ready", "Projects, Tasks, CRM, Analytics"],
-            ["Portfolio-grade", "Premium UI with real SaaS workflows"],
+            ["Production-ready", "Premium UI with real SaaS workflows"],
           ].map(([title, desc]) => (
             <div key={title} className="rounded-3xl bg-white/5 p-6">
               <p className="text-2xl font-black">{title}</p>
@@ -242,7 +242,7 @@ export default function HomePage() {
       <section className="mx-auto grid max-w-7xl gap-10 px-6 pb-24 lg:grid-cols-2">
         <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8">
           <p className="text-sm font-black uppercase tracking-wide text-cyan-300">
-            Built for portfolio impact
+            Built for real business workflows
           </p>
           <h2 className="mt-3 text-4xl font-black">
             More than a CRUD app. It feels like a real product.

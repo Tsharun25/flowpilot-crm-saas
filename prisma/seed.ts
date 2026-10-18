@@ -1,11 +1,13 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 async function main() {
   const demoEmail = "demo@flowpilot.com";
+  const demoPassword = await bcrypt.hash("DemoFlow2026!", 12);
 
-  const user = await prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where: {
       email: demoEmail,
     },
@@ -19,9 +21,36 @@ async function main() {
   });
 
   if (!user) {
-    console.log("Demo user not found.");
-    console.log("First register with email: demo@flowpilot.com");
-    return;
+    user = await prisma.user.create({
+      data: {
+        name: "Demo User",
+        email: demoEmail,
+        password: demoPassword,
+        memberships: {
+          create: {
+            role: "OWNER",
+            workspace: {
+              create: {
+                name: "FlowPilot Demo",
+                slug: `flowpilot-demo-${Date.now()}`,
+              },
+            },
+          },
+        },
+      },
+      include: {
+        memberships: {
+          include: {
+            workspace: true,
+          },
+        },
+      },
+    });
+  } else {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { password: demoPassword },
+    });
   }
 
   const workspace = user.memberships[0]?.workspace;
@@ -171,6 +200,7 @@ async function main() {
   });
 
   console.log("Demo data seeded successfully.");
+  console.log("Demo login: demo@flowpilot.com / DemoFlow2026!");
   console.log(`Workspace: ${workspace.name}`);
   console.log(`Main project: ${websiteProject.name}`);
 }

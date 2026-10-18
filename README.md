@@ -16,7 +16,7 @@ It includes authentication, protected dashboard routes, workspace-based SaaS arc
 
 ```txt
 Email: demo@flowpilot.com
-Password: 123456
+Password: DemoFlow2026!
 ```
 
 ---
@@ -66,11 +66,9 @@ Create a `.env` file in the root directory:
 ```env
 DATABASE_URL="mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/flowpilot?retryWrites=true&w=majority"
 
-AUTH_SECRET="your-secret-key"
 NEXTAUTH_SECRET="your-secret-key"
 
 NEXTAUTH_URL="http://localhost:3000"
-AUTH_URL="http://localhost:3000"
 ```
 
 For production:
@@ -78,11 +76,9 @@ For production:
 ```env
 DATABASE_URL="your-production-mongodb-url"
 
-AUTH_SECRET="your-production-secret"
 NEXTAUTH_SECRET="your-production-secret"
 
 NEXTAUTH_URL="https://flowpilot-crm-saas.vercel.app"
-AUTH_URL="https://flowpilot-crm-saas.vercel.app"
 ```
 
 ---
@@ -106,15 +102,7 @@ http://localhost:3000
 
 ## Seed Demo Data
 
-First register this account:
-
-```txt
-Email: demo@flowpilot.com
-Password: 123456
-Name: Demo User
-```
-
-Then run:
+Run:
 
 ```bash
 npm run seed
@@ -146,10 +134,8 @@ Required Vercel environment variables:
 
 ```env
 DATABASE_URL
-AUTH_SECRET
 NEXTAUTH_SECRET
 NEXTAUTH_URL
-AUTH_URL
 ```
 
 After changing environment variables in Vercel, redeploy the project.
@@ -177,10 +163,10 @@ FlowPilot CRM SaaS demonstrates:
 
 ## Author
 
-Built by Harun as a premium SaaS portfolio project.
+Built by Harun as a commercial SaaS starter project.
 
 ---
 
 ## License
 
-This project is built for educational and portfolio purposes.
+Copyright remains with the seller. Marketplace purchases are licensed under the Vibe96 Standard License supplied with the order. See `SUPPORT.md` for included support and updates.

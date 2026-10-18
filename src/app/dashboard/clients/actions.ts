@@ -5,28 +5,29 @@ import { redirect } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
-
-type ClientStatus = "LEAD" | "CONTACTED" | "WON" | "LOST";
+import {
+  clientIdSchema,
+  clientSchema,
+  clientStatusSchema,
+} from "@/lib/validators/workspace";
 
 export async function createClient(formData: FormData) {
   const { workspace } = await getCurrentUserWithWorkspace();
 
-  const name = String(formData.get("name") || "").trim();
-  const company = String(formData.get("company") || "").trim();
-  const email = String(formData.get("email") || "").trim();
-  const value = Number(formData.get("value") || 0);
-  const status = String(formData.get("status") || "LEAD") as ClientStatus;
-
-  if (!name) {
-    throw new Error("Client name is required");
-  }
+  const { name, company, email, value, status } = clientSchema.parse({
+    name: formData.get("name"),
+    company: formData.get("company") ?? "",
+    email: formData.get("email") ?? "",
+    value: formData.get("value") ?? 0,
+    status: formData.get("status"),
+  });
 
   await prisma.client.create({
     data: {
       name,
       company,
       email,
-      value: Number.isNaN(value) ? 0 : value,
+      value,
       status,
       workspaceId: workspace.id,
     },
@@ -40,17 +41,19 @@ export async function createClient(formData: FormData) {
 
 export async function updateClientStatus(
   clientId: string,
-  status: ClientStatus
+  status: string
 ) {
   const { workspace } = await getCurrentUserWithWorkspace();
+  const safeClientId = clientIdSchema.parse(clientId);
+  const safeStatus = clientStatusSchema.parse(status);
 
   await prisma.client.updateMany({
     where: {
-      id: clientId,
+      id: safeClientId,
       workspaceId: workspace.id,
     },
     data: {
-      status,
+      status: safeStatus,
     },
   });
 
@@ -60,10 +63,11 @@ export async function updateClientStatus(
 
 export async function deleteClient(clientId: string) {
   const { workspace } = await getCurrentUserWithWorkspace();
+  const safeClientId = clientIdSchema.parse(clientId);
 
   await prisma.client.deleteMany({
     where: {
-      id: clientId,
+      id: safeClientId,
       workspaceId: workspace.id,
     },
   });

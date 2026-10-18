@@ -5,18 +5,21 @@ import { redirect } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
-
-type ProjectStatus = "ACTIVE" | "COMPLETED" | "ARCHIVED";
-type TaskStatus = "TODO" | "IN_PROGRESS" | "REVIEW" | "DONE";
-type Priority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+import {
+  projectIdSchema,
+  projectSchema,
+  taskIdSchema,
+  taskSchema,
+  taskStatusSchema,
+} from "@/lib/validators/workspace";
 
 export async function createProject(formData: FormData) {
   const { workspace } = await getCurrentUserWithWorkspace();
 
-  const name = String(formData.get("name") || "").trim();
-  const description = String(formData.get("description") || "").trim();
-
-  if (!name) throw new Error("Project name is required");
+  const { name, description } = projectSchema.parse({
+    name: formData.get("name"),
+    description: formData.get("description") ?? "",
+  });
 
   await prisma.project.create({
     data: {
@@ -33,16 +36,16 @@ export async function createProject(formData: FormData) {
 
 export async function updateProject(projectId: string, formData: FormData) {
   const { workspace } = await getCurrentUserWithWorkspace();
-
-  const name = String(formData.get("name") || "").trim();
-  const description = String(formData.get("description") || "").trim();
-  const status = String(formData.get("status") || "ACTIVE") as ProjectStatus;
-
-  if (!name) throw new Error("Project name is required");
+  const safeProjectId = projectIdSchema.parse(projectId);
+  const { name, description, status } = projectSchema.parse({
+    name: formData.get("name"),
+    description: formData.get("description") ?? "",
+    status: formData.get("status"),
+  });
 
   await prisma.project.updateMany({
     where: {
-      id: projectId,
+      id: safeProjectId,
       workspaceId: workspace.id,
     },
     data: {
@@ -61,10 +64,11 @@ export async function updateProject(projectId: string, formData: FormData) {
 
 export async function deleteProject(projectId: string) {
   const { workspace } = await getCurrentUserWithWorkspace();
+  const safeProjectId = projectIdSchema.parse(projectId);
 
   await prisma.task.deleteMany({
     where: {
-      projectId,
+      projectId: safeProjectId,
       project: {
         workspaceId: workspace.id,
       },
@@ -73,7 +77,7 @@ export async function deleteProject(projectId: string) {
 
   await prisma.project.deleteMany({
     where: {
-      id: projectId,
+      id: safeProjectId,
       workspaceId: workspace.id,
     },
   });
@@ -85,17 +89,17 @@ export async function deleteProject(projectId: string) {
 
 export async function createTask(projectId: string, formData: FormData) {
   const { workspace } = await getCurrentUserWithWorkspace();
-
-  const title = String(formData.get("title") || "").trim();
-  const description = String(formData.get("description") || "").trim();
-  const status = String(formData.get("status") || "TODO") as TaskStatus;
-  const priority = String(formData.get("priority") || "MEDIUM") as Priority;
-
-  if (!title) throw new Error("Task title is required");
+  const safeProjectId = projectIdSchema.parse(projectId);
+  const { title, description, status, priority } = taskSchema.parse({
+    title: formData.get("title"),
+    description: formData.get("description") ?? "",
+    status: formData.get("status"),
+    priority: formData.get("priority"),
+  });
 
   const project = await prisma.project.findFirst({
     where: {
-      id: projectId,
+      id: safeProjectId,
       workspaceId: workspace.id,
     },
   });
@@ -108,7 +112,7 @@ export async function createTask(projectId: string, formData: FormData) {
       description,
       status,
       priority,
-      projectId,
+      projectId: safeProjectId,
     },
   });
 
@@ -122,20 +126,23 @@ export async function createTask(projectId: string, formData: FormData) {
 export async function updateTaskStatus(
   projectId: string,
   taskId: string,
-  status: TaskStatus
+  status: string
 ) {
   const { workspace } = await getCurrentUserWithWorkspace();
+  const safeProjectId = projectIdSchema.parse(projectId);
+  const safeTaskId = taskIdSchema.parse(taskId);
+  const safeStatus = taskStatusSchema.parse(status);
 
   await prisma.task.updateMany({
     where: {
-      id: taskId,
-      projectId,
+      id: safeTaskId,
+      projectId: safeProjectId,
       project: {
         workspaceId: workspace.id,
       },
     },
     data: {
-      status,
+      status: safeStatus,
     },
   });
 
@@ -146,11 +153,13 @@ export async function updateTaskStatus(
 
 export async function deleteTask(projectId: string, taskId: string) {
   const { workspace } = await getCurrentUserWithWorkspace();
+  const safeProjectId = projectIdSchema.parse(projectId);
+  const safeTaskId = taskIdSchema.parse(taskId);
 
   await prisma.task.deleteMany({
     where: {
-      id: taskId,
-      projectId,
+      id: safeTaskId,
+      projectId: safeProjectId,
       project: {
         workspaceId: workspace.id,
       },

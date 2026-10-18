@@ -100,7 +100,8 @@ export default function RegisterForm() {
           name="password"
           type="password"
           required
-          minLength={6}
+          minLength={8}
+          maxLength={72}
           placeholder="Minimum 6 characters"
           className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300"
         />

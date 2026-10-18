@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
-import { getCurrentUserWithWorkspace } from "@/lib/current-user";
+import { getCurrentUserWithWorkspace, requireWorkspaceManager } from "@/lib/current-user";
+import { nameSchema, workspaceNameSchema } from "@/lib/validators/workspace";
 
 function slugify(value: string) {
   return value
@@ -16,11 +17,7 @@ function slugify(value: string) {
 export async function updateProfile(formData: FormData) {
   const { user } = await getCurrentUserWithWorkspace();
 
-  const name = String(formData.get("name") || "").trim();
-
-  if (!name) {
-    throw new Error("Name is required");
-  }
+  const name = nameSchema.parse(formData.get("name"));
 
   await prisma.user.update({
     where: {
@@ -36,13 +33,8 @@ export async function updateProfile(formData: FormData) {
 }
 
 export async function updateWorkspace(formData: FormData) {
-  const { workspace } = await getCurrentUserWithWorkspace();
-
-  const name = String(formData.get("name") || "").trim();
-
-  if (!name) {
-    throw new Error("Workspace name is required");
-  }
+  const { workspace } = await requireWorkspaceManager();
+  const name = workspaceNameSchema.parse(formData.get("name"));
 
   const baseSlug = slugify(name);
 

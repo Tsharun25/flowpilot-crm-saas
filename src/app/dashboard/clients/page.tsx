@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
-import { createClient, deleteClient, updateClientStatus } from "./actions";
+import { createClient, deleteClient } from "./actions";
 import ClientStatusForm from "./status-form";
 
 const columns = [

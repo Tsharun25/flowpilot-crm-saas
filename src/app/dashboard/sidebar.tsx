@@ -65,9 +65,9 @@ export default function DashboardSidebar() {
       </nav>
 
       <div className="mt-10 rounded-3xl bg-gradient-to-br from-slate-950 to-slate-800 p-5 text-white">
-        <p className="text-sm font-black text-cyan-300">Portfolio Tip</p>
+        <p className="text-sm font-black text-cyan-300">Workspace Tip</p>
         <p className="mt-2 text-sm leading-6 text-slate-300">
-          Add demo data and deploy this app with a public demo login.
+          Keep projects, tasks, and client opportunities moving from one place.
         </p>
       </div>
     </aside>
