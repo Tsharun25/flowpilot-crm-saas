@@ -24,7 +24,7 @@ export default function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-72 shrink-0 border-r border-slate-200 bg-white p-6 md:block">
+    <aside className="sticky top-0 hidden h-screen w-72 shrink-0 overflow-y-auto border-r border-slate-200 bg-white p-6 xl:block">
       <Link href="/dashboard" className="mb-10 flex items-center gap-3">
         <div className="grid size-12 place-items-center rounded-2xl bg-slate-950 text-xl font-black text-white shadow-lg">
           F

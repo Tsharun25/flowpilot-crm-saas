@@ -42,3 +42,6 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# generated responsive QA captures
+/marketplace-assets/responsive-audit/

@@ -19,18 +19,21 @@ export default async function DashboardLayout({
       <div className="flex min-h-screen">
         <DashboardSidebar />
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/80 px-4 py-4 backdrop-blur-xl md:px-8">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
+        <div className="flex min-w-0 flex-1 flex-col overflow-x-hidden">
+          <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 px-3 py-3 backdrop-blur-xl sm:px-4 sm:py-4 lg:px-8">
+            <div className="flex min-w-0 items-center justify-between gap-2 sm:gap-4">
+              <div className="flex min-w-0 items-center gap-2 sm:gap-3">
                 <MobileSidebar />
 
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                <div className="min-w-0">
+                  <p className="truncate text-[10px] font-bold uppercase tracking-wide text-slate-400 sm:text-xs">
                     {workspace.name}
                   </p>
-                  <h1 className="text-xl font-black text-slate-950 md:text-2xl">
-                    Welcome, {user.name || "User"}
+                  <h1 className="truncate text-lg font-black text-slate-950 sm:text-xl lg:text-2xl">
+                    <span className="sm:hidden">{user.name || "User"}</span>
+                    <span className="hidden sm:inline">
+                      Welcome, {user.name || "User"}
+                    </span>
                   </h1>
                 </div>
               </div>
@@ -39,7 +42,7 @@ export default async function DashboardLayout({
             </div>
           </header>
 
-          <main className="p-4 md:p-8">{children}</main>
+          <main className="min-w-0 p-3 sm:p-4 lg:p-8">{children}</main>
         </div>
       </div>
     </div>

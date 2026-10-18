@@ -7,7 +7,7 @@ export default function AnalyticsPage() {
         <p className="text-sm font-black uppercase tracking-wide text-cyan-600">
           Analytics
         </p>
-        <h2 className="mt-2 text-4xl font-black tracking-tight text-slate-950">
+        <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
           Business Insights
         </h2>
         <p className="mt-2 max-w-2xl text-slate-500">

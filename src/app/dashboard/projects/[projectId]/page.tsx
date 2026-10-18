@@ -85,7 +85,7 @@ export default async function ProjectDetailsPage({
               {project.status}
             </span>
 
-            <h2 className="mt-4 text-4xl font-black tracking-tight text-slate-950">
+            <h2 className="mt-4 break-words text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
               {project.name}
             </h2>
 

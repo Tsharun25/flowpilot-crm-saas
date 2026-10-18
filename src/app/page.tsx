@@ -50,7 +50,7 @@ export default function HomePage() {
         <div className="absolute left-1/2 top-0 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-cyan-400/20 blur-3xl" />
         <div className="absolute right-0 top-40 h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-3xl" />
 
-        <nav className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
+        <nav className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-6 sm:py-6">
           <Link href="/" className="flex items-center gap-3">
             <div className="grid size-11 place-items-center rounded-2xl bg-cyan-400 text-xl font-black text-slate-950">
               F
@@ -79,14 +79,14 @@ export default function HomePage() {
           </div>
         </nav>
 
-        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-14 px-6 pb-24 pt-14 lg:grid-cols-[1.05fr_0.95fr] lg:pt-24">
+        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-4 pb-16 pt-10 sm:px-6 sm:pb-24 sm:pt-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14 lg:pt-24">
           <div>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-cyan-300 backdrop-blur">
               <Sparkles size={16} />
               Complete SaaS CRM & Project Management Platform
             </div>
 
-            <h1 className="max-w-4xl text-5xl font-black leading-tight tracking-tight md:text-7xl">
+            <h1 className="max-w-4xl text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
               Manage projects, tasks, clients, and revenue in one beautiful SaaS.
             </h1>
 
