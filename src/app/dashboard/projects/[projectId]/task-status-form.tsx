@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { updateTaskStatus } from "../actions";
+import { toast } from "sonner";
 
 type TaskStatus = "TODO" | "IN_PROGRESS" | "REVIEW" | "DONE";
 
@@ -18,12 +19,18 @@ export default function TaskStatusForm({
 
   function handleChange(status: TaskStatus) {
     startTransition(async () => {
-      await updateTaskStatus(projectId, taskId, status);
+      try {
+        await updateTaskStatus(projectId, taskId, status);
+        toast.success("Task status updated");
+      } catch {
+        toast.error("Could not update task status");
+      }
     });
   }
 
   return (
     <select
+      aria-label="Task status"
       value={currentStatus}
       disabled={isPending}
       onChange={(event) => handleChange(event.target.value as TaskStatus)}

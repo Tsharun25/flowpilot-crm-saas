@@ -7,9 +7,11 @@ import {
   createTask,
   deleteProject,
   deleteTask,
+  updateTask,
   updateProject,
 } from "../actions";
 import TaskStatusForm from "./task-status-form";
+import ConfirmSubmitButton from "@/components/confirm-submit-button";
 
 const columns = [
   { label: "Todo", value: "TODO" },
@@ -145,7 +147,7 @@ export default async function ProjectDetailsPage({
               </div>
 
               <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
-                {project.tasks.length} tasks
+                {project.tasks.length} {project.tasks.length === 1 ? "task" : "tasks"}
               </span>
             </div>
 
@@ -191,6 +193,7 @@ export default async function ProjectDetailsPage({
                               project.id,
                               task.id
                             );
+                            const updateTaskWithIds = updateTask.bind(null, project.id, task.id);
 
                             return (
                               <div
@@ -224,10 +227,21 @@ export default async function ProjectDetailsPage({
                                   currentStatus={task.status}
                                 />
 
+                                <details className="mt-3 rounded-xl border border-slate-200 p-3">
+                                  <summary className="cursor-pointer text-center text-xs font-black text-slate-700">Edit Task</summary>
+                                  <form action={updateTaskWithIds} className="mt-3 space-y-3">
+                                    <input aria-label="Task title" name="title" required defaultValue={task.title} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
+                                    <textarea aria-label="Task description" name="description" rows={3} defaultValue={task.description ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
+                                    <select aria-label="Priority" name="priority" defaultValue={task.priority} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"><option value="LOW">Low</option><option value="MEDIUM">Medium</option><option value="HIGH">High</option><option value="URGENT">Urgent</option></select>
+                                    <input type="hidden" name="status" value={task.status} />
+                                    <button className="w-full rounded-xl bg-slate-950 px-3 py-2 text-xs font-black text-white">Save Changes</button>
+                                  </form>
+                                </details>
+
                                 <form action={deleteTaskWithIds}>
-                                  <button className="mt-3 w-full rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-100">
+                                  <ConfirmSubmitButton message={`Delete ${task.title}? This cannot be undone.`} className="mt-3 w-full rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-100">
                                     Delete Task
-                                  </button>
+                                  </ConfirmSubmitButton>
                                 </form>
                               </div>
                             );
@@ -360,9 +374,9 @@ export default async function ProjectDetailsPage({
               Deleting this project will also remove all tasks attached to it.
             </p>
 
-            <button className="mt-5 w-full rounded-2xl bg-red-600 px-5 py-3 font-black text-white transition hover:bg-red-700">
+            <ConfirmSubmitButton message={`Delete ${project.name} and all of its tasks? This cannot be undone.`} className="mt-5 w-full rounded-2xl bg-red-600 px-5 py-3 font-black text-white transition hover:bg-red-700">
               Delete Project
-            </button>
+            </ConfirmSubmitButton>
           </form>
         </aside>
       </div>

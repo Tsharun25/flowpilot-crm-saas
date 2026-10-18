@@ -1,6 +1,10 @@
 import AnalyticsChart from "../analytics-chart";
+import { getCurrentUserWithWorkspace } from "@/lib/current-user";
+import { formatMoney, getWorkspaceCrmMetrics } from "@/lib/analytics";
 
-export default function AnalyticsPage() {
+export default async function AnalyticsPage() {
+  const { workspace } = await getCurrentUserWithWorkspace();
+  const metrics = await getWorkspaceCrmMetrics(workspace.id);
   return (
     <div>
       <div className="mb-8">
@@ -11,16 +15,31 @@ export default function AnalyticsPage() {
           Business Insights
         </h2>
         <p className="mt-2 max-w-2xl text-slate-500">
-          Visualize revenue, CRM performance, and workspace momentum.
+          Review booked won-deal value and pipeline performance in {metrics.currency}.
         </p>
       </div>
 
       <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
         <h3 className="mb-6 text-2xl font-black text-slate-950">
-          Revenue Overview
+          Won Deal Value by Month · {metrics.year} (UTC)
         </h3>
-        <AnalyticsChart />
+        {metrics.hasWonData ? (
+          <AnalyticsChart data={metrics.monthlyWon} currency={metrics.currency} />
+        ) : (
+          <div className="grid h-80 place-items-center rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+            <div><p className="text-lg font-black text-slate-950">No won deals in {metrics.year}</p><p className="mt-2 text-sm text-slate-500">Mark an opportunity as Won to add its value to this UTC calendar-year chart.</p></div>
+          </div>
+        )}
+        <div className="mt-6 grid gap-4 sm:grid-cols-3">
+          <Metric label="Open Pipeline" value={formatMoney(metrics.openPipeline)} />
+          <Metric label="Won Deal Value" value={formatMoney(metrics.wonDealValue)} />
+          <Metric label="Lost Deal Value" value={formatMoney(metrics.lostDealValue)} />
+        </div>
       </section>
     </div>
   );
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return <div className="rounded-2xl bg-slate-50 p-4"><p className="text-sm font-bold text-slate-500">{label}</p><p className="mt-2 text-xl font-black text-slate-950">{value}</p></div>;
 }

@@ -170,6 +170,7 @@ async function main() {
         email: "mario@example.com",
         value: 500000,
         status: "WON",
+        wonAt: new Date(),
         workspaceId: workspace.id,
       },
       {

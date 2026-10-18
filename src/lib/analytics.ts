@@ -1,0 +1,14 @@
+import "server-only";
+
+import { prisma } from "@/lib/prisma";
+import { calculateCrmMetrics } from "@/lib/crm-metrics";
+
+export { formatMoney } from "@/lib/crm-metrics";
+
+export async function getWorkspaceCrmMetrics(workspaceId: string) {
+  const clients = await prisma.client.findMany({
+    where: { workspaceId },
+    select: { value: true, status: true, wonAt: true },
+  });
+  return calculateCrmMetrics(clients);
+}

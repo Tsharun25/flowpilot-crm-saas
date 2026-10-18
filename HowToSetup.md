@@ -8,6 +8,8 @@ This guide starts FlowPilot CRM on a clean machine. No production credentials ar
 - npm 10 or newer
 - MongoDB Atlas or a MongoDB replica set
 
+MongoDB must run as a replica set because Prisma nested writes use transactions. MongoDB Atlas clusters meet this requirement. FlowPilot 1.1 uses USD as its single display currency and groups won deals into calendar months using UTC.
+
 ## Local installation
 
 1. Copy `.env.example` to `.env`.
@@ -62,6 +64,8 @@ npm audit --omit=dev
 ```
 
 Test registration, login/logout, project CRUD, task status changes, client pipeline changes, settings, mobile navigation, and workspace isolation before launch.
+
+For an existing 1.0 installation, back up MongoDB and run `npx prisma db push` to add the optional `wonAt` field/index. Historic Won deals without a close date remain in the Won total but are not placed on the monthly chart until a date is established by re-saving their Won status or an operator-controlled migration.
 
 ## Common issues
 

@@ -2,7 +2,7 @@
 
 FlowPilot CRM SaaS is a premium full-stack SaaS CRM and project management application built with Next.js, TypeScript, Tailwind CSS, MongoDB, Prisma, NextAuth.js, Recharts, Sonner, and Lucide React.
 
-It includes authentication, protected dashboard routes, workspace-based SaaS architecture, projects CRUD, Kanban task management, CRM pipeline, analytics dashboard, profile/workspace settings, toast notifications, loading skeletons, demo data seeding, and a responsive premium UI.
+It includes authentication, protected dashboard routes, workspace-based architecture, project management, Kanban tasks, CRM pipeline, won-deal analytics, profile/workspace settings, toast notifications, loading skeletons, demo data seeding, and a responsive premium UI.
 
 ---
 
@@ -27,8 +27,8 @@ Password: DemoFlow2026!
 - Password hashing with bcryptjs
 - Protected dashboard routes
 - Workspace-based SaaS structure
-- Projects CRUD
-- Tasks CRUD
+- Project creation, editing, archiving, and deletion
+- Task creation, editing, status management, and deletion
 - Kanban task board
 - CRM client pipeline
 - Live dashboard stats
@@ -152,7 +152,7 @@ FlowPilot CRM SaaS demonstrates:
 - MongoDB database integration
 - Workspace-based data structure
 - Server Actions
-- CRUD functionality
+- Validated project, task, and client management
 - Kanban workflow
 - CRM pipeline management
 - Analytics dashboard

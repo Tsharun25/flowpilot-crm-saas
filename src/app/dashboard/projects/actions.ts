@@ -172,3 +172,23 @@ export async function deleteTask(projectId: string, taskId: string) {
 
   redirect(`/dashboard/projects/${projectId}`);
 }
+
+export async function updateTask(projectId: string, taskId: string, formData: FormData) {
+  const { workspace } = await getCurrentUserWithWorkspace();
+  const safeProjectId = projectIdSchema.parse(projectId);
+  const safeTaskId = taskIdSchema.parse(taskId);
+  const data = taskSchema.parse({
+    title: formData.get("title"),
+    description: formData.get("description") ?? "",
+    status: formData.get("status"),
+    priority: formData.get("priority"),
+  });
+  const result = await prisma.task.updateMany({
+    where: { id: safeTaskId, projectId: safeProjectId, project: { workspaceId: workspace.id } },
+    data,
+  });
+  if (result.count === 0) throw new Error("Task not found");
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/tasks");
+  revalidatePath(`/dashboard/projects/${safeProjectId}`);
+}

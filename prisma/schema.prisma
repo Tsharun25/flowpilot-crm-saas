@@ -92,6 +92,7 @@ model Client {
   company String?
   value   Int          @default(0)
   status  ClientStatus @default(LEAD)
+  wonAt   DateTime?
 
   workspaceId String    @db.ObjectId
   workspace   Workspace @relation(fields: [workspaceId], references: [id])
@@ -100,6 +101,7 @@ model Client {
   updatedAt DateTime @updatedAt
 
   @@index([workspaceId])
+  @@index([workspaceId, status, wonAt])
 }
 
 enum Role {

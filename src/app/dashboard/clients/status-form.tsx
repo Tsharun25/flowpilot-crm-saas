@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { updateClientStatus } from "./actions";
+import { toast } from "sonner";
 
 type ClientStatus = "LEAD" | "CONTACTED" | "WON" | "LOST";
 
@@ -16,12 +17,18 @@ export default function ClientStatusForm({
 
   function handleChange(status: ClientStatus) {
     startTransition(async () => {
-      await updateClientStatus(clientId, status);
+      try {
+        await updateClientStatus(clientId, status);
+        toast.success("Client status updated");
+      } catch {
+        toast.error("Could not update client status");
+      }
     });
   }
 
   return (
     <select
+      aria-label="Client status"
       value={currentStatus}
       disabled={isPending}
       onChange={(event) => handleChange(event.target.value as ClientStatus)}

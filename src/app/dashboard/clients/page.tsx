@@ -1,7 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
-import { createClient, deleteClient } from "./actions";
+import { createClient, deleteClient, updateClient } from "./actions";
 import ClientStatusForm from "./status-form";
+import { formatMoney, getWorkspaceCrmMetrics } from "@/lib/analytics";
+import ConfirmSubmitButton from "@/components/confirm-submit-button";
 
 const columns = [
   { label: "Lead", value: "LEAD" },
@@ -20,23 +22,14 @@ function getStatusStyle(status: string) {
 export default async function ClientsPage() {
   const { workspace } = await getCurrentUserWithWorkspace();
 
-  const clients = await prisma.client.findMany({
+  const [clients, metrics] = await Promise.all([prisma.client.findMany({
     where: {
       workspaceId: workspace.id,
     },
     orderBy: {
       createdAt: "desc",
     },
-  });
-
-  const totalPipelineValue = clients.reduce(
-    (total, client) => total + client.value,
-    0
-  );
-
-  const wonValue = clients
-    .filter((client) => client.status === "WON")
-    .reduce((total, client) => total + client.value, 0);
+  }), getWorkspaceCrmMetrics(workspace.id)]);
 
   return (
     <div>
@@ -63,21 +56,21 @@ export default async function ClientsPage() {
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-bold text-slate-500">Pipeline Value</p>
+          <p className="text-sm font-bold text-slate-500">Open Pipeline</p>
           <p className="mt-3 text-3xl font-black text-slate-950">
-            ${totalPipelineValue.toLocaleString()}
+            {formatMoney(metrics.openPipeline)}
           </p>
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-bold text-slate-500">Won Revenue</p>
+          <p className="text-sm font-bold text-slate-500">Won Deal Value</p>
           <p className="mt-3 text-3xl font-black text-slate-950">
-            ${wonValue.toLocaleString()}
+            {formatMoney(metrics.wonDealValue)}
           </p>
         </div>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[420px_1fr]">
+      <section className="space-y-6">
         <form
           action={createClient}
           className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
@@ -158,14 +151,14 @@ export default async function ClientsPage() {
           </div>
         </form>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
           <div className="mb-6 flex items-center justify-between">
             <h3 className="text-xl font-black text-slate-950">
               Pipeline Board
             </h3>
 
             <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">
-              {clients.length} clients
+              {clients.length} {clients.length === 1 ? "client" : "clients"}
             </span>
           </div>
 
@@ -179,7 +172,7 @@ export default async function ClientsPage() {
               </p>
             </div>
           ) : (
-            <div className="grid gap-4 xl:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
               {columns.map((column) => {
                 const columnClients = clients.filter(
                   (client) => client.status === column.value
@@ -221,6 +214,7 @@ export default async function ClientsPage() {
                             null,
                             client.id
                           );
+                          const updateClientWithId = updateClient.bind(null, client.id);
 
                           return (
                             <div
@@ -250,7 +244,7 @@ export default async function ClientsPage() {
                               </div>
 
                               {client.email ? (
-                                <p className="mt-3 break-all text-sm text-slate-500">
+                                <p className="mt-3 truncate text-sm text-slate-500" title={client.email}>
                                   {client.email}
                                 </p>
                               ) : null}
@@ -264,10 +258,22 @@ export default async function ClientsPage() {
                                 currentStatus={client.status}
                               />
 
+                              <details className="mt-3 rounded-xl border border-slate-200 p-3">
+                                <summary className="cursor-pointer text-center text-xs font-black text-slate-700">Edit Client</summary>
+                                <form action={updateClientWithId} className="mt-3 space-y-3">
+                                  <input aria-label="Client name" name="name" required defaultValue={client.name} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
+                                  <input aria-label="Company" name="company" defaultValue={client.company ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
+                                  <input aria-label="Email" name="email" type="email" defaultValue={client.email ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
+                                  <input aria-label="Deal value" name="value" type="number" min="0" max="1000000000" defaultValue={client.value} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
+                                  <input type="hidden" name="status" value={client.status} />
+                                  <button className="w-full rounded-xl bg-slate-950 px-3 py-2 text-xs font-black text-white">Save Changes</button>
+                                </form>
+                              </details>
+
                               <form action={deleteClientWithId}>
-                                <button className="mt-3 w-full rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-100">
+                                <ConfirmSubmitButton message={`Delete ${client.name}? This cannot be undone.`} className="mt-3 w-full rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-100">
                                   Delete Client
-                                </button>
+                                </ConfirmSubmitButton>
                               </form>
                             </div>
                           );

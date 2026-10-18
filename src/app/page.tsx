@@ -29,7 +29,7 @@ const features = [
   },
   {
     title: "Live Analytics",
-    description: "Monitor projects, tasks, clients, and revenue with real-time insights.",
+    description: "Monitor projects, tasks, open pipeline, and won deal value with live workspace insights.",
     icon: BarChart3,
   },
 ];
@@ -38,7 +38,7 @@ const highlights = [
   "Auth protected dashboard",
   "MongoDB powered data",
   "Workspace-based structure",
-  "Projects and tasks CRUD",
+  "Create and manage projects and tasks",
   "CRM deal pipeline",
   "Premium responsive UI",
 ];
@@ -83,11 +83,11 @@ export default function HomePage() {
           <div>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-cyan-300 backdrop-blur">
               <Sparkles size={16} />
-              Complete SaaS CRM & Project Management Platform
+              Self-hosted CRM & Project Management Starter
             </div>
 
             <h1 className="max-w-4xl text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              Manage projects, tasks, clients, and revenue in one beautiful SaaS.
+              Manage projects, tasks, clients, and deal value in one polished workspace.
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
@@ -245,7 +245,7 @@ export default function HomePage() {
             Built for real business workflows
           </p>
           <h2 className="mt-3 text-4xl font-black">
-            More than a CRUD app. It feels like a real product.
+            Practical workflows in a polished, extensible product.
           </h2>
           <p className="mt-4 leading-7 text-slate-400">
             FlowPilot includes real authentication, protected workspaces, live

@@ -15,7 +15,7 @@ FlowPilot gives agencies, consultancies, and small teams a credible starting poi
 - Project creation, editing, progress tracking, completion, and archiving
 - Four-stage Kanban task workflow with priorities
 - CRM lead pipeline, deal values, and status tracking
-- Dashboard KPIs and analytics visualization
+- Dashboard KPIs and UTC monthly won-deal analytics (USD)
 - Profile and workspace settings
 - Loading states, toast feedback, responsive sidebar, and mobile layout
 - MongoDB seed data and demo account
@@ -38,6 +38,8 @@ FlowPilot gives agencies, consultancies, and small teams a credible starting poi
 - Demo login: `demo@flowpilot.com` / `DemoFlow2026!`
 
 Keep the demo online throughout review and while listed. Use this account only with non-sensitive sample data.
+
+The shipped product is a self-hosted CRM/project-management starter, not a hosted subscription service. Billing, subscriptions, invitations, password recovery, email automation, and drag-and-drop are not included. Operators should reset the dedicated demo workspace on a schedule and never connect it to production customer data.
 
 ## Screenshot plan (1920 × 1080 PNG/JPG)
 
