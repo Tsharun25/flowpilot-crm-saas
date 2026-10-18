@@ -4,13 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "seed": "tsx prisma/seed.ts",
     "screenshots": "node scripts/capture-screenshots.mjs",
-    "audit:responsive": "node scripts/responsive-audit.mjs"
-    ,"test:metrics": "tsx scripts/test-crm-metrics.ts"
+    "audit:responsive": "node scripts/responsive-audit.mjs",
+    "test:metrics": "tsx scripts/test-crm-metrics.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
