@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import LoginForm from "./login-form";
+
+export const metadata: Metadata = {
+  title: "Sign in",
+  description: "Sign in to your FlowPilot CRM workspace.",
+};
 
 export default async function LoginPage() {
   const session = await getServerSession(authOptions);

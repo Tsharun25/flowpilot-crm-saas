@@ -1,9 +1,22 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
 import DashboardSidebar from "./sidebar";
 import MobileSidebar from "./mobile-sidebar";
 import LogoutButton from "./logout-button";
+
+export const metadata: Metadata = {
+  title: {
+    default: "Workspace",
+    template: "%s | FlowPilot CRM",
+  },
+  description: "Manage your FlowPilot projects, tasks, clients, and analytics.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function DashboardLayout({
   children,
@@ -26,7 +39,7 @@ export default async function DashboardLayout({
                 <MobileSidebar />
 
                 <div className="min-w-0">
-                  <p className="truncate text-[10px] font-bold uppercase tracking-wide text-slate-400 sm:text-xs">
+                  <p className="truncate text-[10px] font-bold uppercase tracking-wide text-slate-600 sm:text-xs">
                     {workspace.name}
                   </p>
                   <h1 className="truncate text-lg font-black text-slate-950 sm:text-xl lg:text-2xl">

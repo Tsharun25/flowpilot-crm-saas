@@ -1,8 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
+import { projectIdSchema } from "@/lib/validators/workspace";
 import {
   createTask,
   deleteProject,
@@ -12,6 +14,12 @@ import {
 } from "../actions";
 import TaskStatusForm from "./task-status-form";
 import ConfirmSubmitButton from "@/components/confirm-submit-button";
+import SubmitButton from "@/components/submit-button";
+
+export const metadata: Metadata = {
+  title: "Project details",
+  description: "Review a project, manage its tasks, and update project progress.",
+};
 
 const columns = [
   { label: "Todo", value: "TODO" },
@@ -38,8 +46,12 @@ export default async function ProjectDetailsPage({
 }: {
   params: Promise<{ projectId: string }>;
 }) {
-  const { projectId } = await params;
-  const { workspace } = await getCurrentUserWithWorkspace();
+  const parsedProjectId = projectIdSchema.safeParse((await params).projectId);
+  if (!parsedProjectId.success) notFound();
+
+  const projectId = parsedProjectId.data;
+  const { workspace, membership } = await getCurrentUserWithWorkspace();
+  const canDelete = membership.role === "OWNER" || membership.role === "ADMIN";
 
   const project = await prisma.project.findFirst({
     where: {
@@ -76,7 +88,7 @@ export default async function ProjectDetailsPage({
         ← Back to Projects
       </Link>
 
-      <div className="grid gap-6 xl:grid-cols-[1fr_420px]">
+      <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_420px]">
         <section className="space-y-6">
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <span
@@ -91,7 +103,7 @@ export default async function ProjectDetailsPage({
               {project.name}
             </h2>
 
-            <p className="mt-4 max-w-3xl leading-7 text-slate-500">
+            <p className="mt-4 max-w-3xl break-words leading-7 text-slate-500">
               {project.description || "No description added."}
             </p>
 
@@ -126,7 +138,14 @@ export default async function ProjectDetailsPage({
                 <span className="font-black text-slate-950">{progress}%</span>
               </div>
 
-              <div className="h-3 rounded-full bg-slate-200">
+              <div
+                className="h-3 rounded-full bg-slate-200"
+                role="progressbar"
+                aria-label="Project progress"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={progress}
+              >
                 <div
                   className="h-3 rounded-full bg-cyan-400"
                   style={{ width: `${progress}%` }}
@@ -138,7 +157,7 @@ export default async function ProjectDetailsPage({
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="mb-6 flex flex-col justify-between gap-3 md:flex-row md:items-center">
               <div>
-                <p className="text-sm font-bold uppercase tracking-wide text-cyan-600">
+                <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">
                   Kanban
                 </p>
                 <h3 className="mt-1 text-2xl font-black text-slate-950">
@@ -161,7 +180,7 @@ export default async function ProjectDetailsPage({
                 </p>
               </div>
             ) : (
-              <div className="grid gap-4 xl:grid-cols-4">
+              <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
                 {columns.map((column) => {
                   const columnTasks = project.tasks.filter(
                     (task) => task.status === column.value
@@ -183,7 +202,7 @@ export default async function ProjectDetailsPage({
 
                       <div className="space-y-3">
                         {columnTasks.length === 0 ? (
-                          <div className="rounded-2xl border border-dashed border-slate-300 p-4 text-center text-sm font-medium text-slate-400">
+                          <div className="rounded-2xl border border-dashed border-slate-300 p-4 text-center text-sm font-medium text-slate-600">
                             Empty
                           </div>
                         ) : (
@@ -201,12 +220,12 @@ export default async function ProjectDetailsPage({
                                 className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
                               >
                                 <div className="flex items-start justify-between gap-3">
-                                  <div>
-                                    <p className="font-black text-slate-950">
+                                  <div className="min-w-0">
+                                    <p className="break-words font-black text-slate-950">
                                       {task.title}
                                     </p>
                                     {task.description ? (
-                                      <p className="mt-2 text-sm leading-6 text-slate-500">
+                                      <p className="mt-2 break-words text-sm leading-6 text-slate-500">
                                         {task.description}
                                       </p>
                                     ) : null}
@@ -234,15 +253,22 @@ export default async function ProjectDetailsPage({
                                     <textarea aria-label="Task description" name="description" rows={3} defaultValue={task.description ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                     <select aria-label="Priority" name="priority" defaultValue={task.priority} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"><option value="LOW">Low</option><option value="MEDIUM">Medium</option><option value="HIGH">High</option><option value="URGENT">Urgent</option></select>
                                     <input type="hidden" name="status" value={task.status} />
-                                    <button className="w-full rounded-xl bg-slate-950 px-3 py-2 text-xs font-black text-white">Save Changes</button>
+                                    <SubmitButton
+                                      pendingText="Saving..."
+                                      className="w-full rounded-xl bg-slate-950 px-3 py-2 text-xs font-black text-white"
+                                    >
+                                      Save Changes
+                                    </SubmitButton>
                                   </form>
                                 </details>
 
-                                <form action={deleteTaskWithIds}>
-                                  <ConfirmSubmitButton message={`Delete ${task.title}? This cannot be undone.`} className="mt-3 w-full rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-100">
-                                    Delete Task
-                                  </ConfirmSubmitButton>
-                                </form>
+                                {canDelete ? (
+                                  <form action={deleteTaskWithIds}>
+                                    <ConfirmSubmitButton message={`Delete ${task.title}? This cannot be undone.`} className="mt-3 w-full rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-100">
+                                      Delete Task
+                                    </ConfirmSubmitButton>
+                                  </form>
+                                ) : null}
                               </div>
                             );
                           })
@@ -265,10 +291,14 @@ export default async function ProjectDetailsPage({
 
             <div className="mt-6 space-y-5">
               <div>
-                <label className="mb-2 block text-sm font-bold text-slate-700">
+                <label
+                  htmlFor="new-task-title"
+                  className="mb-2 block text-sm font-bold text-slate-700"
+                >
                   Task Title
                 </label>
                 <input
+                  id="new-task-title"
                   name="title"
                   required
                   placeholder="Design homepage wireframe"
@@ -277,10 +307,14 @@ export default async function ProjectDetailsPage({
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-bold text-slate-700">
+                <label
+                  htmlFor="new-task-description"
+                  className="mb-2 block text-sm font-bold text-slate-700"
+                >
                   Description
                 </label>
                 <textarea
+                  id="new-task-description"
                   name="description"
                   rows={4}
                   placeholder="Short task details..."
@@ -290,10 +324,14 @@ export default async function ProjectDetailsPage({
 
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-slate-700">
+                  <label
+                    htmlFor="new-task-status"
+                    className="mb-2 block text-sm font-bold text-slate-700"
+                  >
                     Status
                   </label>
                   <select
+                    id="new-task-status"
                     name="status"
                     defaultValue="TODO"
                     className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
@@ -306,10 +344,14 @@ export default async function ProjectDetailsPage({
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-slate-700">
+                  <label
+                    htmlFor="new-task-priority"
+                    className="mb-2 block text-sm font-bold text-slate-700"
+                  >
                     Priority
                   </label>
                   <select
+                    id="new-task-priority"
                     name="priority"
                     defaultValue="MEDIUM"
                     className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
@@ -322,9 +364,12 @@ export default async function ProjectDetailsPage({
                 </div>
               </div>
 
-              <button className="w-full rounded-2xl bg-cyan-400 px-5 py-3 font-black text-slate-950 transition hover:bg-cyan-300">
+              <SubmitButton
+                pendingText="Adding Task..."
+                className="w-full rounded-2xl bg-cyan-400 px-5 py-3 font-black text-slate-950 transition hover:bg-cyan-300"
+              >
                 Add Task
-              </button>
+              </SubmitButton>
             </div>
           </form>
 
@@ -335,49 +380,81 @@ export default async function ProjectDetailsPage({
             <h3 className="text-xl font-black text-slate-950">Edit Project</h3>
 
             <div className="mt-6 space-y-5">
-              <input
-                name="name"
-                required
-                defaultValue={project.name}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
-              />
+              <div>
+                <label
+                  htmlFor="edit-project-name"
+                  className="mb-2 block text-sm font-bold text-slate-700"
+                >
+                  Project Name
+                </label>
+                <input
+                  id="edit-project-name"
+                  name="name"
+                  required
+                  defaultValue={project.name}
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
+                />
+              </div>
 
-              <select
-                name="status"
-                defaultValue={project.status}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
+              <div>
+                <label
+                  htmlFor="edit-project-status"
+                  className="mb-2 block text-sm font-bold text-slate-700"
+                >
+                  Project Status
+                </label>
+                <select
+                  id="edit-project-status"
+                  name="status"
+                  defaultValue={project.status}
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
+                >
+                  <option value="ACTIVE">Active</option>
+                  <option value="COMPLETED">Completed</option>
+                  <option value="ARCHIVED">Archived</option>
+                </select>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="edit-project-description"
+                  className="mb-2 block text-sm font-bold text-slate-700"
+                >
+                  Description
+                </label>
+                <textarea
+                  id="edit-project-description"
+                  name="description"
+                  rows={4}
+                  defaultValue={project.description || ""}
+                  className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
+                />
+              </div>
+
+              <SubmitButton
+                pendingText="Saving..."
+                className="w-full rounded-2xl bg-slate-950 px-5 py-3 font-black text-white transition hover:bg-slate-800"
               >
-                <option value="ACTIVE">ACTIVE</option>
-                <option value="COMPLETED">COMPLETED</option>
-                <option value="ARCHIVED">ARCHIVED</option>
-              </select>
-
-              <textarea
-                name="description"
-                rows={4}
-                defaultValue={project.description || ""}
-                className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
-              />
-
-              <button className="w-full rounded-2xl bg-slate-950 px-5 py-3 font-black text-white transition hover:bg-slate-800">
                 Save Changes
-              </button>
+              </SubmitButton>
             </div>
           </form>
 
-          <form
-            action={deleteProjectWithId}
-            className="rounded-3xl border border-red-200 bg-red-50 p-6"
-          >
-            <h3 className="text-xl font-black text-red-950">Danger Zone</h3>
-            <p className="mt-2 text-sm leading-6 text-red-700">
-              Deleting this project will also remove all tasks attached to it.
-            </p>
+          {canDelete ? (
+            <form
+              action={deleteProjectWithId}
+              className="rounded-3xl border border-red-200 bg-red-50 p-6"
+            >
+              <h3 className="text-xl font-black text-red-950">Danger Zone</h3>
+              <p className="mt-2 text-sm leading-6 text-red-700">
+                Deleting this project will also remove all tasks attached to it.
+              </p>
 
-            <ConfirmSubmitButton message={`Delete ${project.name} and all of its tasks? This cannot be undone.`} className="mt-5 w-full rounded-2xl bg-red-600 px-5 py-3 font-black text-white transition hover:bg-red-700">
-              Delete Project
-            </ConfirmSubmitButton>
-          </form>
+              <ConfirmSubmitButton message={`Delete ${project.name} and all of its tasks? This cannot be undone.`} className="mt-5 w-full rounded-2xl bg-red-600 px-5 py-3 font-black text-white transition hover:bg-red-700">
+                Delete Project
+              </ConfirmSubmitButton>
+            </form>
+          ) : null}
         </aside>
       </div>
     </div>

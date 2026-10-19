@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -10,6 +11,12 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "FlowPilot CRM — Self-hosted CRM & Project Management Starter",
+  description:
+    "Explore FlowPilot, a self-hosted CRM starter with projects, Kanban tasks, client opportunities, and workspace analytics.",
+};
 
 const features = [
   {
@@ -101,7 +108,7 @@ export default function HomePage() {
                 href="/register"
                 className="inline-flex items-center gap-2 rounded-full bg-cyan-400 px-7 py-4 font-black text-slate-950 shadow-xl shadow-cyan-400/20 transition hover:bg-cyan-300"
               >
-                Start Free
+                Create Demo Account
                 <ArrowRight size={18} />
               </Link>
 
@@ -130,16 +137,30 @@ export default function HomePage() {
           </div>
 
           <div className="rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-2xl shadow-cyan-950/40 backdrop-blur">
+            <div
+              className="mb-3 flex flex-wrap items-center justify-between gap-2 px-1"
+              role="note"
+              aria-label="Illustrative product preview using sample data"
+            >
+              <span className="inline-flex items-center gap-2 rounded-full bg-cyan-400 px-3 py-1.5 text-xs font-black uppercase tracking-wide text-slate-950">
+                <Sparkles aria-hidden="true" size={14} />
+                Illustrative dashboard
+              </span>
+              <span className="text-xs font-bold text-slate-300">
+                Sample data — not customer results
+              </span>
+            </div>
+
             <div className="rounded-[1.5rem] bg-slate-900 p-5">
               <div className="mb-5 flex items-center justify-between">
                 <div>
                   <p className="text-sm font-bold text-slate-400">
-                    Command Center
+                    Sample Won Deal Value
                   </p>
                   <h2 className="mt-1 text-3xl font-black">$750,000</h2>
                 </div>
                 <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-sm font-black text-emerald-300">
-                  +24.8%
+                  Sample +24.8%
                 </span>
               </div>
 
@@ -148,7 +169,7 @@ export default function HomePage() {
                   ["Projects", "12"],
                   ["Active Tasks", "48"],
                   ["Clients", "23"],
-                  ["Pipeline", "$84.2k"],
+                  ["Open Pipeline", "$84.2k"],
                 ].map(([label, value]) => (
                   <div
                     key={label}
@@ -162,7 +183,7 @@ export default function HomePage() {
 
               <div className="mt-5 rounded-3xl border border-white/10 bg-white/5 p-5">
                 <div className="mb-4 flex items-center justify-between">
-                  <p className="font-black">CRM Pipeline</p>
+                  <p className="font-black">Sample CRM Status Snapshot</p>
                   <Zap className="text-cyan-300" size={18} />
                 </div>
 
@@ -192,8 +213,11 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-3">
           {[
             ["Full-stack", "Next.js, MongoDB, Prisma, Auth"],
-            ["Business-ready", "Projects, Tasks, CRM, Analytics"],
-            ["Production-ready", "Premium UI with real SaaS workflows"],
+            ["Workflow coverage", "Projects, Tasks, CRM, Analytics"],
+            [
+              "Deployment documented",
+              "Vercel and Docker/VPS guides; production launch requires environment, database, and security checks",
+            ],
           ].map(([title, desc]) => (
             <div key={title} className="rounded-3xl bg-white/5 p-6">
               <p className="text-2xl font-black">{title}</p>

@@ -5,8 +5,13 @@ import "./globals.css";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-  title: "FlowPilot CRM",
-  description: "SaaS CRM and project management dashboard",
+  title: {
+    default: "FlowPilot CRM — Projects, Tasks & Sales Pipeline",
+    template: "%s | FlowPilot CRM",
+  },
+  description:
+    "A self-hosted CRM and project management starter for projects, Kanban tasks, client opportunities, and workspace analytics.",
+  applicationName: "FlowPilot CRM",
 };
 
 const geistSans = Geist({

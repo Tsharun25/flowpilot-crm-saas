@@ -1,8 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
+import SubmitButton from "@/components/submit-button";
 import { createProject } from "./actions";
+
+export const metadata: Metadata = {
+  title: "Projects",
+  description: "Create, review, and track projects in your FlowPilot workspace.",
+};
 
 function getStatusStyle(status: string) {
   if (status === "COMPLETED") return "bg-emerald-100 text-emerald-700";
@@ -29,7 +36,7 @@ export default async function ProjectsPage() {
     <div>
       <div className="mb-8 flex flex-col justify-between gap-4 xl:flex-row xl:items-end">
         <div>
-          <p className="text-sm font-bold uppercase tracking-wide text-cyan-600">
+          <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">
             Projects
           </p>
           <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
@@ -53,10 +60,14 @@ export default async function ProjectsPage() {
 
           <div className="mt-6 space-y-5">
             <div>
-              <label className="mb-2 block text-sm font-bold text-slate-700">
+              <label
+                htmlFor="new-project-name"
+                className="mb-2 block text-sm font-bold text-slate-700"
+              >
                 Project Name
               </label>
               <input
+                id="new-project-name"
                 name="name"
                 required
                 placeholder="Website Redesign"
@@ -65,10 +76,14 @@ export default async function ProjectsPage() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-bold text-slate-700">
+              <label
+                htmlFor="new-project-description"
+                className="mb-2 block text-sm font-bold text-slate-700"
+              >
                 Description
               </label>
               <textarea
+                id="new-project-description"
                 name="description"
                 rows={5}
                 placeholder="Short project summary..."
@@ -76,9 +91,12 @@ export default async function ProjectsPage() {
               />
             </div>
 
-            <button className="w-full rounded-2xl bg-slate-950 px-5 py-3 font-black text-white transition hover:bg-slate-800">
+            <SubmitButton
+              pendingText="Creating Project..."
+              className="w-full rounded-2xl bg-slate-950 px-5 py-3 font-black text-white transition hover:bg-slate-800"
+            >
               Create Project
-            </button>
+            </SubmitButton>
           </div>
         </form>
 
@@ -120,11 +138,11 @@ export default async function ProjectsPage() {
                     className="rounded-3xl border border-slate-200 bg-slate-50 p-5 transition hover:border-cyan-300 hover:bg-white hover:shadow-sm"
                   >
                     <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <h4 className="font-black text-slate-950">
+                      <div className="min-w-0">
+                        <h4 className="break-words font-black text-slate-950">
                           {project.name}
                         </h4>
-                        <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-500">
+                        <p className="mt-2 line-clamp-2 break-words text-sm leading-6 text-slate-500">
                           {project.description || "No description added."}
                         </p>
                       </div>

@@ -21,27 +21,44 @@ export default function LoginForm() {
     const email = String(formData.get("email"));
     const password = String(formData.get("password"));
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-    setIsLoading(false);
+      if (!result || !result.ok || result.error) {
+        setError(
+          result?.error
+            ? "Invalid email or password"
+            : "Unable to sign in right now. Please try again.",
+        );
+        return;
+      }
 
-    if (result?.error) {
-      setError("Invalid email or password");
-      return;
+      router.push("/dashboard");
+      router.refresh();
+    } catch {
+      setError("Unable to sign in right now. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-
-    router.push("/dashboard");
-    router.refresh();
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form
+      method="post"
+      onSubmit={handleSubmit}
+      className="space-y-5"
+      aria-busy={isLoading}
+    >
       {error ? (
-        <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <div
+          id="login-error"
+          role="alert"
+          className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+        >
           {error}
         </div>
       ) : null}
@@ -55,6 +72,9 @@ export default function LoginForm() {
           name="email"
           type="email"
           required
+          autoComplete="email"
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? "login-error" : undefined}
           placeholder="you@example.com"
           className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300"
         />
@@ -69,6 +89,9 @@ export default function LoginForm() {
           name="password"
           type="password"
           required
+          autoComplete="current-password"
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? "login-error" : undefined}
           placeholder="••••••••"
           className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300"
         />

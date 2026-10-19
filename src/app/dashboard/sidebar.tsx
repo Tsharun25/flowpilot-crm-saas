@@ -33,7 +33,7 @@ export default function DashboardSidebar() {
           <p className="text-2xl font-black leading-none text-slate-950">
             FlowPilot
           </p>
-          <p className="mt-1 text-xs font-bold uppercase tracking-wide text-cyan-600">
+          <p className="mt-1 text-xs font-bold uppercase tracking-wide text-cyan-700">
             SaaS CRM
           </p>
         </div>
@@ -51,6 +51,7 @@ export default function DashboardSidebar() {
             <Link
               key={item.href}
               href={item.href}
+              aria-current={active ? "page" : undefined}
               className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-black transition ${
                 active
                   ? "bg-slate-950 text-white shadow-lg shadow-slate-950/10"

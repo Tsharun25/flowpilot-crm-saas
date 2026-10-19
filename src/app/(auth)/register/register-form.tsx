@@ -22,43 +22,71 @@ export default function RegisterForm() {
     const email = String(formData.get("email"));
     const password = String(formData.get("password"));
 
-    const response = await fetch("/api/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, email, password }),
-    });
+    let accountCreated = false;
 
-    const data = await response.json();
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
 
-    if (!response.ok) {
+      const data: unknown = await response.json();
+      const message =
+        typeof data === "object" &&
+        data !== null &&
+        "message" in data &&
+        typeof data.message === "string"
+          ? data.message
+          : null;
+
+      if (!response.ok) {
+        setError(message || "Unable to create this account. Please try again.");
+        return;
+      }
+
+      accountCreated = true;
+
+      const loginResult = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (!loginResult || !loginResult.ok || loginResult.error) {
+        router.push("/login");
+        return;
+      }
+
+      router.push("/dashboard");
+      router.refresh();
+    } catch {
+      if (accountCreated) {
+        router.push("/login");
+        return;
+      }
+
+      setError("Unable to create your account right now. Please try again.");
+    } finally {
       setIsLoading(false);
-      setError(data.message || "Registration failed");
-      return;
     }
-
-    const loginResult = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-
-    setIsLoading(false);
-
-    if (loginResult?.error) {
-      router.push("/login");
-      return;
-    }
-
-    router.push("/dashboard");
-    router.refresh();
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form
+      method="post"
+      onSubmit={handleSubmit}
+      className="space-y-5"
+      aria-busy={isLoading}
+    >
       {error ? (
-        <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <div
+          id="registration-error"
+          role="alert"
+          className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+        >
           {error}
         </div>
       ) : null}
@@ -72,6 +100,8 @@ export default function RegisterForm() {
           name="name"
           type="text"
           required
+          autoComplete="name"
+          aria-describedby={error ? "registration-error" : undefined}
           placeholder="Ts Harun"
           className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300"
         />
@@ -86,6 +116,8 @@ export default function RegisterForm() {
           name="email"
           type="email"
           required
+          autoComplete="email"
+          aria-describedby={error ? "registration-error" : undefined}
           placeholder="you@example.com"
           className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300"
         />
@@ -102,7 +134,9 @@ export default function RegisterForm() {
           required
           minLength={8}
           maxLength={72}
-          placeholder="Minimum 6 characters"
+          autoComplete="new-password"
+          aria-describedby={error ? "registration-error" : undefined}
+          placeholder="8–72 characters"
           className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300"
         />
       </div>

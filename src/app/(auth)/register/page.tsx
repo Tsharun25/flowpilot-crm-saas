@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth";
 import RegisterForm from "./register-form";
+
+export const metadata: Metadata = {
+  title: "Create an account",
+  description: "Create a FlowPilot CRM account and workspace.",
+};
 
 export default async function RegisterPage() {
   const session = await getServerSession(authOptions);

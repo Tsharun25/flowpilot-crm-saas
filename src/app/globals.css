@@ -26,6 +26,12 @@ select {
   touch-action: manipulation;
 }
 
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid #0f172a;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px #22d3ee;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

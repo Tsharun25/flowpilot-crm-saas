@@ -3,7 +3,13 @@ import { getCurrentUserWithWorkspace } from "@/lib/current-user";
 import { createClient, deleteClient, updateClient } from "./actions";
 import ClientStatusForm from "./status-form";
 import { formatMoney, getWorkspaceCrmMetrics } from "@/lib/analytics";
+import {
+  centsToDollars,
+  getDealValueCents,
+  getDealValueInput,
+} from "@/lib/crm-metrics";
 import ConfirmSubmitButton from "@/components/confirm-submit-button";
+import SubmitButton from "@/components/submit-button";
 
 const columns = [
   { label: "Lead", value: "LEAD" },
@@ -20,7 +26,8 @@ function getStatusStyle(status: string) {
 }
 
 export default async function ClientsPage() {
-  const { workspace } = await getCurrentUserWithWorkspace();
+  const { workspace, membership } = await getCurrentUserWithWorkspace();
+  const canDelete = membership.role === "OWNER" || membership.role === "ADMIN";
 
   const [clients, metrics] = await Promise.all([prisma.client.findMany({
     where: {
@@ -35,7 +42,7 @@ export default async function ClientsPage() {
     <div>
       <div className="mb-8 flex flex-col justify-between gap-4 xl:flex-row xl:items-end">
         <div>
-          <p className="text-sm font-bold uppercase tracking-wide text-cyan-600">
+          <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">
             CRM
           </p>
           <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
@@ -50,21 +57,21 @@ export default async function ClientsPage() {
       <section className="mb-8 grid gap-4 md:grid-cols-3">
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="text-sm font-bold text-slate-500">Total Clients</p>
-          <p className="mt-3 text-3xl font-black text-slate-950">
+          <p className="mt-3 break-words text-2xl font-black text-slate-950 xl:text-3xl">
             {clients.length}
           </p>
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="text-sm font-bold text-slate-500">Open Pipeline</p>
-          <p className="mt-3 text-3xl font-black text-slate-950">
+          <p className="mt-3 break-words text-2xl font-black text-slate-950 xl:text-3xl">
             {formatMoney(metrics.openPipeline)}
           </p>
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="text-sm font-bold text-slate-500">Won Deal Value</p>
-          <p className="mt-3 text-3xl font-black text-slate-950">
+          <p className="mt-3 break-words text-2xl font-black text-slate-950 xl:text-3xl">
             {formatMoney(metrics.wonDealValue)}
           </p>
         </div>
@@ -81,10 +88,11 @@ export default async function ClientsPage() {
 
           <div className="mt-6 space-y-5">
             <div>
-              <label className="mb-2 block text-sm font-bold text-slate-700">
+              <label htmlFor="client-name" className="mb-2 block text-sm font-bold text-slate-700">
                 Client Name
               </label>
               <input
+                id="client-name"
                 name="name"
                 required
                 placeholder="John Smith"
@@ -93,10 +101,11 @@ export default async function ClientsPage() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-bold text-slate-700">
+              <label htmlFor="client-company" className="mb-2 block text-sm font-bold text-slate-700">
                 Company
               </label>
               <input
+                id="client-company"
                 name="company"
                 placeholder="Acme Inc."
                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
@@ -104,10 +113,11 @@ export default async function ClientsPage() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-bold text-slate-700">
+              <label htmlFor="client-email" className="mb-2 block text-sm font-bold text-slate-700">
                 Email
               </label>
               <input
+                id="client-email"
                 name="email"
                 type="email"
                 placeholder="client@example.com"
@@ -116,24 +126,30 @@ export default async function ClientsPage() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-bold text-slate-700">
-                Deal Value
+              <label htmlFor="client-value" className="mb-2 block text-sm font-bold text-slate-700">
+                Deal Value (USD)
               </label>
               <input
+                id="client-value"
                 name="value"
                 type="number"
                 min="0"
-                defaultValue="0"
-                placeholder="5000"
+                max="1000000000.00"
+                step="0.01"
+                inputMode="decimal"
+                required
+                defaultValue="0.00"
+                placeholder="5000.00"
                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-bold text-slate-700">
+              <label htmlFor="client-status" className="mb-2 block text-sm font-bold text-slate-700">
                 Status
               </label>
               <select
+                id="client-status"
                 name="status"
                 defaultValue="LEAD"
                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
@@ -145,9 +161,12 @@ export default async function ClientsPage() {
               </select>
             </div>
 
-            <button className="w-full rounded-2xl bg-cyan-400 px-5 py-3 font-black text-slate-950 transition hover:bg-cyan-300">
+            <SubmitButton
+              pendingText="Adding Client..."
+              className="w-full rounded-2xl bg-cyan-400 px-5 py-3 font-black text-slate-950 transition hover:bg-cyan-300"
+            >
               Add Client
-            </button>
+            </SubmitButton>
           </div>
         </form>
 
@@ -179,8 +198,8 @@ export default async function ClientsPage() {
                 );
 
                 const columnValue = columnClients.reduce(
-                  (total, client) => total + client.value,
-                  0
+                  (total, client) => total + getDealValueCents(client),
+                  BigInt(0)
                 );
 
                 return (
@@ -194,7 +213,7 @@ export default async function ClientsPage() {
                           {column.label}
                         </h4>
                         <p className="text-xs font-bold text-slate-500">
-                          ${columnValue.toLocaleString()}
+                          {formatMoney(centsToDollars(columnValue))}
                         </p>
                       </div>
 
@@ -205,7 +224,7 @@ export default async function ClientsPage() {
 
                     <div className="space-y-3">
                       {columnClients.length === 0 ? (
-                        <div className="rounded-2xl border border-dashed border-slate-300 p-4 text-center text-sm font-medium text-slate-400">
+                        <div className="rounded-2xl border border-dashed border-slate-300 p-4 text-center text-sm font-medium text-slate-600">
                           Empty
                         </div>
                       ) : (
@@ -219,16 +238,17 @@ export default async function ClientsPage() {
                           return (
                             <div
                               key={client.id}
+                              data-testid="client-card"
                               className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
                             >
                               <div className="flex items-start justify-between gap-3">
-                                <div>
-                                  <p className="font-black text-slate-950">
+                                <div className="min-w-0">
+                                  <p className="break-words font-black text-slate-950">
                                     {client.name}
                                   </p>
 
                                   {client.company ? (
-                                    <p className="mt-1 text-xs font-bold text-slate-500">
+                                    <p className="mt-1 break-words text-xs font-bold text-slate-500">
                                       {client.company}
                                     </p>
                                   ) : null}
@@ -249,8 +269,8 @@ export default async function ClientsPage() {
                                 </p>
                               ) : null}
 
-                              <p className="mt-3 text-lg font-black text-slate-950">
-                                ${client.value.toLocaleString()}
+                              <p className="mt-3 break-words text-lg font-black text-slate-950">
+                                {formatMoney(centsToDollars(getDealValueCents(client)))}
                               </p>
 
                               <ClientStatusForm
@@ -264,17 +284,24 @@ export default async function ClientsPage() {
                                   <input aria-label="Client name" name="name" required defaultValue={client.name} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                   <input aria-label="Company" name="company" defaultValue={client.company ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                   <input aria-label="Email" name="email" type="email" defaultValue={client.email ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
-                                  <input aria-label="Deal value" name="value" type="number" min="0" max="1000000000" defaultValue={client.value} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
+                                  <input aria-label="Deal value in USD" name="value" type="number" min="0" max="1000000000.00" step="0.01" inputMode="decimal" required defaultValue={getDealValueInput(client)} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                   <input type="hidden" name="status" value={client.status} />
-                                  <button className="w-full rounded-xl bg-slate-950 px-3 py-2 text-xs font-black text-white">Save Changes</button>
+                                  <SubmitButton
+                                    pendingText="Saving..."
+                                    className="w-full rounded-xl bg-slate-950 px-3 py-2 text-xs font-black text-white"
+                                  >
+                                    Save Changes
+                                  </SubmitButton>
                                 </form>
                               </details>
 
-                              <form action={deleteClientWithId}>
-                                <ConfirmSubmitButton message={`Delete ${client.name}? This cannot be undone.`} className="mt-3 w-full rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-100">
-                                  Delete Client
-                                </ConfirmSubmitButton>
-                              </form>
+                              {canDelete ? (
+                                <form action={deleteClientWithId}>
+                                  <ConfirmSubmitButton message={`Delete ${client.name}? This cannot be undone.`} className="mt-3 w-full rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-100">
+                                    Delete Client
+                                  </ConfirmSubmitButton>
+                                </form>
+                              ) : null}
                             </div>
                           );
                         })

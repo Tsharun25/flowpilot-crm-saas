@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
+
+export const metadata: Metadata = {
+  title: "Workspace tasks",
+  description: "Review tasks from every workspace project on one Kanban board.",
+};
 
 const columns = [
   { label: "Todo", value: "TODO" },
@@ -37,7 +43,7 @@ export default async function TasksPage() {
   return (
     <div>
       <div className="mb-8">
-        <p className="text-sm font-bold uppercase tracking-wide text-cyan-600">
+        <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">
           Tasks
         </p>
         <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
@@ -85,11 +91,11 @@ export default async function TasksPage() {
                       className="block rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-cyan-300 hover:bg-white"
                     >
                       <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="font-black text-slate-950">
+                        <div className="min-w-0">
+                          <p className="break-words font-black text-slate-950">
                             {task.title}
                           </p>
-                          <p className="mt-1 text-xs font-bold text-slate-500">
+                          <p className="mt-1 break-words text-xs font-bold text-slate-500">
                             {task.project.name}
                           </p>
                         </div>
@@ -104,7 +110,7 @@ export default async function TasksPage() {
                       </div>
 
                       {task.description ? (
-                        <p className="mt-3 text-sm leading-6 text-slate-500">
+                        <p className="mt-3 break-words text-sm leading-6 text-slate-500">
                           {task.description}
                         </p>
                       ) : null}

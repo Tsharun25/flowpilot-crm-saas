@@ -24,6 +24,7 @@ model Workspace {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   slug      String   @unique
+  isDemo    Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -86,13 +87,16 @@ model Task {
 }
 
 model Client {
-  id      String       @id @default(auto()) @map("_id") @db.ObjectId
-  name    String
-  email   String?
-  company String?
-  value   Int          @default(0)
-  status  ClientStatus @default(LEAD)
-  wonAt   DateTime?
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  email      String?
+  company    String?
+  /// Legacy whole-dollar value retained so existing MongoDB documents remain readable.
+  value      Int          @default(0)
+  /// Exact USD amount in cents for new and edited records.
+  valueCents BigInt?
+  status     ClientStatus @default(LEAD)
+  wonAt      DateTime?
 
   workspaceId String    @db.ObjectId
   workspace   Workspace @relation(fields: [workspaceId], references: [id])

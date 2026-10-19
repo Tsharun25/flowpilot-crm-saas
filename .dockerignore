@@ -1,7 +1,11 @@
-node_modules
-.next
 .git
-.env*
-!.env.example
+.github
+.next
+node_modules
 npm-debug.log*
+.env
+.env.*
+!.env.example
+.vercel
 marketplace-assets
+*.tsbuildinfo

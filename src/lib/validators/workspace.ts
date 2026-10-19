@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MAX_DEAL_VALUE_CENTS } from "@/lib/crm-metrics";
 
 const objectId = z.string().regex(/^[a-f\d]{24}$/i, "Invalid identifier");
 
@@ -21,11 +22,29 @@ export const taskSchema = z.object({
 
 export const taskStatusSchema = z.enum(["TODO", "IN_PROGRESS", "REVIEW", "DONE"]);
 
+export const dealValueSchema = z
+  .string()
+  .trim()
+  .regex(
+    /^\d+(?:\.\d{1,2})?$/,
+    "Deal value must be a nonnegative USD amount with no more than two decimal places",
+  )
+  .transform((value) => {
+    const [wholeDollars, fractionalCents = ""] = value.split(".");
+    return (
+      BigInt(wholeDollars) * BigInt(100) +
+      BigInt(fractionalCents.padEnd(2, "0") || "0")
+    );
+  })
+  .refine((value) => value <= MAX_DEAL_VALUE_CENTS, {
+    message: "Deal value cannot exceed $1,000,000,000.00",
+  });
+
 export const clientSchema = z.object({
   name: z.string().trim().min(1).max(120),
   company: z.string().trim().max(120),
   email: z.union([z.literal(""), z.string().trim().email().max(254)]),
-  value: z.coerce.number().int().min(0).max(1_000_000_000),
+  value: dealValueSchema,
   status: z.enum(["LEAD", "CONTACTED", "WON", "LOST"]).default("LEAD"),
 });
 

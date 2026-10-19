@@ -15,7 +15,15 @@ function slugify(value: string) {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { message: "Request body must be valid JSON" },
+        { status: 400 },
+      );
+    }
 
     const parsed = registerSchema.safeParse(body);
 
@@ -29,17 +37,6 @@ export async function POST(request: Request) {
     }
 
     const { name, email, password } = parsed.data;
-
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (existingUser) {
-      return NextResponse.json(
-        { message: "An account with this email already exists" },
-        { status: 409 }
-      );
-    }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -80,7 +77,7 @@ export async function POST(request: Request) {
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
       return NextResponse.json(
-        { message: "An account with this email already exists" },
+        { message: "Unable to create this account. Try signing in or use a different email." },
         { status: 409 }
       );
     }

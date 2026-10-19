@@ -16,6 +16,12 @@ export async function getCurrentUserWithWorkspace() {
     where: {
       id: session.user.id,
     },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      image: true,
+    },
   });
 
   if (!dbUser) {
@@ -25,6 +31,9 @@ export async function getCurrentUserWithWorkspace() {
   const membership = await prisma.membership.findFirst({
     where: {
       userId: dbUser.id,
+    },
+    orderBy: {
+      createdAt: "asc",
     },
     include: {
       workspace: true,

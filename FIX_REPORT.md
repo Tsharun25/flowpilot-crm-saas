@@ -1,47 +1,64 @@
-# FlowPilot Correction Report
+# FlowPilot 1.2.0 Correction Report
 
-Date: 2026-10-18 · Release target: 1.1.0
+Date: 2026-10-20 · Source target: FlowPilot 1.2.0
 
-No production secret, password, or database value is included in this report.
+This report records what is implemented in the current source tree and separates it from checks that have actually run. `IMPLEMENTED` is not the same as independently verified in a deployed environment. No production secret, password, session token, or database connection value is included.
 
-## Confirmed findings
+## Re-audit findings R01–R03
 
-| ID | Status | Change and evidence | Remaining limitation |
+| ID | Current status | Changes in 1.2.0 | Verification still required |
 |---|---|---|---|
-| F01 | FIXED | Static chart and invented growth were removed. `src/lib/crm-metrics.ts`, `src/lib/analytics.ts`, overview and Analytics now use workspace-scoped won deals grouped by `wonAt` in UTC for the current calendar year. Empty workspaces show an empty state. `npm run test:metrics` passed. | Existing Won records without `wonAt` are included in the all-time Won total but not backdated into the chart. Toggle/re-save them after deployment or migrate with a chosen historical date. |
-| F02 | FIXED | Shared definitions: Open Pipeline = Lead + Contacted; Won Deal Value = Won; Lost Deal Value = Lost; USD is displayed consistently. The `$1,000` status acceptance cases pass in `scripts/test-crm-metrics.ts`. | Currency is currently a documented single-currency USD product setting, not per-workspace multi-currency. |
-| F03 | FIXED | Client creation and board are stacked; cards use two columns from tablet and four only on very wide screens. Email truncates with full text in `title`. Responsive audit checks page-wide overflow. | Horizontal board scrolling was unnecessary after the new layout. |
-| F04 | FIXED | Client cards now expose a prefilled Edit Client form for name, company, email and amount. The server action validates input and scopes the update by authenticated workspace. Totals revalidate. | Browser persistence test must run after the deployed database/schema update. |
-| F05 | FIXED | Project task cards now expose a prefilled editor for title, description and priority while retaining the keyboard-accessible status selector. Server mutation is project- and workspace-scoped. | No drag-and-drop is claimed or implemented. |
-| F06 | FIXED | Landing copy now describes a self-hosted starter and deal-value workflows, not a hosted subscription platform. Seed data remains restricted to the explicit seed command. | Public demo reset scheduling remains an owner deployment task. |
-| F07 | PARTIALLY FIXED | Singular/plural task/client labels corrected; status selectors now show success/error toasts; destructive project/task/client actions require confirmation. Existing submit controls prevent duplicate submission where `SubmitButton` is used. | Failure-state testing under forced network/database failure was not performed. Some legacy forms still use native pending navigation rather than an inline error state. |
+| R01: decimal USD values | IMPLEMENTED; AUTOMATED UNIT AND LOCAL BROWSER/DB ACCEPTANCE PASSED | Client create and edit inputs accept `0.01` increments and use decimal input hints. Server validation accepts ordinary nonnegative decimal strings with at most two fractional digits through `$1,000,000,000.00` and rejects exponent notation, non-finite values, negatives, extra precision, and out-of-range values. Exact amounts are stored in optional `Client.valueCents` as `BigInt`; cards, totals, overview metrics, analytics, and chart tooltips read integer cents and display two decimals. Existing documents without `valueCents` fall back to the legacy whole-dollar `value`. The guarded browser audit created, edited, reloaded, and then removed temporary `0`, `0.01`, `1250.50`, and upper-bound records; exact card values persisted. Native invalid cases and the 360px upper-bound card check passed. | The automated metric suite covers total/chart logic and server rejection cases. A human hover check of the final deployed chart tooltip remains part of final live review. |
+| R02: illustrative homepage figures | IMPLEMENTED IN SOURCE; LIVE DEPLOYMENT PENDING | The preview now carries prominent `Illustrative dashboard` and `Sample data — not customer results` disclosures. `$750k`, growth, project/task/client counts, pipeline figures, and stage data are described as sample values rather than adoption, earnings, or customer outcomes. | Confirm the disclosure remains visible at phone, tablet, and desktop widths after the 1.2 deployment and recapture marketplace screenshots from the live build. |
+| R03: production-readiness claim | IMPLEMENTED IN SOURCE AND DOCUMENTATION; LIVE DEPLOYMENT PENDING | Broad `Production-ready`/`Business-ready` wording was removed. Landing, README, setup guide, and listing now describe a self-hosted starter, verified workflow scope, operator responsibilities, and deployment prerequisites. No billing, invitation, automation, or security-certification claim was added. | Recheck the deployed landing page and final Vibe96 listing for old unqualified wording before submission. |
 
-## Required verification
+## R04 verification matrix
 
-| ID | Status | Evidence | Remaining limitation / owner action |
+R04 was a request for evidence, not a confirmed defect list. The statuses below deliberately avoid turning source inspection into an end-to-end pass.
+
+| Area | Status | Current evidence | Limitation / next check |
 |---|---|---|---|
-| V01 | VERIFIED IN SOURCE | NextAuth credential sessions, bcrypt cost 12, protected server layout, and authentication inside every mutation via `getCurrentUserWithWorkspace`. | Expired-session and sign-in abuse/rate-limit tests are NOT TESTED. Password recovery is not shipped. |
-| V02 | VERIFIED IN SOURCE / NOT FULLY TESTED | Reads and writes derive workspace from the session; nested task operations check their parent project workspace; malformed IDs are rejected. | A controlled two-account IDOR suite was not run against an isolated staging database. |
-| V03 | VERIFIED IN SOURCE | Zod schemas enforce IDs, trimmed lengths, enums, email, integer nonnegative deal values and allowlisted updates. Prisma operations are scoped. Metric edge cases pass. | Destructive and database-failure cases were not executed against production. |
-| V04 | PARTIALLY VERIFIED | `.env` is ignored, `.env.example` contains placeholders, secret-pattern scan found no tracked live credentials, lockfile exists, patched Next/Auth releases are used. See `AUDIT_REPORT.md`. | Prisma 6 MongoDB-compatible CLI retains a development-tree advisory; Prisma 7 does not support MongoDB. Full repository-history secret scanning and a third-party asset/license inventory remain owner review items. |
-| V05 | PARTIALLY VERIFIED | Automated Chromium screenshots and horizontal-overflow checks cover landing plus six dashboard routes at 360, 390, 768, 1024, 1280 and 1440 CSS pixels. | Second browser engine, touch hardware, keyboard-only full pass and 200% zoom are NOT TESTED in this environment. |
-| V06 | PARTIALLY VERIFIED | ESLint, TypeScript production build, loading routes, 404 behavior in code, and security headers are present. | Forced database outage, slow-network retry behavior, centralized production monitoring and restore drill are NOT TESTED. |
-| V07 | PARTIALLY VERIFIED | README, `HowToSetup.md`, AGENTS/CLAUDE guidance, `.env.example`, Dockerfile, Vercel route, seed, changelog and support policy exist. | A fresh empty test database, Docker runtime and both deployment routes were not independently provisioned in this environment. MongoDB must be a replica set (Atlas satisfies this) for Prisma nested writes. |
-| V08 | READY LOCALLY | Six authentic 1920×1080 screenshots, listing copy, setup requirements, support policy and changelog are included. | Regenerate screenshots after production deployment if live demo data differs. Seller must supply a real support contact and accept Vibe96 obligations. |
+| Authentication and sessions | REVIEWED IN SOURCE / PARTIALLY TESTED | Dashboard routes and mutations derive the user and workspace from the server session; password hashes use bcrypt; registration handles malformed JSON and duplicate identities without a pre-query that discloses account existence. | Expired-session behavior, cookie behavior in the final deployment, sustained sign-in abuse, and forced authentication failures are `NOT TESTED`. Login and registration rate limiting is not implemented in the application; add a durable shared or edge limiter for exposed production use. |
+| Workspace isolation / IDOR | REVIEWED IN SOURCE / NOT INDEPENDENTLY VERIFIED | Project, task, client, settings, and analytics queries are scoped through the authenticated workspace; nested task writes include the parent project/workspace relationship; malformed object IDs are rejected. | A controlled two-account suite covering reads, writes, nested IDs, deletes, and analytics is `NOT TESTED`. Do not describe workspace isolation as independently penetration-tested. |
+| Input validation and deletion | REVIEWED IN SOURCE / FAILURE PATHS NOT TESTED | Zod schemas validate identifiers, enums, text, email, and money. `OWNER`/`ADMIN` are required to delete projects, tasks, and clients or change workspace identity. Project deletion checks workspace ownership and deletes its tasks/project in one Prisma transaction. Mutations check zero-row results. | Database outage, transaction rollback, stale concurrent writes, and retry behavior are `NOT TESTED`. |
+| Dependencies, secrets, licenses, and assets | PARTIALLY VERIFIED | Exact direct versions and the lockfile are present. `npm audit --omit=dev --json` reported zero production vulnerabilities. The vulnerable `deepmerge-ts` path is overridden to 8.0.2. Direct licenses and bundled-asset provenance are recorded in `THIRD_PARTY_NOTICES.md`; environment files are excluded from delivery patterns. | Full `npm audit` still reports five high-severity development-only findings through `eslint-config-next -> fast-glob -> micromatch -> braces`; `braces` has no patched release beyond the currently resolved line, so this is disclosed rather than hidden. Full Git-history secret scanning and an independent legal/license review are `NOT TESTED`. |
+| Responsive and accessibility | AUTOMATED CHECKS PASSED / MANUAL SCOPE OPEN | The source includes responsive layouts, a keyboard-operable mobile navigation dialog, visible focus styling, explicit form labels, progressbar semantics, a screen-reader chart summary, route metadata, dashboard `noindex`, and an automated accessibility audit script. The completed-tree accessibility audit passed 123/123 checks; the responsive audit passed 42/42 route/viewport combinations from 360px through 1440px, and the maximum money card also passed a 360px overflow check. | Safari/Firefox, physical touch devices, a full keyboard-only walkthrough, screen-reader use, automated contrast tooling, and 200% zoom are `NOT TESTED`. |
+| Loading, failure, and duplicate submission | IMPLEMENTED / CONTROLLED FAILURE SUITE OPEN | Loading routes, toast feedback, confirmation controls, pending-state submit components, authentication network-error recovery, and a dashboard retry boundary exist. | Controlled database outage/rollback, stale-write, slow-network, and repeated-submit testing across every form are `NOT TESTED`. |
+| Clean install and deployment | VERIFIED LOCALLY / VERCEL PENDING / DOCKER BLOCKED | A full `npm ci`, Prisma validation, unit tests, lint, production build, standalone asset preparation, server startup, and HTML/static-asset HTTP smoke test passed. Vercel/Docker prerequisites and schema-sync steps are documented. | The 1.2 Vercel deployment remains pending until this commit is pushed and reaches Ready. Docker build/runtime is `BLOCKED` because the Docker CLI is unavailable in the audit environment. A MongoDB replica set is required for the transaction used by project deletion. |
+| Listing, media, support, and demo operations | IN PREPARATION | Listing copy, setup, changelog, security policy, Vibe96-ticket support policy, third-party notices, and six screenshot slots are present. The seed requires explicit destructive confirmation, uses a persistent demo marker, recognizes only the documented legacy demo identity, and refuses an unrelated workspace. A direct safety test passed, and plain `npm run seed` refused as designed. | Regenerate live screenshots after deployment. Public-demo reset is a manual/operator-scheduled task; no scheduler is shipped. A sanitized release ZIP and final Vibe96 submission review remain pending. |
 
-## Commands and outcomes
+## Monetary migration behavior
 
-- `npx prisma generate` — PASS
-- `npx prisma validate` — PASS
-- `npm run test:metrics` — PASS
-- `npm run lint` — PASS, zero warnings
-- `npm run build` — PASS
-- `npm run audit:responsive` — PASS when run against the local production server
+FlowPilot 1.2 uses a non-destructive compatibility strategy:
 
-## Owner actions before submission
+1. `valueCents` is optional so older MongoDB documents remain readable.
+2. If `valueCents` exists, it is the authoritative exact USD amount in cents.
+3. If it is absent, the legacy integer `value` is treated as whole USD and multiplied by 100 at read time.
+4. Creating or re-saving a client writes exact `valueCents` and also keeps a truncated legacy `value` for backward compatibility.
+5. Operators apply the additive schema/index change with `npx prisma db push`; no silent bulk backfill is performed.
 
-1. Back up the database, then apply the additive `wonAt` schema/index change with `npx prisma db push` in the intended environment.
-2. Run the safe demo seed only against the dedicated demo workspace/database, then deploy.
-3. Validate public demo credentials and schedule a restricted demo reset; do not expose production customer data.
-4. Complete the two-account staging authorization suite and clean-install/Docker test before claiming those items as fully verified.
-5. Review repository history and third-party license/asset rights, add the actual support contact, and submit the updated screenshots.
+Back up the database before applying the release. See `HowToSetup.md` for the complete sequence.
+
+## Command evidence at report update
+
+| Command / check | Result |
+|---|---|
+| `npm ci` | PASS — 451 packages installed from the lockfile and audited on a clean dependency restore. |
+| `npm audit --omit=dev --json` | PASS — zero production vulnerabilities reported. |
+| `npm audit` | DISCLOSED — five high-severity development-only findings in the ESLint toolchain path described above; no patched `braces` release is currently available. |
+| `npm run verify` | PASS — Prisma validation, money tests, demo-safety tests, ESLint, TypeScript compilation, production build, and standalone asset preparation completed. |
+| `npm run audit:money-browser` | PASS — four valid create/edit/reload cases, three native invalid cases, exact display, 360px overflow check, and cleanup completed against the dedicated demo. |
+| `npm run audit:a11y` | PASS — 123/123 scoped automated checks. This is not a full manual accessibility certification. |
+| `npm run audit:responsive` | PASS — 42/42 route/viewport overflow checks at six widths from 360px to 1440px. |
+| Standalone server smoke test | PASS — root HTML and a generated static asset both returned HTTP 200. |
+| Docker image build and container smoke test | BLOCKED — Docker CLI unavailable. |
+
+## Owner actions before Vibe96 submission
+
+1. Back up the intended database and run `npx prisma db push` before directing production traffic to 1.2.
+2. Run an isolated two-account authorization/IDOR suite and add deployment-appropriate login/registration rate limiting.
+3. Deploy 1.2, verify demo credentials, and schedule a restricted reset of the dedicated demo workspace without connecting it to customer data.
+4. Re-capture the six 1920×1080 marketplace screenshots from the final live build and keep all sample-data disclosures visible.
+5. Test Docker on a capable host, review repository history for secrets, and package a sanitized source archive.
+
+No marketplace approval score, income estimate, security certification, or sales guarantee is asserted.

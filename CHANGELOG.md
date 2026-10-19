@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.2.0 — 2026-10-20
+
+- Added exact two-decimal USD handling across client create/edit forms, cards, totals, analytics, and chart tooltips.
+- Added optional MongoDB `Client.valueCents` storage using integer cents while preserving the legacy whole-dollar `value` field as a read fallback for existing records.
+- Added server-side money validation for nonnegative amounts up to `$1,000,000,000.00`; exponent notation, non-finite values, and amounts with more than two decimal places are rejected.
+- Labeled landing-page preview figures as illustrative sample data and replaced broad production-readiness claims with documented self-hosting prerequisites and limitations.
+- Restricted project, task, and client deletion plus workspace identity changes to `OWNER` and `ADMIN`; regular `MEMBER` users retain authenticated create, edit, and status workflows.
+- Made project deletion transactional and added scoped not-found checks to project, task, and client mutations.
+- Hardened authentication failure recovery and made the destructive demo reset require the explicit `seed:demo` command against a persistently marked dedicated demo workspace.
+- Locked the shared demo workspace identity, preserved safe legacy-demo upgrades, and added automated demo-safety tests.
+- Added duplicate-submit pending states, a dashboard recovery boundary, and a standalone asset preparation step for reproducible local/VPS startup.
+- Added route metadata, dashboard `noindex`, keyboard focus styles, form labels, mobile-dialog keyboard handling, an accessible chart summary, and an automated accessibility audit script.
+- Pinned direct dependencies, patched the `deepmerge-ts` advisory through an override, and added security and third-party notice documentation.
+- Documented the 1.2 schema upgrade, authorization scope, audit limitations, and marketplace disclosure requirements.
+
 ## 1.1.0 — 2026-10-18
 
 - Replaced illustrative revenue data with workspace-scoped won-deal analytics.
@@ -12,7 +27,7 @@
 ## 1.0.0 — 2026-10-18
 
 - Initial commercial release.
-- Multi-workspace authentication and authorization.
+- Workspace-scoped authentication and authorization.
 - Project, task, Kanban, CRM pipeline, analytics, and settings modules.
 - Vercel and Docker deployment paths.
 - Validated Server Action inputs and workspace-scoped mutations.

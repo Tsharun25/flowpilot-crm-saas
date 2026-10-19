@@ -1,10 +1,20 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import {
+  DEMO_ACCOUNT_EMAIL,
+  isDemoWorkspace,
+} from "../src/lib/demo-workspace";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const demoEmail = "demo@flowpilot.com";
+  if (!process.argv.includes("--confirm-demo-reset")) {
+    throw new Error(
+      "Demo seeding deletes and recreates data. Run `npm run seed:demo` only against a dedicated demo database.",
+    );
+  }
+
+  const demoEmail = DEMO_ACCOUNT_EMAIL;
   const demoPassword = await bcrypt.hash("DemoFlow2026!", 12);
 
   let user = await prisma.user.findUnique({
@@ -33,6 +43,7 @@ async function main() {
               create: {
                 name: "FlowPilot Demo",
                 slug: `flowpilot-demo-${Date.now()}`,
+                isDemo: true,
               },
             },
           },
@@ -47,17 +58,35 @@ async function main() {
       },
     });
   } else {
+    const dedicatedDemoWorkspace = user.memberships.find(({ workspace }) =>
+      isDemoWorkspace(workspace, demoEmail),
+    )?.workspace;
+
+    if (!dedicatedDemoWorkspace) {
+      throw new Error(
+        "Refusing to reset data: demo@flowpilot.com is not attached to a dedicated FlowPilot demo workspace.",
+      );
+    }
+
+    if (!dedicatedDemoWorkspace.isDemo) {
+      await prisma.workspace.update({
+        where: { id: dedicatedDemoWorkspace.id },
+        data: { isDemo: true },
+      });
+    }
+
     await prisma.user.update({
       where: { id: user.id },
       data: { password: demoPassword },
     });
   }
 
-  const workspace = user.memberships[0]?.workspace;
+  const workspace = user.memberships.find(({ workspace }) =>
+    isDemoWorkspace(workspace, demoEmail),
+  )?.workspace;
 
   if (!workspace) {
-    console.log("Workspace not found.");
-    return;
+    throw new Error("Dedicated demo workspace not found.");
   }
 
   await prisma.task.deleteMany({
@@ -169,6 +198,7 @@ async function main() {
         company: "Rossi Digital",
         email: "mario@example.com",
         value: 500000,
+        valueCents: BigInt(50_000_000),
         status: "WON",
         wonAt: new Date(),
         workspaceId: workspace.id,
@@ -178,6 +208,7 @@ async function main() {
         company: "LaunchLab",
         email: "sarah@example.com",
         value: 120000,
+        valueCents: BigInt(12_000_000),
         status: "CONTACTED",
         workspaceId: workspace.id,
       },
@@ -186,6 +217,7 @@ async function main() {
         company: "Northstar Apps",
         email: "daniel@example.com",
         value: 85000,
+        valueCents: BigInt(8_500_000),
         status: "LEAD",
         workspaceId: workspace.id,
       },
@@ -194,6 +226,7 @@ async function main() {
         company: "BrightWorks",
         email: "ayesha@example.com",
         value: 45000,
+        valueCents: BigInt(4_500_000),
         status: "LOST",
         workspaceId: workspace.id,
       },

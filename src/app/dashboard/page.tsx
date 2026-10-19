@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight, BriefcaseBusiness, CheckSquare, DollarSign, Users } from "lucide-react";
 
@@ -5,6 +6,11 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
 import AnalyticsChart from "./analytics-chart";
 import { formatMoney, getWorkspaceCrmMetrics } from "@/lib/analytics";
+
+export const metadata: Metadata = {
+  title: "Workspace overview",
+  description: "Review workspace projects, active tasks, clients, and CRM totals.",
+};
 
 export default async function DashboardPage() {
   const { workspace } = await getCurrentUserWithWorkspace();
@@ -63,14 +69,14 @@ export default async function DashboardPage() {
     <div>
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
-          <p className="text-sm font-black uppercase tracking-wide text-cyan-600">
+          <p className="text-sm font-black uppercase tracking-wide text-cyan-700">
             Overview
           </p>
           <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
             Command Center
           </h2>
           <p className="mt-3 max-w-2xl text-slate-500">
-            A premium SaaS dashboard for projects, tasks, clients, and revenue.
+            A premium SaaS dashboard for projects, tasks, clients, and deal value.
           </p>
         </div>
 
@@ -111,7 +117,7 @@ export default async function DashboardPage() {
               <p className="mt-6 text-sm font-bold text-slate-500">
                 {stat.label}
               </p>
-              <p className="mt-2 text-3xl font-black text-slate-950">
+              <p className="mt-2 break-words text-xl font-black text-slate-950 sm:text-2xl 2xl:text-3xl">
                 {stat.value}
               </p>
               <p className="mt-2 text-sm font-bold text-emerald-600">
@@ -126,7 +132,7 @@ export default async function DashboardPage() {
         <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm xl:col-span-2">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <p className="text-sm font-black uppercase tracking-wide text-cyan-600">
+              <p className="text-sm font-black uppercase tracking-wide text-cyan-700">
                 Analytics
               </p>
               <h3 className="mt-1 text-2xl font-black text-slate-950">
@@ -143,7 +149,7 @@ export default async function DashboardPage() {
 
         <div className="rounded-[2rem] bg-gradient-to-br from-slate-950 to-slate-800 p-6 text-white shadow-xl shadow-slate-300">
           <p className="text-sm font-black text-cyan-300">CRM Pulse</p>
-          <h3 className="mt-4 text-4xl font-black">
+          <h3 className="mt-4 break-words text-2xl font-black sm:text-3xl 2xl:text-4xl">
             {formatMoney(crmMetrics.openPipeline)}
           </h3>
           <p className="mt-4 text-sm leading-6 text-slate-300">
@@ -184,7 +190,7 @@ export default async function DashboardPage() {
                 href={`/dashboard/projects/${project.id}`}
                 className="rounded-3xl border border-slate-200 bg-slate-50 p-5 transition hover:border-cyan-300 hover:bg-white hover:shadow-sm"
               >
-                <p className="font-black text-slate-950">{project.name}</p>
+                <p className="break-words font-black text-slate-950">{project.name}</p>
                 <p className="mt-2 text-sm text-slate-500">
                   {project.tasks.length} {project.tasks.length === 1 ? "task" : "tasks"} • {project.status}
                 </p>

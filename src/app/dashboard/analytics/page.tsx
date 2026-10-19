@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
+
 import AnalyticsChart from "../analytics-chart";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
 import { formatMoney, getWorkspaceCrmMetrics } from "@/lib/analytics";
+
+export const metadata: Metadata = {
+  title: "CRM analytics",
+  description: "Review open pipeline and won and lost deal values for your workspace.",
+};
 
 export default async function AnalyticsPage() {
   const { workspace } = await getCurrentUserWithWorkspace();
@@ -8,7 +15,7 @@ export default async function AnalyticsPage() {
   return (
     <div>
       <div className="mb-8">
-        <p className="text-sm font-black uppercase tracking-wide text-cyan-600">
+        <p className="text-sm font-black uppercase tracking-wide text-cyan-700">
           Analytics
         </p>
         <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
@@ -41,5 +48,5 @@ export default async function AnalyticsPage() {
 }
 
 function Metric({ label, value }: { label: string; value: string }) {
-  return <div className="rounded-2xl bg-slate-50 p-4"><p className="text-sm font-bold text-slate-500">{label}</p><p className="mt-2 text-xl font-black text-slate-950">{value}</p></div>;
+  return <div className="min-w-0 rounded-2xl bg-slate-50 p-4"><p className="text-sm font-bold text-slate-500">{label}</p><p className="mt-2 break-words text-lg font-black text-slate-950 lg:text-xl">{value}</p></div>;
 }

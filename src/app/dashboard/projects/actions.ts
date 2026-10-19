@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
-import { getCurrentUserWithWorkspace } from "@/lib/current-user";
+import { getCurrentUserWithWorkspace, requireWorkspaceManager } from "@/lib/current-user";
 import {
   projectIdSchema,
   projectSchema,
@@ -43,7 +43,7 @@ export async function updateProject(projectId: string, formData: FormData) {
     status: formData.get("status"),
   });
 
-  await prisma.project.updateMany({
+  const result = await prisma.project.updateMany({
     where: {
       id: safeProjectId,
       workspaceId: workspace.id,
@@ -55,6 +55,8 @@ export async function updateProject(projectId: string, formData: FormData) {
     },
   });
 
+  if (result.count === 0) throw new Error("Project not found");
+
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/projects");
   revalidatePath(`/dashboard/projects/${projectId}`);
@@ -63,24 +65,24 @@ export async function updateProject(projectId: string, formData: FormData) {
 }
 
 export async function deleteProject(projectId: string) {
-  const { workspace } = await getCurrentUserWithWorkspace();
+  const { workspace } = await requireWorkspaceManager();
   const safeProjectId = projectIdSchema.parse(projectId);
 
-  await prisma.task.deleteMany({
-    where: {
-      projectId: safeProjectId,
-      project: {
-        workspaceId: workspace.id,
-      },
-    },
+  const project = await prisma.project.findFirst({
+    where: { id: safeProjectId, workspaceId: workspace.id },
+    select: { id: true },
   });
+  if (!project) throw new Error("Project not found");
 
-  await prisma.project.deleteMany({
-    where: {
-      id: safeProjectId,
-      workspaceId: workspace.id,
-    },
-  });
+  await prisma.$transaction([
+    prisma.task.deleteMany({
+      where: {
+        projectId: safeProjectId,
+        project: { workspaceId: workspace.id },
+      },
+    }),
+    prisma.project.delete({ where: { id: project.id } }),
+  ]);
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/projects");
@@ -133,7 +135,7 @@ export async function updateTaskStatus(
   const safeTaskId = taskIdSchema.parse(taskId);
   const safeStatus = taskStatusSchema.parse(status);
 
-  await prisma.task.updateMany({
+  const result = await prisma.task.updateMany({
     where: {
       id: safeTaskId,
       projectId: safeProjectId,
@@ -146,17 +148,19 @@ export async function updateTaskStatus(
     },
   });
 
+  if (result.count === 0) throw new Error("Task not found");
+
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/projects");
   revalidatePath(`/dashboard/projects/${projectId}`);
 }
 
 export async function deleteTask(projectId: string, taskId: string) {
-  const { workspace } = await getCurrentUserWithWorkspace();
+  const { workspace } = await requireWorkspaceManager();
   const safeProjectId = projectIdSchema.parse(projectId);
   const safeTaskId = taskIdSchema.parse(taskId);
 
-  await prisma.task.deleteMany({
+  const result = await prisma.task.deleteMany({
     where: {
       id: safeTaskId,
       projectId: safeProjectId,
@@ -165,6 +169,8 @@ export async function deleteTask(projectId: string, taskId: string) {
       },
     },
   });
+
+  if (result.count === 0) throw new Error("Task not found");
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/projects");
