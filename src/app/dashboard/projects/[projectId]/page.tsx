@@ -217,6 +217,7 @@ export default async function ProjectDetailsPage({
                             return (
                               <div
                                 key={task.id}
+                                data-testid="task-card"
                                 className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
                               >
                                 <div className="flex items-start justify-between gap-3">
@@ -248,7 +249,11 @@ export default async function ProjectDetailsPage({
 
                                 <details className="mt-3 rounded-xl border border-slate-200 p-3">
                                   <summary className="cursor-pointer text-center text-xs font-black text-slate-700">Edit Task</summary>
-                                  <form action={updateTaskWithIds} className="mt-3 space-y-3">
+                                  <form
+                                    key={task.updatedAt.toISOString()}
+                                    action={updateTaskWithIds}
+                                    className="mt-3 space-y-3"
+                                  >
                                     <input aria-label="Task title" name="title" required defaultValue={task.title} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                     <textarea aria-label="Task description" name="description" rows={3} defaultValue={task.description ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                     <select aria-label="Priority" name="priority" defaultValue={task.priority} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"><option value="LOW">Low</option><option value="MEDIUM">Medium</option><option value="HIGH">High</option><option value="URGENT">Urgent</option></select>
@@ -374,6 +379,7 @@ export default async function ProjectDetailsPage({
           </form>
 
           <form
+            key={project.updatedAt.toISOString()}
             action={updateProjectWithId}
             className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
           >

@@ -191,6 +191,7 @@ export default async function SettingsPage() {
 
       <section className="grid gap-6 xl:grid-cols-2">
         <form
+          key={user.name}
           action={updateProfile}
           className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm"
         >
@@ -246,6 +247,7 @@ export default async function SettingsPage() {
 
         {canEditWorkspace ? (
           <form
+            key={`${workspace.name}:${workspace.slug}`}
             action={updateWorkspace}
             aria-labelledby="workspace-identity-title"
             className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm"

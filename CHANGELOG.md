@@ -1,5 +1,11 @@
 # Changelog
 
+### Final audit corrections — 2026-10-20
+
+- Fixed stale uncontrolled edit-form state after Server Action refreshes; task priority now remains synchronized after a save and an unchanged repeated save. Client, project, profile, and workspace edit forms use the same saved-value reset strategy.
+- Added a guarded browser regression for `HIGH` to `URGENT` repeated saves across the project and workspace task boards.
+- Clarified that client-linked projects, won-deal conversion, dated activity, search/filter, CSV export, and due-date UI are roadmap/customization scope rather than shipped features.
+
 ## 1.2.0 — 2026-10-20
 
 - Added exact two-decimal USD handling across client create/edit forms, cards, totals, analytics, and chart tooltips.

@@ -280,7 +280,11 @@ export default async function ClientsPage() {
 
                               <details className="mt-3 rounded-xl border border-slate-200 p-3">
                                 <summary className="cursor-pointer text-center text-xs font-black text-slate-700">Edit Client</summary>
-                                <form action={updateClientWithId} className="mt-3 space-y-3">
+                                <form
+                                  key={client.updatedAt.toISOString()}
+                                  action={updateClientWithId}
+                                  className="mt-3 space-y-3"
+                                >
                                   <input aria-label="Client name" name="name" required defaultValue={client.name} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                   <input aria-label="Company" name="company" defaultValue={client.company ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                   <input aria-label="Email" name="email" type="email" defaultValue={client.email ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />

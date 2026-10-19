@@ -27,6 +27,10 @@ R04 was a request for evidence, not a confirmed defect list. The statuses below 
 | Clean install and deployment | VERIFIED LOCALLY / VERCEL READY / DOCKER BLOCKED | A full `npm ci`, Prisma validation, unit tests, lint, production build, standalone asset preparation, server startup, and HTML/static-asset HTTP smoke test passed. The pushed 1.2 commit reached Vercel `Ready`, and live accessibility/responsive audits passed. Vercel/Docker prerequisites and schema-sync steps are documented. | Docker build/runtime is `BLOCKED` because the Docker CLI is unavailable in the audit environment. A MongoDB replica set is required for the transaction used by project deletion. |
 | Listing, media, support, and demo operations | READY WITH DISCLOSED LIMITATIONS | Listing copy, setup, changelog, security policy, Vibe96-ticket support policy, third-party notices, and seven live 1920x1080 screenshot slots are present. The seed requires explicit destructive confirmation, uses a persistent demo marker, recognizes only the documented legacy demo identity, and refuses an unrelated workspace. A direct safety test passed, and plain `npm run seed` refused as designed. | Public-demo reset is a manual/operator-scheduled task; no scheduler is shipped. Final marketplace acceptance remains Vibe96's decision. |
 
+## Final live UI finding A01
+
+The reported task-priority repeated-save defect was confirmed in source. React preserved the uncontrolled editor state across the Server Action refresh, so the task card could show the saved priority while the still-mounted editor retained its previous value. Task edit forms now remount from the task's saved `updatedAt` version. Client and project editors use the same record-version strategy; profile and workspace editors reset from their saved identity values. A guarded browser regression covers `HIGH -> URGENT -> save -> unchanged save -> reload` and verifies both project and workspace task boards. Live execution is recorded in the release audit after deployment.
+
 ## Monetary migration behavior
 
 FlowPilot 1.2 uses a non-destructive compatibility strategy:

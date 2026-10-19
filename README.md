@@ -25,6 +25,8 @@ Password: DemoFlow2026!
 
 ## Features
 
+FlowPilot 1.2 intentionally ships as a focused CRM/project-management starter. It does not include client-linked projects, won-deal conversion, dated client activity, search/filter, CSV export, or a due-date/overdue UI. The optional task `dueDate` database field is reserved for buyer customization. Do not advertise these roadmap items as included features.
+
 - User registration and login
 - Password hashing with bcryptjs
 - Protected dashboard routes

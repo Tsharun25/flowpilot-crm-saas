@@ -87,6 +87,7 @@ export default async function TasksPage() {
                   {columnTasks.map((task) => (
                     <Link
                       key={task.id}
+                      data-testid="workspace-task-card"
                       href={`/dashboard/projects/${task.projectId}`}
                       className="block rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-cyan-300 hover:bg-white"
                     >

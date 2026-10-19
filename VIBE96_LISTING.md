@@ -53,7 +53,7 @@ Buyers should review the [Security Policy](SECURITY.md), [Release Audit](AUDIT_R
 
 Keep the demo online throughout review and while listed. Use this account only with non-sensitive sample data.
 
-The shipped product is a self-hosted CRM/project-management starter, not a hosted subscription service. Billing, subscriptions, invitations, password recovery, email automation, and drag-and-drop are not included. Operators should reset the dedicated demo workspace on a schedule and never connect it to production customer data.
+The shipped product is a self-hosted CRM/project-management starter, not a hosted subscription service. Billing, subscriptions, invitations, password recovery, email automation, drag-and-drop, client-linked projects, won-deal conversion, dated client activity, search/filter, and CSV export are not included. Task records contain an optional `dueDate` field in the data model, but the shipped UI does not offer due-date or overdue workflows. These items are roadmap/customization opportunities and must not be advertised as shipped features. Operators should reset the dedicated demo workspace on a schedule and never connect it to production customer data.
 
 The application does not schedule the demo reset itself; that remains a manual or operator-configured infrastructure task.
 

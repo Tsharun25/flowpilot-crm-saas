@@ -18,6 +18,7 @@ The 1.2 source candidate addresses the re-audit's decimal-money, illustrative-fi
 - The demo seed requires an explicit confirmation flag, persists an `isDemo` marker, safely upgrades only the documented legacy demo identity, and refuses to reset an unrelated non-demo workspace. The public demo workspace identity is locked; scheduling resets remains an operator task.
 - Accessibility-oriented source changes include explicit labels, focus-visible styles, semantic progress output, an equivalent screen-reader chart summary, route metadata, dashboard `noindex`, and keyboard/focus handling for the mobile navigation dialog.
 - Pending submit controls reduce accidental duplicate form submissions, authentication network failures recover in context, and the dashboard has a route-level retry boundary for unexpected failures.
+- Edit forms remount from saved record versions after mutations, preventing stale uncontrolled values from overwriting newly saved task, client, project, profile, or workspace data on a repeated save.
 - Security and third-party disclosures are available in `SECURITY.md` and `THIRD_PARTY_NOTICES.md`.
 
 Source review supports these statements, but it is not a substitute for the open runtime checks below.
@@ -44,6 +45,7 @@ The affected path is not imported by the application runtime, but the full audit
 | Full dependency audit | OPEN, DEVELOPMENT ONLY | Five high findings through the ESLint toolchain path above; no current patched `braces` release. |
 | Clean dependency install | PASS | Full `npm ci` restored 451 packages from the lockfile. |
 | Decimal-money unit/browser checks | PASS, SCOPED | Unit/server validation tests passed. A guarded local browser/DB audit created, edited, reloaded, verified, and removed temporary `0`, `0.01`, `1250.50`, and `$1,000,000,000.00` records; invalid native cases and the 360px upper-bound card check passed. |
+| Task-priority repeated-save regression | IMPLEMENTED / LIVE RERUN PENDING | A guarded browser test covers `HIGH -> URGENT -> save -> unchanged save -> reload` and checks the project and workspace task boards. The source fix resets uncontrolled editors from the saved record version. |
 | Prisma validation, lint, TypeScript, and production build | PASS | `npm run verify` completed on the final source candidate, including standalone static/public asset preparation. |
 | Accessibility and responsive browser audits | PASS, SCOPED | Accessibility automation passed 123/123 checks. Responsive automation passed 42/42 route/viewport overflow checks at 360, 390, 768, 1024, 1280, and 1440px. Cross-browser, screen-reader, hardware-touch, automated contrast, full keyboard-only, and 200% zoom testing are not complete. |
 | Standalone server smoke test | PASS | The production server started and returned HTTP 200 for the landing HTML and a generated static asset. |
@@ -58,6 +60,6 @@ The affected path is not imported by the application runtime, but the full audit
 
 ## Release boundaries
 
-FlowPilot is a self-hosted CRM/project-management starter. It does not include hosted billing, subscriptions, invitations, password recovery, outbound email automation, drag-and-drop, a managed backup service, a demo-reset scheduler, or an application-level distributed rate limiter. Deployment operators are responsible for private secrets, HTTPS, MongoDB network policy, replica-set availability, backups and restoration, monitoring, abuse controls, privacy requirements, and re-testing after customization.
+FlowPilot is a self-hosted CRM/project-management starter. It does not include hosted billing, subscriptions, invitations, password recovery, outbound email automation, drag-and-drop, client-linked projects, won-deal conversion, dated client activity, search/filter, CSV export, a due-date/overdue UI, a managed backup service, a demo-reset scheduler, or an application-level distributed rate limiter. Deployment operators are responsible for private secrets, HTTPS, MongoDB network policy, replica-set availability, backups and restoration, monitoring, abuse controls, privacy requirements, and re-testing after customization.
 
 This audit records evidence and limitations; it does not guarantee defect-free operation, marketplace acceptance, sales, income, or security certification.

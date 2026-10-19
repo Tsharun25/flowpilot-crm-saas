@@ -18,6 +18,7 @@
     "audit:responsive": "node scripts/responsive-audit.mjs",
     "audit:a11y": "node scripts/accessibility-audit.mjs",
     "audit:money-browser": "node scripts/decimal-browser-audit.mjs",
+    "audit:task-priority": "node scripts/task-priority-browser-audit.mjs",
     "test:metrics": "tsx scripts/test-crm-metrics.ts",
     "test:demo-safety": "tsx scripts/test-demo-workspace.ts",
     "verify": "prisma validate && npm run test:metrics && npm run test:demo-safety && npm run lint && npm run build"
