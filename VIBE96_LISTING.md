@@ -61,9 +61,10 @@ The application does not schedule the demo reset itself; that remains a manual o
 
 1. Landing page hero and product preview
 2. Main dashboard with KPI cards and recent projects
-3. Project details and four-column Kanban board
-4. CRM pipeline with lead cards and deal values
-5. Analytics dashboard with chart
-6. Workspace settings and team roles
+3. Projects overview
+4. Project details and four-column Kanban board
+5. CRM pipeline with lead cards and deal values
+6. Analytics dashboard with chart
+7. Workspace settings and team roles
 
 Use only real screens from the live product; do not include browser extensions, personal bookmarks, credentials, or customer data. The landing-page preview contains illustrative sample figures and an in-frame disclosure; keep that disclosure visible and do not present those figures as customer results, adoption, or earnings.

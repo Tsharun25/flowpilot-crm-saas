@@ -29,9 +29,20 @@ try {
 
   await capture("02-dashboard", "/dashboard");
   await capture("03-projects", "/dashboard/projects");
-  await capture("04-crm-pipeline", "/dashboard/clients");
-  await capture("05-analytics", "/dashboard/analytics");
-  await capture("06-settings", "/dashboard/settings");
+
+  const firstProjectHref = await page
+    .locator('a[href^="/dashboard/projects/"]')
+    .first()
+    .getAttribute("href");
+
+  if (!firstProjectHref) {
+    throw new Error("No demo project was available for the project-detail screenshot.");
+  }
+
+  await capture("04-project-details", firstProjectHref);
+  await capture("05-crm-pipeline", "/dashboard/clients");
+  await capture("06-analytics", "/dashboard/analytics");
+  await capture("07-settings", "/dashboard/settings");
 } finally {
   await browser.close();
 }
