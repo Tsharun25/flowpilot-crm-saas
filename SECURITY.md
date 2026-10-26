@@ -17,6 +17,6 @@ FlowPilot is a self-hosted starter. Before processing real customer data, the op
 - serve the application over HTTPS;
 - apply schema changes and dependency updates in a staging environment first;
 - verify workspace isolation and role permissions after customization;
-- configure monitoring, rate limiting, recovery procedures, and any jurisdiction-specific privacy controls required by the deployment.
+- keep `RATE_LIMIT_SALT` private and consistent across instances, monitor the included MongoDB-backed authentication limits, add edge/WAF controls where appropriate, and configure recovery procedures plus any jurisdiction-specific privacy controls required by the deployment.
 
 The repository intentionally contains no telemetry, analytics tracker, hidden outbound service, licensing lock, or production credential.

@@ -41,8 +41,12 @@ try {
 
   await capture("04-project-details", firstProjectHref);
   await capture("05-crm-pipeline", "/dashboard/clients");
-  await capture("06-analytics", "/dashboard/analytics");
-  await capture("07-settings", "/dashboard/settings");
+  const firstClientHref = await page.locator('a[href^="/dashboard/clients/"]').first().getAttribute("href");
+  if (!firstClientHref) throw new Error("No demo client was available for the client-detail screenshot.");
+  await capture("06-client-details", firstClientHref);
+  await capture("07-tasks-and-filters", "/dashboard/tasks");
+  await capture("08-analytics", "/dashboard/analytics");
+  await capture("09-settings", "/dashboard/settings");
 } finally {
   await browser.close();
 }

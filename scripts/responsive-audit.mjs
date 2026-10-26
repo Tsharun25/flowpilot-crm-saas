@@ -13,6 +13,7 @@ const viewports = [
   { name: "tablet-768", width: 768, height: 1024 },
   { name: "laptop-1024", width: 1024, height: 768 },
   { name: "desktop-1280", width: 1280, height: 800 },
+  { name: "desktop-1366", width: 1366, height: 900 },
   { name: "desktop-1440", width: 1440, height: 900 },
 ];
 
@@ -40,6 +41,13 @@ try {
   await page.getByLabel(/password/i).fill(password);
   await page.getByRole("button", { name: /sign in|login/i }).click();
   await page.waitForURL(/\/dashboard/, { timeout: 20_000 });
+
+  await page.goto(`${baseUrl}/dashboard/projects`, { waitUntil: "domcontentloaded" });
+  const projectHref = await page.locator('a[href^="/dashboard/projects/"]').first().getAttribute("href");
+  if (projectHref) routes.push({ name: "project-details", path: projectHref });
+  await page.goto(`${baseUrl}/dashboard/clients`, { waitUntil: "domcontentloaded" });
+  const clientHref = await page.locator('a[href^="/dashboard/clients/"]').first().getAttribute("href");
+  if (clientHref) routes.push({ name: "client-details", path: clientHref });
 
   for (const route of routes) {
     await page.goto(`${baseUrl}${route.path}`, { waitUntil: "domcontentloaded" });

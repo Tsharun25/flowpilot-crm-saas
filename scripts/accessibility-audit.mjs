@@ -315,6 +315,15 @@ try {
     console.log("SKIP project details — no seeded project is available");
   }
 
+  await page.goto(`${baseUrl}/dashboard/clients`, { waitUntil: "domcontentloaded" });
+  const clientHref = await page.locator('a[href^="/dashboard/clients/"]').first().getAttribute("href");
+  if (clientHref) {
+    const clientRoute = { name: "client details", path: clientHref, expectNoIndex: true };
+    titles.set(clientHref, await auditRoute(clientRoute));
+  } else {
+    console.log("SKIP client details — no seeded client is available");
+  }
+
   const titleGroups = new Map();
   for (const [path, title] of titles) {
     const paths = titleGroups.get(title) ?? [];

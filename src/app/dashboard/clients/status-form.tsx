@@ -18,7 +18,7 @@ export default function ClientStatusForm({
   function handleChange(status: ClientStatus) {
     startTransition(async () => {
       try {
-        await updateClientStatus(clientId, status);
+        await updateClientStatus(clientId, status, crypto.randomUUID());
         toast.success("Client status updated");
       } catch {
         toast.error("Could not update client status");

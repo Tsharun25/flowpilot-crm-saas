@@ -1,68 +1,49 @@
-# FlowPilot 1.2.0 Correction Report
+# FlowPilot 1.3.0 Remaining-Work Report
 
-Date: 2026-10-20 · Source target: FlowPilot 1.2.0
+Date: 2026-10-26 · Branch: `main` · Starting revision: `08a345a`
 
-This report records what is implemented in the current source tree and separates it from checks that have actually run. `IMPLEMENTED` is not the same as independently verified in a deployed environment. No production secret, password, session token, or database connection value is included.
+This report separates implementation, testing, and deployment. `PASS` means the named scoped check ran; it is not a security, accessibility, or marketplace certification. No credential, token, connection string, or secret value is recorded.
 
-## Re-audit findings R01–R03
+| ID | Implemented? | Tested? | Deployed? | Files / commit | Actual evidence | Remaining blocker |
+|---|---|---|---|---|---|---|
+| F01 client-linked projects | Yes | PASS, scoped | Pending | `prisma/schema.prisma`, project/client pages and actions | Browser workflow created a client-linked project through Won conversion; project details displayed the client. Project create/edit selectors are populated only from the current workspace. Empty relation remains valid; client deletion unlinks projects before deleting client data. | Forged cross-workspace Server Action payload was source-reviewed and selector isolation was tested, but no external DAST/fuzzer certification. |
+| F02 Won deal to project | Yes | PASS, scoped | Pending | `DealConversion`, client actions/pages | Unique `clientId` and `projectId` conversion records plus a transaction provide durable idempotency. Workflow retained `$1,234.56`, created one linked project, and exposed the existing-project control afterward. | Concurrent production load test not run; MongoDB replica set is mandatory. |
+| F03 follow-up/due dates | Yes | PASS | Pending | schema, validators, client/project/task UI | Workflow created/reloaded a `2026-11-01` follow-up and a past due task, observed overdue, then observed completed-not-overdue. Unit check confirmed date-only storage at `00:00:00 UTC`; fields support blank clearing. | Email reminders are intentionally absent. Full global timezone matrix beyond UTC boundary logic is not a browser suite. |
+| F04 notes/activity | Yes | PASS, scoped | Pending | `ClientNote`, `ClientActivity`, client detail/actions | Unicode multiline note persisted with authenticated author; status and conversion events are server-generated and ordered by timestamp/id. Unique request/event keys and conditional status updates prevent ordinary retry duplicates. React escapes note text. | Forged-author payload is impossible in shipped form/action API but no external penetration test. |
+| F05 search/filters | Yes | PASS, scoped | Pending | client/project/task pages | Clients search name/company/email and filter status; projects search name and filter status/client/internal; tasks search title and filter project/status/priority/overdue. Workflow combined client search+Won filter and reset/no-results states are present. Inputs are bounded and every query carries workspace scope. | Performance tuning for very large workspaces is buyer-specific. |
+| F06 CSV export | Yes | PASS | Pending | `/api/export/[resource]`, `src/lib/csv.ts` | Authenticated filtered exports cover clients/projects/tasks, cap at 5,000, emit UTF-8 BOM, quote commas/quotes/newlines, and prefix formula-like values. Workflow verified Unicode and `=2+2` safety; second-workspace export excluded the first workspace. | Spreadsheet behavior can vary by vendor; no XLSX format is shipped. |
+| AUTH | Yes | PASS, scoped | Pending | auth configuration and isolation audit | Fresh sessions succeeded; anonymous protected-route access redirected to login; logout/protected-route behavior remains covered by the UI path. Password recovery is not advertised or shipped. | Artificial JWT expiry/time-travel was not tested. |
+| ISOLATION | Yes | PASS, scoped | Pending | current-user helper, scoped actions/pages/export, isolation audit | Two temporary accounts/workspaces verified own access, cross-workspace client/project 404s, export exclusion, link-selector exclusion, zero-row scoped write, and nested task exclusion. All synthetic records were removed. | Opaque Server Action IDs were not externally fuzzed; this is not a penetration test. |
+| RATE LIMITS | Yes | PASS, controlled | Pending | `RateLimit`, `rate-limit.ts`, login/register handlers | Atomic MongoDB `findAndModify` test observed counts `1,2,3` and rejection threshold metadata. Login uses hashed IP+email; registration uses hashed IP and returns `429` with `Retry-After`. | Edge/WAF controls remain recommended; sustained production attack testing was intentionally not run. |
+| FAILURES | Partial | PASS for validation/retry cases; otherwise NOT TESTED | Pending | validators, pending buttons, actions | Invalid money/date/ID paths, duplicate note/conversion keys, repeated priority save, and rate-limit rejection have automated coverage. | Controlled database outage, transaction rollback injection, and every-form slow-network testing remain open. |
+| RESPONSIVE | Yes | PASS, automated | Pending | responsive UI and audit script | No horizontal overflow across 9 routes at 360, 390, 768, 1024, 1280, 1366, and 1440 px: 63/63 combinations. Workflow also ran at 1366 px. | Physical touch devices, Safari/Firefox, and a formal 200% browser-zoom/manual usability certification remain open. |
+| ACCESSIBILITY | Partial | PASS, automated scope | Pending | UI semantics and accessibility audit | 135/135 checks passed for titles, language, headings, landmarks, names, labels, IDs, image alternatives, noindex, basic focus visibility, and mobile drawer focus/Escape. | Axe/contrast tooling, screen reader, full keyboard-only, and manual 200% zoom remain open. |
+| INSTALL | Yes | PASS, local | Pending | lockfile, setup guide, Dockerfile | Prisma validation/generation, schema sync, production build, standalone preparation/start, and authenticated workflow ran against a real MongoDB replica-set deployment. | Independent buyer-machine walkthrough not performed. |
+| DOCKER | Documented | BLOCKED | No | `Dockerfile`, `HowToSetup.md` | Route and schema-sync commands are documented. | Docker CLI is unavailable on this machine; no build/run claim is made. |
+| DATABASE | Yes | PASS, scoped | Pending | schema and setup docs | `npx prisma db push` applied four new collections and required indexes without deleting or rewriting existing records. Backup/restore and replica-set requirements are documented. | Backup restoration is an operator responsibility and was not exercised. |
+| SECRETS/DEPENDENCIES | Partial | PASS for current dependency audit; partial otherwise | Pending | `.env.example`, security and third-party docs | Delivery excludes `.env`; both full and production-only `npm audit` reported zero known vulnerabilities on 2026-10-26 after updating Zod to 4.6.7. Direct dependencies remain pinned. | Independent full-history secret scan and legal/license review remain owner actions. |
+| DEMO/BUYER MEDIA | In progress | NOT YET FINAL | Pending | seed, README, setup, listing, media scripts | Guarded seed now creates linked clients/projects plus dated synthetic records while retaining the sample-data disclosure. | Screenshots and release ZIP must be refreshed after deployment. |
 
-| ID | Current status | Changes in 1.2.0 | Verification still required |
-|---|---|---|---|
-| R01: decimal USD values | IMPLEMENTED; AUTOMATED UNIT AND LOCAL BROWSER/DB ACCEPTANCE PASSED | Client create and edit inputs accept `0.01` increments and use decimal input hints. Server validation accepts ordinary nonnegative decimal strings with at most two fractional digits through `$1,000,000,000.00` and rejects exponent notation, non-finite values, negatives, extra precision, and out-of-range values. Exact amounts are stored in optional `Client.valueCents` as `BigInt`; cards, totals, overview metrics, analytics, and chart tooltips read integer cents and display two decimals. Existing documents without `valueCents` fall back to the legacy whole-dollar `value`. The guarded browser audit created, edited, reloaded, and then removed temporary `0`, `0.01`, `1250.50`, and upper-bound records; exact card values persisted. Native invalid cases and the 360px upper-bound card check passed. | The automated metric suite covers total/chart logic and server rejection cases. A human hover check of the final deployed chart tooltip remains part of final live review. |
-| R02: illustrative homepage figures | IMPLEMENTED; LIVE RESPONSIVE CHECKS PASSED | The preview carries prominent `Illustrative dashboard` and `Sample data — not customer results` disclosures. `$750k`, growth, project/task/client counts, pipeline figures, and stage data are described as sample values rather than adoption, earnings, or customer outcomes. The disclosure remained visible in the scoped live responsive audit, and marketplace screenshots were recaptured from the deployed build. | Retain these disclosures in future marketing changes. |
-| R03: production-readiness claim | IMPLEMENTED; LIVE DEPLOYMENT VERIFIED | Broad `Production-ready`/`Business-ready` wording was removed. Landing, README, setup guide, and listing describe a self-hosted starter, verified workflow scope, operator responsibilities, and deployment prerequisites. No billing, invitation, automation, or security-certification claim was added. | Recheck claims after future feature or listing changes. |
+## Commands and observed outcomes
 
-## R04 verification matrix
+- `npx prisma db push` — PASS; added `DealConversion`, `ClientNote`, `ClientActivity`, and `RateLimit` plus indexes. No destructive warning or record rewrite.
+- `npm run build` — PASS with Next.js 16.4.2, TypeScript, 11 UI routes and 3 API route groups.
+- `npm run test:workflow-utils` — PASS; UTC date parsing and safe CSV escaping.
+- `npm run test:rate-limit` — PASS; atomic shared limit count/rejection behavior.
+- `CONFIRM_DEMO_MUTATION=1 npm run audit:workflow` — PASS; complete synthetic agency workflow and cleanup.
+- `CONFIRM_ISOLATION_MUTATION=1 npm run audit:isolation` — PASS; scoped two-account checks and cleanup.
+- `CONFIRM_DEMO_MUTATION=1 npm run audit:task-priority` — PASS; High → Urgent → save → unchanged save → reload on both boards and cleanup.
+- `npm run audit:a11y` — PASS 135/135 automated checks.
+- `npm run audit:responsive` — PASS 63/63 route/viewport overflow combinations.
 
-R04 was a request for evidence, not a confirmed defect list. The statuses below deliberately avoid turning source inspection into an end-to-end pass.
+## Data and migration requirements
 
-| Area | Status | Current evidence | Limitation / next check |
-|---|---|---|---|
-| Authentication and sessions | REVIEWED IN SOURCE / PARTIALLY TESTED | Dashboard routes and mutations derive the user and workspace from the server session; password hashes use bcrypt; registration handles malformed JSON and duplicate identities without a pre-query that discloses account existence. | Expired-session behavior, cookie behavior in the final deployment, sustained sign-in abuse, and forced authentication failures are `NOT TESTED`. Login and registration rate limiting is not implemented in the application; add a durable shared or edge limiter for exposed production use. |
-| Workspace isolation / IDOR | REVIEWED IN SOURCE / NOT INDEPENDENTLY VERIFIED | Project, task, client, settings, and analytics queries are scoped through the authenticated workspace; nested task writes include the parent project/workspace relationship; malformed object IDs are rejected. | A controlled two-account suite covering reads, writes, nested IDs, deletes, and analytics is `NOT TESTED`. Do not describe workspace isolation as independently penetration-tested. |
-| Input validation and deletion | REVIEWED IN SOURCE / FAILURE PATHS NOT TESTED | Zod schemas validate identifiers, enums, text, email, and money. `OWNER`/`ADMIN` are required to delete projects, tasks, and clients or change workspace identity. Project deletion checks workspace ownership and deletes its tasks/project in one Prisma transaction. Mutations check zero-row results. | Database outage, transaction rollback, stale concurrent writes, and retry behavior are `NOT TESTED`. |
-| Dependencies, secrets, licenses, and assets | PARTIALLY VERIFIED | Exact direct versions and the lockfile are present. `npm audit --omit=dev --json` reported zero production vulnerabilities. The vulnerable `deepmerge-ts` path is overridden to 8.0.2. Direct licenses and bundled-asset provenance are recorded in `THIRD_PARTY_NOTICES.md`; environment files are excluded from delivery patterns. | Full `npm audit` still reports five high-severity development-only findings through `eslint-config-next -> fast-glob -> micromatch -> braces`; `braces` has no patched release beyond the currently resolved line, so this is disclosed rather than hidden. Full Git-history secret scanning and an independent legal/license review are `NOT TESTED`. |
-| Responsive and accessibility | AUTOMATED CHECKS PASSED / MANUAL SCOPE OPEN | The source includes responsive layouts, a keyboard-operable mobile navigation dialog, visible focus styling, explicit form labels, progressbar semantics, a screen-reader chart summary, route metadata, dashboard `noindex`, and an automated accessibility audit script. The completed-tree accessibility audit passed 123/123 checks; the responsive audit passed 42/42 route/viewport combinations from 360px through 1440px, and the maximum money card also passed a 360px overflow check. | Safari/Firefox, physical touch devices, a full keyboard-only walkthrough, screen-reader use, automated contrast tooling, and 200% zoom are `NOT TESTED`. |
-| Loading, failure, and duplicate submission | IMPLEMENTED / CONTROLLED FAILURE SUITE OPEN | Loading routes, toast feedback, confirmation controls, pending-state submit components, authentication network-error recovery, and a dashboard retry boundary exist. | Controlled database outage/rollback, stale-write, slow-network, and repeated-submit testing across every form are `NOT TESTED`. |
-| Clean install and deployment | VERIFIED LOCALLY / VERCEL READY / DOCKER BLOCKED | A full `npm ci`, Prisma validation, unit tests, lint, production build, standalone asset preparation, server startup, and HTML/static-asset HTTP smoke test passed. The pushed 1.2 commit reached Vercel `Ready`, and live accessibility/responsive audits passed. Vercel/Docker prerequisites and schema-sync steps are documented. | Docker build/runtime is `BLOCKED` because the Docker CLI is unavailable in the audit environment. A MongoDB replica set is required for the transaction used by project deletion. |
-| Listing, media, support, and demo operations | READY WITH DISCLOSED LIMITATIONS | Listing copy, setup, changelog, security policy, Vibe96-ticket support policy, third-party notices, and seven live 1920x1080 screenshot slots are present. The seed requires explicit destructive confirmation, uses a persistent demo marker, recognizes only the documented legacy demo identity, and refuses an unrelated workspace. A direct safety test passed, and plain `npm run seed` refused as designed. | Public-demo reset is a manual/operator-scheduled task; no scheduler is shipped. Final marketplace acceptance remains Vibe96's decision. |
+Back up MongoDB and test restoration before upgrading. Run `npm ci`, `npx prisma generate`, then `npx prisma db push` before routing 1.3 traffic. MongoDB must support replica-set transactions. Follow-up and due-date inputs are UTC calendar dates stored at UTC midnight. Existing projects without clients and records without dates remain valid. Set a private `RATE_LIMIT_SALT` consistently across application instances.
 
-## Final live UI finding A01
+## Synthetic records changed
 
-The reported task-priority repeated-save defect was confirmed in source. React preserved the uncontrolled editor state across the Server Action refresh, so the task card could show the saved priority while the still-mounted editor retained its previous value. Task edit forms now remount from the task's saved `updatedAt` version. Client and project editors use the same record-version strategy; profile and workspace editors reset from their saved identity values. A guarded live browser regression passed `HIGH -> URGENT -> save -> unchanged save -> reload`, verified both project and workspace task boards remained `URGENT`, and removed its temporary project.
+The workflow audit temporarily created one client, note, status/conversion activity, converted project, and dated task; cleanup removed them. The isolation audit temporarily created two users/workspaces and private resources; cleanup removed all of them. The atomic rate-limit test removed its test record. No QA-name wildcard deletion was used.
 
-## Monetary migration behavior
+## Honest limitations
 
-FlowPilot 1.2 uses a non-destructive compatibility strategy:
-
-1. `valueCents` is optional so older MongoDB documents remain readable.
-2. If `valueCents` exists, it is the authoritative exact USD amount in cents.
-3. If it is absent, the legacy integer `value` is treated as whole USD and multiplied by 100 at read time.
-4. Creating or re-saving a client writes exact `valueCents` and also keeps a truncated legacy `value` for backward compatibility.
-5. Operators apply the additive schema/index change with `npx prisma db push`; no silent bulk backfill is performed.
-
-Back up the database before applying the release. See `HowToSetup.md` for the complete sequence.
-
-## Command evidence at report update
-
-| Command / check | Result |
-|---|---|
-| `npm ci` | PASS — 451 packages installed from the lockfile and audited on a clean dependency restore. |
-| `npm audit --omit=dev --json` | PASS — zero production vulnerabilities reported. |
-| `npm audit` | DISCLOSED — five high-severity development-only findings in the ESLint toolchain path described above; no patched `braces` release is currently available. |
-| `npm run verify` | PASS — Prisma validation, money tests, demo-safety tests, ESLint, TypeScript compilation, production build, and standalone asset preparation completed. |
-| `npm run audit:money-browser` | PASS — four valid create/edit/reload cases, three native invalid cases, exact display, 360px overflow check, and cleanup completed against the dedicated demo. |
-| `npm run audit:a11y` | PASS — 123/123 scoped automated checks. This is not a full manual accessibility certification. |
-| `npm run audit:responsive` | PASS — 42/42 route/viewport overflow checks at six widths from 360px to 1440px. |
-| Standalone server smoke test | PASS — root HTML and a generated static asset both returned HTTP 200. |
-| Docker image build and container smoke test | BLOCKED — Docker CLI unavailable. |
-
-## Owner actions before Vibe96 submission
-
-1. Back up the intended database and run `npx prisma db push` before directing production traffic to 1.2.
-2. Run an isolated two-account authorization/IDOR suite and add deployment-appropriate login/registration rate limiting.
-3. Schedule a restricted reset of the dedicated demo workspace without connecting it to customer data.
-4. Keep the seven live 1920×1080 marketplace screenshots and all sample-data disclosures current.
-5. Test Docker on a capable host and complete an independent repository-history secret scan.
-
-No marketplace approval score, income estimate, security certification, or sales guarantee is asserted.
+Docker remains blocked, manual screen-reader/cross-browser/200%-zoom work is open, artificial expired-session and database-failure injection are not complete, and no external penetration test, legal review, marketplace approval, sales, or income guarantee is claimed.

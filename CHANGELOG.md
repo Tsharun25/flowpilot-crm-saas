@@ -1,10 +1,22 @@
 # Changelog
 
+## 1.3.0 — 2026-10-26
+
+- Added optional workspace-validated client links to project create/edit and linked-project context on client/project details.
+- Added durable one-time Won-deal conversion backed by unique conversion records and MongoDB transactions.
+- Added editable/clearable UTC date-only client follow-ups and task due dates with overdue, today, future, and completed states.
+- Added timestamped plain-text client notes with author attribution and server-generated status/conversion activity.
+- Added bounded workspace-scoped search and combined filters for clients, projects, and tasks.
+- Added authorized filtered CSV exports with UTF-8, quoting/newline handling, a 5,000-row cap, and spreadsheet-formula safeguards.
+- Added shared MongoDB-backed login and registration abuse limits with hashed identifiers.
+- Added guarded end-to-end workflow, two-account isolation, rate-limit, date/CSV, responsive, and accessibility verification.
+- Updated the synthetic demo seed, buyer documentation, marketplace listing, schema-sync instructions, and release evidence.
+
 ### Final audit corrections — 2026-10-20
 
 - Fixed stale uncontrolled edit-form state after Server Action refreshes; task priority now remains synchronized after a save and an unchanged repeated save. Client, project, profile, and workspace edit forms use the same saved-value reset strategy.
 - Added a guarded browser regression for `HIGH` to `URGENT` repeated saves across the project and workspace task boards.
-- Clarified that client-linked projects, won-deal conversion, dated activity, search/filter, CSV export, and due-date UI are roadmap/customization scope rather than shipped features.
+- Recorded the earlier audit boundary that treated client-linked projects, won-deal conversion, dated activity, search/filter, CSV export, and due-date UI as roadmap scope; version 1.3 now ships those features.
 
 ## 1.2.0 — 2026-10-20
 

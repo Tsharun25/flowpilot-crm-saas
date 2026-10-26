@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { registerSchema } from "@/lib/validators/auth";
+import { checkRateLimit, requestAddress } from "@/lib/rate-limit";
 
 function slugify(value: string) {
   return value
@@ -15,6 +16,13 @@ function slugify(value: string) {
 
 export async function POST(request: Request) {
   try {
+    const rate = await checkRateLimit("register", requestAddress(request.headers), 5, 60 * 60 * 1000);
+    if (!rate.allowed) {
+      return NextResponse.json(
+        { message: "Too many registration attempts. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(rate.retryAfterSeconds) } },
+      );
+    }
     let body: unknown;
     try {
       body = await request.json();

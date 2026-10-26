@@ -41,6 +41,16 @@ function getPriorityStyle(priority: string) {
   return "bg-blue-100 text-blue-700";
 }
 
+function getDueState(dueDate: Date | null, status: string) {
+  if (!dueDate) return null;
+  const today = new Date();
+  const todayUtc = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+  if (status === "DONE") return { label: `Completed · due ${dueDate.toISOString().slice(0, 10)}`, className: "bg-emerald-50 text-emerald-800" };
+  if (dueDate.getTime() < todayUtc) return { label: `Overdue · ${dueDate.toISOString().slice(0, 10)}`, className: "bg-red-50 text-red-700" };
+  if (dueDate.getTime() === todayUtc) return { label: "Due today (UTC)", className: "bg-amber-50 text-amber-800" };
+  return { label: `Due ${dueDate.toISOString().slice(0, 10)}`, className: "bg-blue-50 text-blue-800" };
+}
+
 export default async function ProjectDetailsPage({
   params,
 }: {
@@ -53,19 +63,20 @@ export default async function ProjectDetailsPage({
   const { workspace, membership } = await getCurrentUserWithWorkspace();
   const canDelete = membership.role === "OWNER" || membership.role === "ADMIN";
 
-  const project = await prisma.project.findFirst({
+  const [project, clients] = await Promise.all([prisma.project.findFirst({
     where: {
       id: projectId,
       workspaceId: workspace.id,
     },
     include: {
+      client: { select: { id: true, name: true } },
       tasks: {
         orderBy: {
           createdAt: "desc",
         },
       },
     },
-  });
+  }), prisma.client.findMany({ where: { workspaceId: workspace.id }, orderBy: { name: "asc" }, select: { id: true, name: true } })]);
 
   if (!project) notFound();
 
@@ -106,6 +117,7 @@ export default async function ProjectDetailsPage({
             <p className="mt-4 max-w-3xl break-words leading-7 text-slate-500">
               {project.description || "No description added."}
             </p>
+            {project.client ? <Link href={`/dashboard/clients/${project.client.id}`} className="mt-4 inline-flex rounded-full bg-cyan-50 px-3 py-2 text-sm font-black text-cyan-900">Client: {project.client.name}</Link> : <p className="mt-4 text-sm font-bold text-slate-500">Internal project · no linked client</p>}
 
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               <div className="rounded-3xl bg-slate-50 p-5">
@@ -230,6 +242,7 @@ export default async function ProjectDetailsPage({
                                         {task.description}
                                       </p>
                                     ) : null}
+                                    {getDueState(task.dueDate, task.status) ? <p className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[10px] font-black ${getDueState(task.dueDate, task.status)!.className}`}>{getDueState(task.dueDate, task.status)!.label}</p> : null}
                                   </div>
 
                                   <span
@@ -257,6 +270,7 @@ export default async function ProjectDetailsPage({
                                     <input aria-label="Task title" name="title" required defaultValue={task.title} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                     <textarea aria-label="Task description" name="description" rows={3} defaultValue={task.description ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                     <select aria-label="Priority" name="priority" defaultValue={task.priority} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"><option value="LOW">Low</option><option value="MEDIUM">Medium</option><option value="HIGH">High</option><option value="URGENT">Urgent</option></select>
+                                    <input aria-label="Task due date" name="dueDate" type="date" defaultValue={task.dueDate?.toISOString().slice(0, 10) ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                     <input type="hidden" name="status" value={task.status} />
                                     <SubmitButton
                                       pendingText="Saving..."
@@ -369,6 +383,8 @@ export default async function ProjectDetailsPage({
                 </div>
               </div>
 
+              <div><label htmlFor="new-task-due-date" className="mb-2 block text-sm font-bold text-slate-700">Due Date (optional, UTC date)</label><input id="new-task-due-date" name="dueDate" type="date" className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3" /></div>
+
               <SubmitButton
                 pendingText="Adding Task..."
                 className="w-full rounded-2xl bg-cyan-400 px-5 py-3 font-black text-slate-950 transition hover:bg-cyan-300"
@@ -401,6 +417,8 @@ export default async function ProjectDetailsPage({
                   className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
                 />
               </div>
+
+              <div><label htmlFor="edit-project-client" className="mb-2 block text-sm font-bold text-slate-700">Client (optional)</label><select id="edit-project-client" name="clientId" defaultValue={project.clientId ?? ""} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3"><option value="">Internal / no client</option>{clients.map((client) => <option key={client.id} value={client.id}>{client.name}</option>)}</select></div>
 
               <div>
                 <label

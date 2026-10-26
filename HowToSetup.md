@@ -10,12 +10,12 @@ FlowPilot is provided as a self-hosted starter. The documented deployment routes
 - npm 10 or newer
 - MongoDB Atlas or a MongoDB replica set
 
-MongoDB must run as a replica set because Prisma transactions are used for controlled project deletion. MongoDB Atlas clusters meet this requirement. FlowPilot 1.2 uses USD as its single display currency, stores new or edited deal amounts as exact integer cents, and groups won deals into calendar months using UTC.
+MongoDB must run as a replica set because Prisma transactions are used for controlled project deletion, status activity, and Won-deal conversion. MongoDB Atlas clusters meet this requirement. FlowPilot 1.3 uses USD as its single display currency, stores new or edited deal amounts as exact integer cents, and groups won deals into calendar months using UTC.
 
 ## Local installation
 
 1. Copy `.env.example` to `.env`.
-2. Set `DATABASE_URL`, `NEXTAUTH_SECRET`, and `NEXTAUTH_URL`.
+2. Set `DATABASE_URL`, `NEXTAUTH_SECRET`, `RATE_LIMIT_SALT`, and `NEXTAUTH_URL`.
 3. Install and prepare the application:
 
 ```bash
@@ -30,7 +30,7 @@ Open `http://localhost:3000`. The explicit `seed:demo` command creates `demo@flo
 
 Demo reset scheduling is not built in. Run the reset manually or through infrastructure you control, and never reuse the demo database for real customer data.
 
-## Upgrade an existing installation to 1.2.0
+## Upgrade an existing installation to 1.3.0
 
 1. Back up the MongoDB database and verify that the backup can be restored.
 2. Install the release lockfile and regenerate Prisma Client.
@@ -42,7 +42,7 @@ npx prisma generate
 npx prisma db push
 ```
 
-The update adds optional `Client.valueCents` storage as a MongoDB `long`/Prisma `BigInt` and adds the `Workspace.isDemo` marker. It does not delete or rewrite existing deal values. If an older document has no `valueCents`, FlowPilot treats its legacy integer `value` as whole USD at read time. Creating or re-saving a client writes the exact two-decimal amount to `valueCents` and keeps a truncated whole-dollar `value` for backward compatibility. Operators who want all records populated with `valueCents` should design and test a separate backup-aware migration; the application does not perform a silent bulk backfill.
+The update retains the optional `Client.valueCents` compatibility behavior and adds optional client/project links, UTC date-only follow-up/due-date values, and dedicated conversion, note, activity, and rate-limit collections. Existing internal projects and undated records remain valid. It does not delete or rewrite existing deal values. Back up and test restoration first; no silent bulk backfill is performed.
 
 The earlier optional `wonAt` behavior is unchanged: historic Won records without a close date remain in the all-time Won total but do not appear in a monthly chart bucket until a date is established by an operator-controlled migration or by re-saving their Won state.
 
@@ -61,7 +61,7 @@ Set `NEXTAUTH_URL` to the final HTTPS domain. Use a unique secret generated with
 ## Deployment route 1: Vercel
 
 1. Import the Git repository into Vercel.
-2. Add all three variables from `.env.example` with production values.
+2. Add all four variables from `.env.example` with production values.
 3. Keep the standard Next.js build command (`npm run build`).
 4. Run `npx prisma db push` once against the production database before first use.
 5. Deploy, then set `NEXTAUTH_URL` to the final domain and redeploy.
@@ -95,12 +95,16 @@ npm audit --omit=dev
 
 Test registration, login/logout, project CRUD, task status changes, client pipeline changes, settings, mobile navigation, and workspace isolation before launch.
 
+FlowPilot treats follow-up and due-date inputs as calendar dates stored at `00:00:00 UTC`. A non-completed task is overdue only when its date is earlier than the current UTC calendar date; completed tasks are labeled completed rather than overdue. CSV downloads contain the currently filtered rows, are capped at 5,000 records, include a UTF-8 BOM, quote all cells, and prefix formula-like cells.
+
 The browser audit and screenshot scripts need Chromium. Install Playwright's browser once, start the application (and seed only a dedicated demo database), then run the checks in a second terminal:
 
 ```bash
 npx playwright install chromium
 npm run audit:a11y
 npm run audit:responsive
+npm run audit:workflow
+npm run audit:isolation
 npm run screenshots
 ```
 
@@ -114,13 +118,13 @@ CONFIRM_DEMO_MUTATION=1 npm run audit:money-browser
 
 Run the monetary acceptance cases `0`, `0.01`, `1250.50`, and `$1,000,000,000.00` through both create and edit workflows. Confirm exact values after reload in cards, open/won/lost totals, overview metrics, and chart tooltips. Confirm that negative values, exponent notation, non-finite values, out-of-range values, and more than two decimal places are rejected.
 
-Authorization policy in 1.2:
+Authorization policy in 1.3:
 
 - `OWNER` and `ADMIN` may delete projects, tasks, and clients and rename the workspace.
 - `MEMBER` may use authenticated create, edit, and status workflows but may not perform those destructive actions or rename the workspace.
 - Every role may update its own profile name.
 
-Before production, test that policy with two accounts in separate workspaces, including direct requests for project/task/client IDs belonging to the other workspace. This controlled two-account IDOR suite was `NOT TESTED` in the current audit. Login and registration rate limiting is not included; configure it at the edge or add a durable shared limiter before exposing a high-risk deployment.
+The guarded two-account audit tests fresh sessions, anonymous route protection, cross-workspace client/project reads, filtered export isolation, client-link selector isolation, one scoped write, and a nested task lookup. Run it only in an isolated test environment with `CONFIRM_ISOLATION_MUTATION=1`. Login attempts are limited per hashed IP/email pair and registration attempts per hashed IP through the shared MongoDB `RateLimit` collection. `RATE_LIMIT_SALT` must be private and consistent across instances. Add edge/WAF protection as an additional layer for high-risk deployments.
 
 The Docker route is documented but was `BLOCKED` in the current audit environment because the Docker CLI was unavailable. Test `docker build` and the running container on a Docker-capable host before claiming that route as verified.
 

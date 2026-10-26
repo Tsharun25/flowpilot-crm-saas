@@ -42,7 +42,12 @@ try {
   await page.getByLabel(/email/i).fill(email);
   await page.getByLabel(/password/i).fill(password);
   await page.getByRole("button", { name: /sign in|login/i }).click();
-  await page.waitForURL(/\/dashboard/, { timeout: 20_000 });
+  await Promise.race([
+    page.waitForURL(/\/dashboard/, { timeout: 20_000 }),
+    page.locator("#login-error").waitFor({ timeout: 20_000 }).then(async () => {
+      throw new Error(`Login failed: ${await page.locator("#login-error").innerText()}`);
+    }),
+  ]);
 
   await page.goto(`${baseUrl}/dashboard/projects`, { waitUntil: "networkidle" });
   await page.locator("#new-project-name").fill(projectName);

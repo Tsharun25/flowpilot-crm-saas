@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import type { Prisma, Priority, TaskStatus } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
@@ -23,22 +24,27 @@ function getPriorityStyle(priority: string) {
   return "bg-blue-100 text-blue-700";
 }
 
-export default async function TasksPage() {
+export default async function TasksPage({ searchParams }: { searchParams: Promise<{ q?: string; projectId?: string; status?: string; priority?: string; overdue?: string }> }) {
   const { workspace } = await getCurrentUserWithWorkspace();
+  const params = await searchParams;
+  const q = (params.q ?? "").trim().slice(0, 100);
+  const status = new Set(["TODO", "IN_PROGRESS", "REVIEW", "DONE"]).has(params.status ?? "") ? params.status as TaskStatus : undefined;
+  const priority = new Set(["LOW", "MEDIUM", "HIGH", "URGENT"]).has(params.priority ?? "") ? params.priority as Priority : undefined;
+  const projectId = /^[a-f\d]{24}$/i.test(params.projectId ?? "") ? params.projectId : undefined;
+  const overdue = params.overdue === "1";
+  const now = new Date();
+  const todayUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const where: Prisma.TaskWhereInput = { project: { workspaceId: workspace.id }, ...(q ? { title: { contains: q, mode: "insensitive" } } : {}), ...(status ? { status } : {}), ...(priority ? { priority } : {}), ...(projectId ? { projectId } : {}), ...(overdue ? { dueDate: { lt: todayUtc }, status: { not: "DONE" } } : {}) };
 
-  const tasks = await prisma.task.findMany({
-    where: {
-      project: {
-        workspaceId: workspace.id,
-      },
-    },
+  const [tasks, projects] = await Promise.all([prisma.task.findMany({
+    where,
     include: {
       project: true,
     },
     orderBy: {
       createdAt: "desc",
     },
-  });
+  }), prisma.project.findMany({ where: { workspaceId: workspace.id }, orderBy: { name: "asc" }, select: { id: true, name: true } })]);
 
   return (
     <div>
@@ -53,6 +59,16 @@ export default async function TasksPage() {
           See all tasks from every project in one board.
         </p>
       </div>
+
+      <form method="get" className="mb-6 grid gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-3 xl:grid-cols-7">
+        <input aria-label="Search tasks" name="q" defaultValue={q} placeholder="Search task title" className="rounded-xl border border-slate-200 px-3 py-2" />
+        <select aria-label="Filter task project" name="projectId" defaultValue={projectId ?? ""} className="rounded-xl border border-slate-200 px-3 py-2"><option value="">All projects</option>{projects.map((project) => <option key={project.id} value={project.id}>{project.name}</option>)}</select>
+        <select aria-label="Filter task status" name="status" defaultValue={status ?? ""} className="rounded-xl border border-slate-200 px-3 py-2"><option value="">All statuses</option><option value="TODO">Todo</option><option value="IN_PROGRESS">In progress</option><option value="REVIEW">Review</option><option value="DONE">Done</option></select>
+        <select aria-label="Filter task priority" name="priority" defaultValue={priority ?? ""} className="rounded-xl border border-slate-200 px-3 py-2"><option value="">All priorities</option><option value="LOW">Low</option><option value="MEDIUM">Medium</option><option value="HIGH">High</option><option value="URGENT">Urgent</option></select>
+        <label className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold"><input type="checkbox" name="overdue" value="1" defaultChecked={overdue} /> Overdue only</label>
+        <button className="rounded-xl bg-slate-950 px-4 py-2 font-bold text-white">Apply</button><Link href="/dashboard/tasks" className="rounded-xl border border-slate-200 px-4 py-2 text-center font-bold">Reset</Link>
+      </form>
+      <div className="mb-6 flex justify-end"><a href={`/api/export/tasks?${new URLSearchParams({ ...(q ? { q } : {}), ...(projectId ? { projectId } : {}), ...(status ? { status } : {}), ...(priority ? { priority } : {}), ...(overdue ? { overdue: "1" } : {}) })}`} className="rounded-xl border border-cyan-300 bg-cyan-50 px-4 py-2 text-sm font-black text-cyan-900">Export filtered CSV</a></div>
 
       {tasks.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
@@ -115,6 +131,7 @@ export default async function TasksPage() {
                           {task.description}
                         </p>
                       ) : null}
+                      {task.dueDate ? <p className={`mt-3 rounded-full px-2.5 py-1 text-xs font-black ${task.status !== "DONE" && task.dueDate < todayUtc ? "bg-red-50 text-red-700" : "bg-blue-50 text-blue-800"}`}>{task.status !== "DONE" && task.dueDate < todayUtc ? "Overdue · " : "Due · "}{task.dueDate.toISOString().slice(0, 10)}</p> : null}
                     </Link>
                   ))}
                 </div>

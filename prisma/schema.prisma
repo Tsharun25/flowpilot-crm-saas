@@ -16,8 +16,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  memberships Membership[]
-  tasks       Task[]
+  memberships      Membership[]
+  tasks            Task[]
+  clientNotes      ClientNote[]
+  clientActivities ClientActivity[]
 }
 
 model Workspace {
@@ -58,9 +60,12 @@ model Project {
   workspaceId String    @db.ObjectId
   workspace   Workspace @relation(fields: [workspaceId], references: [id])
 
-  tasks     Task[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  tasks      Task[]
+  clientId   String?         @db.ObjectId
+  client     Client?         @relation("ClientProjects", fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  conversion DealConversion?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
 
   @@index([workspaceId])
 }
@@ -87,25 +92,77 @@ model Task {
 }
 
 model Client {
-  id         String       @id @default(auto()) @map("_id") @db.ObjectId
-  name       String
-  email      String?
-  company    String?
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  email        String?
+  company      String?
   /// Legacy whole-dollar value retained so existing MongoDB documents remain readable.
-  value      Int          @default(0)
+  value        Int          @default(0)
   /// Exact USD amount in cents for new and edited records.
-  valueCents BigInt?
-  status     ClientStatus @default(LEAD)
-  wonAt      DateTime?
+  valueCents   BigInt?
+  status       ClientStatus @default(LEAD)
+  wonAt        DateTime?
+  nextFollowUp DateTime?
 
   workspaceId String    @db.ObjectId
   workspace   Workspace @relation(fields: [workspaceId], references: [id])
+
+  projects   Project[]        @relation("ClientProjects")
+  conversion DealConversion?
+  notes      ClientNote[]
+  activities ClientActivity[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([workspaceId])
   @@index([workspaceId, status, wonAt])
+  @@index([workspaceId, nextFollowUp])
+}
+
+model DealConversion {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  clientId  String   @unique @db.ObjectId
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  projectId String   @unique @db.ObjectId
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdAt DateTime @default(now())
+}
+
+model ClientNote {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  body      String
+  requestId String   @unique
+  clientId  String   @db.ObjectId
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  authorId  String   @db.ObjectId
+  author    User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdAt DateTime @default(now())
+
+  @@index([clientId, createdAt])
+}
+
+model ClientActivity {
+  id        String             @id @default(auto()) @map("_id") @db.ObjectId
+  kind      ClientActivityKind
+  summary   String
+  eventKey  String             @unique
+  clientId  String             @db.ObjectId
+  client    Client             @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  actorId   String             @db.ObjectId
+  actor     User               @relation(fields: [actorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdAt DateTime           @default(now())
+
+  @@index([clientId, createdAt])
+}
+
+model RateLimit {
+  id          String   @id @map("_id")
+  count       Int
+  windowStart DateTime
+  expiresAt   DateTime
+
+  @@index([expiresAt])
 }
 
 enum Role {
@@ -139,4 +196,9 @@ enum ClientStatus {
   CONTACTED
   WON
   LOST
+}
+
+enum ClientActivityKind {
+  STATUS_CHANGE
+  CONVERSION
 }

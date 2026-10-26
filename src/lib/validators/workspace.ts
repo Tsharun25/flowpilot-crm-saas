@@ -11,13 +11,20 @@ export const projectSchema = z.object({
   name: z.string().trim().min(1).max(120),
   description: z.string().trim().max(2000),
   status: z.enum(["ACTIVE", "COMPLETED", "ARCHIVED"]).default("ACTIVE"),
+  clientId: z.union([z.literal(""), objectId]).default(""),
 });
+
+export const dateOnlySchema = z.union([
+  z.literal(""),
+  z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use a YYYY-MM-DD date"),
+]);
 
 export const taskSchema = z.object({
   title: z.string().trim().min(1).max(160),
   description: z.string().trim().max(2000),
   status: z.enum(["TODO", "IN_PROGRESS", "REVIEW", "DONE"]).default("TODO"),
   priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).default("MEDIUM"),
+  dueDate: dateOnlySchema.default(""),
 });
 
 export const taskStatusSchema = z.enum(["TODO", "IN_PROGRESS", "REVIEW", "DONE"]);
@@ -46,9 +53,16 @@ export const clientSchema = z.object({
   email: z.union([z.literal(""), z.string().trim().email().max(254)]),
   value: dealValueSchema,
   status: z.enum(["LEAD", "CONTACTED", "WON", "LOST"]).default("LEAD"),
+  nextFollowUp: dateOnlySchema.default(""),
 });
 
 export const clientStatusSchema = z.enum(["LEAD", "CONTACTED", "WON", "LOST"]);
 
 export const nameSchema = z.string().trim().min(2).max(80);
 export const workspaceNameSchema = z.string().trim().min(2).max(100);
+export const clientNoteSchema = z.string().trim().min(1).max(2000);
+export const requestIdSchema = z.string().uuid();
+
+export function parseDateOnly(value: string) {
+  return value ? new Date(`${value}T00:00:00.000Z`) : null;
+}

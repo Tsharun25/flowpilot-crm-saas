@@ -2,7 +2,7 @@
 
 FlowPilot CRM SaaS is a premium full-stack SaaS CRM and project management application built with Next.js, TypeScript, Tailwind CSS, MongoDB, Prisma, NextAuth.js, Recharts, Sonner, and Lucide React.
 
-It includes authentication, protected dashboard routes, workspace-based architecture, project management, Kanban tasks, CRM pipeline, won-deal analytics, profile/workspace settings, toast notifications, loading skeletons, demo data seeding, and a responsive premium UI.
+It includes authentication, protected dashboard routes, workspace-based architecture, client-linked projects, idempotent Won-deal conversion, dated follow-ups and tasks, client notes/activity, search and filters, safe CSV export, won-deal analytics, and a responsive premium UI.
 
 FlowPilot is distributed as a self-hosted application starter. The public demo and included deployment guides demonstrate the shipped workflows; they do not certify a buyer's customized environment for production use.
 
@@ -25,7 +25,7 @@ Password: DemoFlow2026!
 
 ## Features
 
-FlowPilot 1.2 intentionally ships as a focused CRM/project-management starter. It does not include client-linked projects, won-deal conversion, dated client activity, search/filter, CSV export, or a due-date/overdue UI. The optional task `dueDate` database field is reserved for buyer customization. Do not advertise these roadmap items as included features.
+FlowPilot 1.3 ships the focused agency workflow described below. It remains a self-hosted starter and does not include email reminders, billing, invoicing, a client portal, password recovery, or hosted operations.
 
 - User registration and login
 - Password hashing with bcryptjs
@@ -35,6 +35,13 @@ FlowPilot 1.2 intentionally ships as a focused CRM/project-management starter. I
 - Task creation, editing, status management, and deletion
 - Kanban task board
 - CRM client pipeline
+- Optional client-to-project links with safe unlinking on client deletion
+- Idempotent Won-deal conversion to one linked project
+- Editable UTC date-only follow-ups and task due dates with overdue states
+- Timestamped client notes plus status/conversion activity
+- Workspace-scoped client, project, and task search/filters
+- Filtered CSV export with Unicode, quoting, newline, and spreadsheet-formula safeguards
+- Shared MongoDB-backed login and registration rate limits
 - Exact two-decimal USD deal values
 - Live dashboard stats
 - Analytics chart
@@ -54,7 +61,7 @@ FlowPilot 1.2 intentionally ships as a focused CRM/project-management starter. I
 - Every role can update its own profile name.
 - The shared public demo workspace identity is locked even though its demo user has the `OWNER` role.
 
-All application reads and writes are scoped through the signed-in user's resolved workspace context. A controlled two-account authorization/IDOR test is still required before treating a customized deployment as independently security-verified; see [Security Policy](SECURITY.md) and [Release Audit](AUDIT_REPORT.md).
+All application reads and writes are scoped through the signed-in user's resolved workspace context. A controlled two-account browser/database audit covers protected routes, cross-workspace reads, scoped export, client-link options, a scoped write, and a nested task read. It is useful evidence, not a penetration-test certification; see [Security Policy](SECURITY.md) and [Release Audit](AUDIT_REPORT.md).
 
 ---
 
@@ -82,6 +89,8 @@ DATABASE_URL="mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/flowpilot?retr
 
 NEXTAUTH_SECRET="your-secret-key"
 
+RATE_LIMIT_SALT="a-separate-long-random-secret"
+
 NEXTAUTH_URL="http://localhost:3000"
 ```
 
@@ -91,6 +100,8 @@ For production:
 DATABASE_URL="your-production-mongodb-url"
 
 NEXTAUTH_SECRET="your-production-secret"
+
+RATE_LIMIT_SALT="your-production-rate-limit-salt"
 
 NEXTAUTH_URL="https://flowpilot-crm-saas.vercel.app"
 ```
@@ -128,7 +139,7 @@ The public demo reset is not scheduled by the application. The operator must run
 
 ---
 
-## Upgrading to 1.2.0
+## Upgrading to 1.3.0
 
 Back up MongoDB, install the locked dependencies, regenerate Prisma Client, and apply the additive schema change:
 
@@ -138,7 +149,7 @@ npx prisma generate
 npx prisma db push
 ```
 
-Version 1.2 adds optional `Client.valueCents` storage as a MongoDB `long`/Prisma `BigInt` and a persistent `Workspace.isDemo` marker. Existing records remain readable: when `valueCents` is absent, FlowPilot interprets the legacy integer `value` as whole USD and converts it to cents at read time. Creating or re-saving a client writes the exact amount to `valueCents` while retaining a truncated legacy `value` for backward compatibility. No automatic destructive money backfill is performed.
+Version 1.3 keeps the 1.2 money compatibility behavior and adds optional project/client links, optional UTC date-only follow-up/due-date values, conversion records, notes, activity, and rate-limit collections/indexes. Existing internal projects and undated clients/tasks remain valid. Back up MongoDB before `npx prisma db push`; the application does not perform a destructive bulk backfill.
 
 Historic Won records without `wonAt` remain in the all-time Won total but are not assigned to a monthly chart bucket until an operator supplies a date through an approved migration or the record's Won state is re-saved.
 
@@ -167,6 +178,7 @@ Required Vercel environment variables:
 ```env
 DATABASE_URL
 NEXTAUTH_SECRET
+RATE_LIMIT_SALT
 NEXTAUTH_URL
 ```
 
@@ -174,7 +186,7 @@ After changing environment variables in Vercel, redeploy the project.
 
 Before processing real customer data, configure private production secrets, provision a supported MongoDB replica set, run the Prisma schema sync, replace the public demo credentials, and verify security, workspace isolation, accessibility, backups, and recovery in the target environment. FlowPilot is a self-hosted starter, not a security-audited or turnkey hosted service.
 
-Docker/VPS instructions are included, but the 1.2 release candidate has not been built in Docker in the current audit environment because the Docker CLI was unavailable. Treat that route as `BLOCKED` until tested on a Docker-capable host.
+Docker/VPS instructions are included, but the 1.3 release candidate has not been built in Docker in the current audit environment because the Docker CLI was unavailable. Treat that route as `BLOCKED` until tested on a Docker-capable host.
 
 ---
 

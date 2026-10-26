@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 
 import { prisma } from "@/lib/prisma";
 import { loginSchema } from "@/lib/validators/auth";
+import { checkRateLimit, requestAddress } from "@/lib/rate-limit";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -23,12 +24,16 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
 
-      async authorize(credentials) {
+      async authorize(credentials, request) {
         const parsed = loginSchema.safeParse(credentials);
 
         if (!parsed.success) return null;
 
         const { email, password } = parsed.data;
+
+        const address = requestAddress(new Headers(request.headers as Record<string, string>));
+        const rate = await checkRateLimit("login", `${address}:${email}`, 10, 15 * 60 * 1000);
+        if (!rate.allowed) return null;
 
         const user = await prisma.user.findUnique({
           where: { email },

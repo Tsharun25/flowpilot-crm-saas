@@ -1,6 +1,6 @@
 {
   "name": "flowpilot-crm",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "license": "UNLICENSED",
   "engines": {
@@ -19,9 +19,13 @@
     "audit:a11y": "node scripts/accessibility-audit.mjs",
     "audit:money-browser": "node scripts/decimal-browser-audit.mjs",
     "audit:task-priority": "node scripts/task-priority-browser-audit.mjs",
+    "audit:workflow": "node scripts/workflow-browser-audit.mjs",
+    "audit:isolation": "node scripts/isolation-browser-audit.mjs",
     "test:metrics": "tsx scripts/test-crm-metrics.ts",
     "test:demo-safety": "tsx scripts/test-demo-workspace.ts",
-    "verify": "prisma validate && npm run test:metrics && npm run test:demo-safety && npm run lint && npm run build"
+    "test:workflow-utils": "tsx scripts/test-workflow-utils.ts",
+    "test:rate-limit": "tsx scripts/test-rate-limit.ts",
+    "verify": "prisma generate && prisma validate && npm run test:metrics && npm run test:demo-safety && npm run test:workflow-utils && npm run test:rate-limit && npm run lint && npm run build"
   },
   "dependencies": {
     "@prisma/client": "6.19.3",
@@ -33,7 +37,7 @@
     "react-dom": "19.2.4",
     "recharts": "3.8.1",
     "sonner": "2.0.7",
-    "zod": "4.4.3"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.0",

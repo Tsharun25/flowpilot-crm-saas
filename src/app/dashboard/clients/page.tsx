@@ -1,6 +1,9 @@
+import { randomUUID } from "node:crypto";
+import Link from "next/link";
+import type { ClientStatus, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
-import { createClient, deleteClient, updateClient } from "./actions";
+import { convertWonClientToProject, createClient, deleteClient, updateClient } from "./actions";
 import ClientStatusForm from "./status-form";
 import { formatMoney, getWorkspaceCrmMetrics } from "@/lib/analytics";
 import {
@@ -25,14 +28,22 @@ function getStatusStyle(status: string) {
   return "bg-cyan-100 text-cyan-700";
 }
 
-export default async function ClientsPage() {
+export default async function ClientsPage({ searchParams }: { searchParams: Promise<{ q?: string; status?: string }> }) {
   const { workspace, membership } = await getCurrentUserWithWorkspace();
   const canDelete = membership.role === "OWNER" || membership.role === "ADMIN";
+  const params = await searchParams;
+  const q = (params.q ?? "").trim().slice(0, 100);
+  const allowedStatuses = new Set(["LEAD", "CONTACTED", "WON", "LOST"]);
+  const status = allowedStatuses.has(params.status ?? "") ? params.status as ClientStatus : undefined;
+  const where: Prisma.ClientWhereInput = {
+    workspaceId: workspace.id,
+    ...(status ? { status } : {}),
+    ...(q ? { OR: [{ name: { contains: q, mode: "insensitive" } }, { company: { contains: q, mode: "insensitive" } }, { email: { contains: q, mode: "insensitive" } }] } : {}),
+  };
 
   const [clients, metrics] = await Promise.all([prisma.client.findMany({
-    where: {
-      workspaceId: workspace.id,
-    },
+    where,
+    include: { conversion: { select: { projectId: true } } },
     orderBy: {
       createdAt: "desc",
     },
@@ -76,6 +87,20 @@ export default async function ClientsPage() {
           </p>
         </div>
       </section>
+
+      <form className="mb-6 grid gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-[1fr_220px_auto_auto]" method="get">
+        <label className="sr-only" htmlFor="client-search">Search clients</label>
+        <input id="client-search" name="q" defaultValue={q} placeholder="Search name, company, or email" className="rounded-xl border border-slate-200 px-4 py-3" />
+        <label className="sr-only" htmlFor="client-filter-status">Filter status</label>
+        <select id="client-filter-status" name="status" defaultValue={status ?? ""} className="rounded-xl border border-slate-200 px-4 py-3">
+          <option value="">All statuses</option><option value="LEAD">Lead</option><option value="CONTACTED">Contacted</option><option value="WON">Won</option><option value="LOST">Lost</option>
+        </select>
+        <button className="rounded-xl bg-slate-950 px-5 py-3 font-bold text-white">Apply</button>
+        <Link href="/dashboard/clients" className="rounded-xl border border-slate-200 px-5 py-3 text-center font-bold">Reset</Link>
+      </form>
+      <div className="mb-6 flex justify-end">
+        <a href={`/api/export/clients?${new URLSearchParams({ ...(q ? { q } : {}), ...(status ? { status } : {}) })}`} className="rounded-xl border border-cyan-300 bg-cyan-50 px-4 py-2 text-sm font-black text-cyan-900">Export filtered CSV</a>
+      </div>
 
       <section className="space-y-6">
         <form
@@ -159,6 +184,11 @@ export default async function ClientsPage() {
                 <option value="WON">Won</option>
                 <option value="LOST">Lost</option>
               </select>
+            </div>
+
+            <div>
+              <label htmlFor="client-follow-up" className="mb-2 block text-sm font-bold text-slate-700">Next Follow-up (UTC date)</label>
+              <input id="client-follow-up" name="nextFollowUp" type="date" className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3" />
             </div>
 
             <SubmitButton
@@ -273,6 +303,10 @@ export default async function ClientsPage() {
                                 {formatMoney(centsToDollars(getDealValueCents(client)))}
                               </p>
 
+                              {client.nextFollowUp ? <p className="mt-2 text-xs font-bold text-slate-600">Follow-up: {client.nextFollowUp.toISOString().slice(0, 10)}</p> : null}
+
+                              <Link href={`/dashboard/clients/${client.id}`} className="mt-3 block rounded-xl border border-slate-200 px-3 py-2 text-center text-xs font-black text-slate-700">View details & activity</Link>
+
                               <ClientStatusForm
                                 clientId={client.id}
                                 currentStatus={client.status}
@@ -289,7 +323,9 @@ export default async function ClientsPage() {
                                   <input aria-label="Company" name="company" defaultValue={client.company ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                   <input aria-label="Email" name="email" type="email" defaultValue={client.email ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                   <input aria-label="Deal value in USD" name="value" type="number" min="0" max="1000000000.00" step="0.01" inputMode="decimal" required defaultValue={getDealValueInput(client)} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
+                                  <input aria-label="Next follow-up" name="nextFollowUp" type="date" defaultValue={client.nextFollowUp?.toISOString().slice(0, 10) ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                   <input type="hidden" name="status" value={client.status} />
+                                  <input type="hidden" name="eventKey" value={randomUUID()} />
                                   <SubmitButton
                                     pendingText="Saving..."
                                     className="w-full rounded-xl bg-slate-950 px-3 py-2 text-xs font-black text-white"
@@ -298,6 +334,14 @@ export default async function ClientsPage() {
                                   </SubmitButton>
                                 </form>
                               </details>
+
+                              {client.status === "WON" ? client.conversion ? (
+                                <Link href={`/dashboard/projects/${client.conversion.projectId}`} className="mt-3 block rounded-xl bg-emerald-50 px-3 py-2 text-center text-xs font-black text-emerald-800">Open converted project</Link>
+                              ) : (
+                                <form action={convertWonClientToProject.bind(null, client.id)}>
+                                  <SubmitButton pendingText="Converting..." className="mt-3 w-full rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white">Convert Won Deal to Project</SubmitButton>
+                                </form>
+                              ) : null}
 
                               {canDelete ? (
                                 <form action={deleteClientWithId}>

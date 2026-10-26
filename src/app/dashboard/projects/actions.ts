@@ -8,6 +8,7 @@ import { getCurrentUserWithWorkspace, requireWorkspaceManager } from "@/lib/curr
 import {
   projectIdSchema,
   projectSchema,
+  parseDateOnly,
   taskIdSchema,
   taskSchema,
   taskStatusSchema,
@@ -16,15 +17,25 @@ import {
 export async function createProject(formData: FormData) {
   const { workspace } = await getCurrentUserWithWorkspace();
 
-  const { name, description } = projectSchema.parse({
+  const { name, description, clientId } = projectSchema.parse({
     name: formData.get("name"),
     description: formData.get("description") ?? "",
+    clientId: formData.get("clientId") ?? "",
   });
+
+  if (clientId) {
+    const client = await prisma.client.findFirst({
+      where: { id: clientId, workspaceId: workspace.id },
+      select: { id: true },
+    });
+    if (!client) throw new Error("Client not found");
+  }
 
   await prisma.project.create({
     data: {
       name,
       description,
+      clientId: clientId || null,
       workspaceId: workspace.id,
     },
   });
@@ -37,11 +48,20 @@ export async function createProject(formData: FormData) {
 export async function updateProject(projectId: string, formData: FormData) {
   const { workspace } = await getCurrentUserWithWorkspace();
   const safeProjectId = projectIdSchema.parse(projectId);
-  const { name, description, status } = projectSchema.parse({
+  const { name, description, status, clientId } = projectSchema.parse({
     name: formData.get("name"),
     description: formData.get("description") ?? "",
     status: formData.get("status"),
+    clientId: formData.get("clientId") ?? "",
   });
+
+  if (clientId) {
+    const client = await prisma.client.findFirst({
+      where: { id: clientId, workspaceId: workspace.id },
+      select: { id: true },
+    });
+    if (!client) throw new Error("Client not found");
+  }
 
   const result = await prisma.project.updateMany({
     where: {
@@ -52,6 +72,7 @@ export async function updateProject(projectId: string, formData: FormData) {
       name,
       description,
       status,
+      clientId: clientId || null,
     },
   });
 
@@ -75,6 +96,9 @@ export async function deleteProject(projectId: string) {
   if (!project) throw new Error("Project not found");
 
   await prisma.$transaction([
+    prisma.dealConversion.deleteMany({
+      where: { projectId: safeProjectId },
+    }),
     prisma.task.deleteMany({
       where: {
         projectId: safeProjectId,
@@ -92,11 +116,12 @@ export async function deleteProject(projectId: string) {
 export async function createTask(projectId: string, formData: FormData) {
   const { workspace } = await getCurrentUserWithWorkspace();
   const safeProjectId = projectIdSchema.parse(projectId);
-  const { title, description, status, priority } = taskSchema.parse({
+  const { title, description, status, priority, dueDate } = taskSchema.parse({
     title: formData.get("title"),
     description: formData.get("description") ?? "",
     status: formData.get("status"),
     priority: formData.get("priority"),
+    dueDate: formData.get("dueDate") ?? "",
   });
 
   const project = await prisma.project.findFirst({
@@ -114,6 +139,7 @@ export async function createTask(projectId: string, formData: FormData) {
       description,
       status,
       priority,
+      dueDate: parseDateOnly(dueDate),
       projectId: safeProjectId,
     },
   });
@@ -188,10 +214,11 @@ export async function updateTask(projectId: string, taskId: string, formData: Fo
     description: formData.get("description") ?? "",
     status: formData.get("status"),
     priority: formData.get("priority"),
+    dueDate: formData.get("dueDate") ?? "",
   });
   const result = await prisma.task.updateMany({
     where: { id: safeTaskId, projectId: safeProjectId, project: { workspaceId: workspace.id } },
-    data,
+    data: { ...data, dueDate: parseDateOnly(data.dueDate) },
   });
   if (result.count === 0) throw new Error("Task not found");
   revalidatePath("/dashboard");

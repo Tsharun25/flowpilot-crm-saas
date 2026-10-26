@@ -89,6 +89,10 @@ async function main() {
     throw new Error("Dedicated demo workspace not found.");
   }
 
+  await prisma.clientNote.deleteMany({ where: { client: { workspaceId: workspace.id } } });
+  await prisma.clientActivity.deleteMany({ where: { client: { workspaceId: workspace.id } } });
+  await prisma.dealConversion.deleteMany({ where: { client: { workspaceId: workspace.id } } });
+
   await prisma.task.deleteMany({
     where: {
       project: {
@@ -109,6 +113,26 @@ async function main() {
     },
   });
 
+  const futureDate = new Date();
+  futureDate.setUTCHours(0, 0, 0, 0);
+  futureDate.setUTCDate(futureDate.getUTCDate() + 7);
+  const dueSoon = new Date();
+  dueSoon.setUTCHours(0, 0, 0, 0);
+  dueSoon.setUTCDate(dueSoon.getUTCDate() + 3);
+
+  await prisma.client.createMany({
+    data: [
+      { name: "Mario Rossi", company: "Rossi Digital", email: "mario@example.com", value: 500000, valueCents: BigInt(50_000_000), status: "WON", wonAt: new Date(), workspaceId: workspace.id },
+      { name: "Sarah Khan", company: "LaunchLab", email: "sarah@example.com", value: 120000, valueCents: BigInt(12_000_000), status: "CONTACTED", nextFollowUp: futureDate, workspaceId: workspace.id },
+      { name: "Daniel Lee", company: "Northstar Apps", email: "daniel@example.com", value: 85000, valueCents: BigInt(8_500_000), status: "LEAD", workspaceId: workspace.id },
+      { name: "Ayesha Rahman", company: "BrightWorks", email: "ayesha@example.com", value: 45000, valueCents: BigInt(4_500_000), status: "LOST", workspaceId: workspace.id },
+    ],
+  });
+  const [mario, sarah] = await Promise.all([
+    prisma.client.findFirstOrThrow({ where: { workspaceId: workspace.id, email: "mario@example.com" } }),
+    prisma.client.findFirstOrThrow({ where: { workspaceId: workspace.id, email: "sarah@example.com" } }),
+  ]);
+
   const websiteProject = await prisma.project.create({
     data: {
       name: "Website Redesign",
@@ -116,6 +140,7 @@ async function main() {
         "Modern marketing website redesign for a growing SaaS brand.",
       status: "ACTIVE",
       workspaceId: workspace.id,
+      clientId: mario.id,
       tasks: {
         create: [
           {
@@ -129,6 +154,7 @@ async function main() {
             description: "Implement responsive layout with Tailwind CSS.",
             status: "IN_PROGRESS",
             priority: "URGENT",
+            dueDate: dueSoon,
           },
           {
             title: "Write homepage copy",
@@ -148,6 +174,7 @@ async function main() {
         "Automate client follow-ups, deal tracking, and sales reporting.",
       status: "ACTIVE",
       workspaceId: workspace.id,
+      clientId: sarah.id,
       tasks: {
         create: [
           {
@@ -189,48 +216,6 @@ async function main() {
         ],
       },
     },
-  });
-
-  await prisma.client.createMany({
-    data: [
-      {
-        name: "Mario Rossi",
-        company: "Rossi Digital",
-        email: "mario@example.com",
-        value: 500000,
-        valueCents: BigInt(50_000_000),
-        status: "WON",
-        wonAt: new Date(),
-        workspaceId: workspace.id,
-      },
-      {
-        name: "Sarah Khan",
-        company: "LaunchLab",
-        email: "sarah@example.com",
-        value: 120000,
-        valueCents: BigInt(12_000_000),
-        status: "CONTACTED",
-        workspaceId: workspace.id,
-      },
-      {
-        name: "Daniel Lee",
-        company: "Northstar Apps",
-        email: "daniel@example.com",
-        value: 85000,
-        valueCents: BigInt(8_500_000),
-        status: "LEAD",
-        workspaceId: workspace.id,
-      },
-      {
-        name: "Ayesha Rahman",
-        company: "BrightWorks",
-        email: "ayesha@example.com",
-        value: 45000,
-        valueCents: BigInt(4_500_000),
-        status: "LOST",
-        workspaceId: workspace.id,
-      },
-    ],
   });
 
   console.log("Demo data seeded successfully.");
