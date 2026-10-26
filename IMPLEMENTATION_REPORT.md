@@ -6,7 +6,9 @@ Scope: `FLOWPILOT_FINAL_CORRECTIONS_CODEX.md`
 
 Starting revision: `f1a3064`
 
-Final revision: pending release commit
+Implemented revision: `a52f7a9`
+
+Release metadata revision: the Git `HEAD` recorded beside the generated ZIP checksum
 
 Deployment status: not deployed or production-verified in this correction run
 
@@ -20,7 +22,7 @@ Deployment status: not deployed or production-verified in this correction run
 | C2 usable support channel | BLOCKED | The configurable HTTPS CTA remains. The owner has not supplied a verified destination, handler or response-time commitment; the honest unconfigured state remains. |
 | C3 deployment-owner notices | BLOCKED | Privacy/Terms templates cannot be finalized without verified operator identity/contact, jurisdiction, retention/deletion process and commitments. No values were invented. |
 | C4 second deployment route | BLOCKED | Docker/VPS instructions were updated for 1.5.0, but Docker CLI is unavailable on this machine; no runtime pass is claimed. |
-| C5 package/report | IMPLEMENTED / OWNER CONFIG REQUIRED | Documentation, owner checklist, changelog, screenshot targets and package metadata were updated. Archive/checksum are generated after final commit and clean verification. |
+| C5 package/report | IMPLEMENTED / OWNER CONFIG REQUIRED | Documentation, owner checklist, changelog, 11 final 1920×1080 screenshots and package metadata were updated. The source ZIP/checksum are generated from the release metadata commit. |
 
 ## Security and behavior implemented
 
