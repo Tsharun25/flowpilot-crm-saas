@@ -3,7 +3,7 @@
 Date: 2026-10-27 (Asia/Dhaka)
 Scope: `FLOWPILOT_CODEX_WORK_BRIEF.md`
 Starting revision: `770c74d`
-Deployment/publication: not performed, as required by the brief
+Deployed implementation revision: `59a5856` on 2026-10-27 (Asia/Dhaka), Vercel status `success`
 
 `PASS` below means the named check was executed in the stated environment. It is not a security, accessibility, legal, marketplace, or production-readiness certification.
 
@@ -52,6 +52,17 @@ Deployment/publication: not performed, as required by the brief
 | `npm run audit:responsive` | PASS — 84/84 route/viewport combinations |
 | Rendered metadata/robots/sitemap/OG HTTP check | PASS — canonical, Open Graph, Twitter, PNG image, public-only sitemap, private disallow rules |
 | Tracked-source secret-pattern review | PASS with reviewed placeholder — no tracked `.env`; README sample URI contains only explicit placeholders |
+
+## Production verification
+
+Target: `https://flowpilot-crm-saas.vercel.app` after Vercel successfully deployed `59a5856`.
+
+| Check | Result |
+|---|---|
+| Live failure-state audit | PASS — failed login retained input/recovered pending state; anonymous export returned 401 |
+| Live demo read-only audit | PASS — controls disabled; forged submission rejected; client data unchanged |
+| Live session invalidation audit | PASS — two existing JWT sessions rejected after reset; fresh login accepted; temporary account/workspace removed |
+| Live isolated agency workflow | PASS — CRUD, note, conversion, link, due task, repeated save, inline status, filter and CSV; temporary records removed |
 
 ## Remaining blockers and owner actions
 
