@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace, requireWorkspaceManager } from "@/lib/current-user";
-import { isDemoWorkspace } from "@/lib/demo-workspace";
+import { assertWorkspaceWritable } from "@/lib/demo-workspace";
 import { nameSchema, workspaceNameSchema } from "@/lib/validators/workspace";
 
 function slugify(value: string) {
@@ -16,7 +16,8 @@ function slugify(value: string) {
 }
 
 export async function updateProfile(formData: FormData) {
-  const { user } = await getCurrentUserWithWorkspace();
+  const { user, workspace } = await getCurrentUserWithWorkspace();
+  assertWorkspaceWritable(workspace, user.email);
 
   const name = nameSchema.parse(formData.get("name"));
 
@@ -36,9 +37,7 @@ export async function updateProfile(formData: FormData) {
 export async function updateWorkspace(formData: FormData) {
   const { user, workspace } = await requireWorkspaceManager();
 
-  if (isDemoWorkspace(workspace, user.email)) {
-    throw new Error("The public demo workspace identity is locked.");
-  }
+  assertWorkspaceWritable(workspace, user.email);
 
   const name = workspaceNameSchema.parse(formData.get("name"));
 

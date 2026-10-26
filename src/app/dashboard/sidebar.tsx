@@ -34,7 +34,7 @@ export default function DashboardSidebar() {
             FlowPilot
           </p>
           <p className="mt-1 text-xs font-bold uppercase tracking-wide text-cyan-700">
-            SaaS CRM
+            CRM Starter
           </p>
         </div>
       </Link>

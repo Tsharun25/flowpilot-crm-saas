@@ -1,10 +1,17 @@
 import assert from "node:assert/strict";
+import bcrypt from "bcryptjs";
 import { chromium } from "playwright";
+import { PrismaClient } from "@prisma/client";
 
-if (process.env.CONFIRM_DEMO_MUTATION !== "1") throw new Error("Set CONFIRM_DEMO_MUTATION=1 only for the dedicated demo workspace.");
+if (process.env.CONFIRM_ISOLATED_MUTATION !== "1") throw new Error("Set CONFIRM_ISOLATED_MUTATION=1 only for an isolated acceptance run.");
+const prisma = new PrismaClient();
 const baseUrl = process.env.DEMO_URL ?? "http://localhost:3000";
 const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE;
 const runId = Date.now();
+const email = `workflow-owner-${runId}@example.com`;
+const password = `Workflow-${runId}-Pass!`;
+let workspaceId;
+let userId;
 const clientName = `Ågency QA ${runId}`;
 const company = `=2+2, "Synthetic"`;
 const taskName = `Dated delivery ${runId}`;
@@ -21,9 +28,14 @@ function clientCard() { return page.getByTestId("client-card").filter({ has: pag
 function taskCard() { return page.getByTestId("task-card").filter({ has: page.getByText(taskName, { exact: true }) }); }
 
 try {
+  const workspace = await prisma.workspace.create({ data: { name: "Workflow Audit", slug: `workflow-audit-${runId}` } });
+  const user = await prisma.user.create({ data: { name: "Workflow Owner", email, password: await bcrypt.hash(password, 10) } });
+  await prisma.membership.create({ data: { role: "OWNER", userId: user.id, workspaceId: workspace.id } });
+  workspaceId = workspace.id;
+  userId = user.id;
   await page.goto(`${baseUrl}/login`);
-  await page.getByLabel(/email/i).fill(process.env.DEMO_EMAIL ?? "demo@flowpilot.com");
-  await page.getByLabel(/password/i).fill(process.env.DEMO_PASSWORD ?? "DemoFlow2026!");
+  await page.getByLabel(/email/i).fill(email);
+  await page.getByLabel(/password/i).fill(password);
   await page.getByRole("button", { name: /login|sign in/i }).click();
   await page.waitForURL(/\/dashboard/, { timeout: 20_000 });
 
@@ -73,6 +85,17 @@ try {
   await page.waitForLoadState("networkidle").catch(() => {});
   await taskCard().getByText(/Completed · due/).waitFor();
 
+  await page.goto(`${baseUrl}/dashboard/tasks?q=${encodeURIComponent(taskName)}`, { waitUntil: "networkidle" });
+  const workspaceCard = page.getByTestId("workspace-task-card").filter({ has: page.getByText(taskName, { exact: true }) });
+  const reviewResponse = page.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/dashboard/tasks"));
+  await workspaceCard.getByLabel("Task status").selectOption("REVIEW");
+  await reviewResponse;
+  await page.reload({ waitUntil: "networkidle" });
+  assert.equal(await page.getByTestId("workspace-task-card").filter({ has: page.getByText(taskName, { exact: true }) }).getByLabel("Task status").inputValue(), "REVIEW");
+  const restoreDoneResponse = page.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/dashboard/tasks"));
+  await page.getByTestId("workspace-task-card").filter({ has: page.getByText(taskName, { exact: true }) }).getByLabel("Task status").selectOption("DONE");
+  await restoreDoneResponse;
+
   await page.goto(`${baseUrl}/dashboard/clients?q=${encodeURIComponent(clientName)}&status=WON`, { waitUntil: "networkidle" });
   assert.equal(await clientCard().count(), 1);
   const downloadPromise = page.waitForEvent("download");
@@ -83,7 +106,7 @@ try {
   assert.ok(csv.startsWith("\uFEFF"));
   assert.ok(csv.includes(clientName));
   assert.ok(csv.includes("'=2+2"), "formula-like CSV cell should be prefixed safely");
-  console.log("PASS lead, follow-up, note, Won conversion, linked project, due task, repeated priority save, completion, filter, and safe CSV export");
+  console.log("PASS lead, follow-up, note, Won conversion, linked project, due task, repeated priority save, inline workspace status, completion, filter, and safe CSV export");
 } finally {
   try {
     if (projectUrl) {
@@ -94,7 +117,18 @@ try {
     await page.goto(`${baseUrl}/dashboard/clients?q=${encodeURIComponent(clientName)}`, { waitUntil: "networkidle" });
     const card = clientCard();
     if (await card.count()) { page.once("dialog", (dialog) => dialog.accept()); await submit(() => card.getByRole("button", { name: "Delete Client" }).click(), "/dashboard/clients"); }
-    console.log("CLEANUP removed workflow audit records");
+    if (workspaceId) {
+      await prisma.task.deleteMany({ where: { project: { workspaceId } } }).catch(() => {});
+      await prisma.dealConversion.deleteMany({ where: { client: { workspaceId } } }).catch(() => {});
+      await prisma.project.deleteMany({ where: { workspaceId } }).catch(() => {});
+      await prisma.clientNote.deleteMany({ where: { client: { workspaceId } } }).catch(() => {});
+      await prisma.clientActivity.deleteMany({ where: { client: { workspaceId } } }).catch(() => {});
+      await prisma.client.deleteMany({ where: { workspaceId } }).catch(() => {});
+      await prisma.membership.deleteMany({ where: { workspaceId } }).catch(() => {});
+      await prisma.workspace.deleteMany({ where: { id: workspaceId } }).catch(() => {});
+    }
+    if (userId) await prisma.user.deleteMany({ where: { id: userId } }).catch(() => {});
+    console.log("CLEANUP removed isolated workflow audit records");
   } catch (error) { console.error("CLEANUP FAILED", error); process.exitCode = 1; }
-  await browser.close();
+  await prisma.$disconnect(); await browser.close();
 }

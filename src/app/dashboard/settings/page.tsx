@@ -85,7 +85,7 @@ export default async function SettingsPage() {
         </h3>
         <p className="mt-2 text-sm leading-6 text-slate-500">
           {canEditWorkspace
-            ? "Customize your workspace name and SaaS organization identity."
+            ? "Customize your workspace name and organization identity."
             : "View the identity assigned to your current workspace."}
         </p>
       </div>

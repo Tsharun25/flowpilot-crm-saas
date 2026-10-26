@@ -19,6 +19,9 @@ const viewports = [
 
 const routes = [
   { name: "landing", path: "/", public: true },
+  { name: "privacy", path: "/privacy", public: true },
+  { name: "terms", path: "/terms", public: true },
+  { name: "support", path: "/support", public: true },
   { name: "dashboard", path: "/dashboard" },
   { name: "projects", path: "/dashboard/projects" },
   { name: "tasks", path: "/dashboard/tasks" },

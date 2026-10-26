@@ -35,8 +35,12 @@ type Deal = StoredDealValue & {
   wonAt: Date | null;
 };
 
-export function calculateCrmMetrics(clients: Deal[], now = new Date()) {
-  const year = now.getUTCFullYear();
+export function calculateCrmMetrics(
+  clients: Deal[],
+  now = new Date(),
+  selectedYear = now.getUTCFullYear(),
+) {
+  const year = selectedYear;
   const start = new Date(Date.UTC(year, 0, 1));
   const end = new Date(Date.UTC(year + 1, 0, 1));
   const sumCents = (deals: Deal[]) =>
@@ -51,6 +55,15 @@ export function calculateCrmMetrics(clients: Deal[], now = new Date()) {
   );
   const wonDealValueCents = sumCents(
     clients.filter((client) => client.status === "WON"),
+  );
+  const periodWonDealValueCents = sumCents(
+    clients.filter(
+      (client) =>
+        client.status === "WON" &&
+        client.wonAt &&
+        client.wonAt >= start &&
+        client.wonAt < end,
+    ),
   );
   const lostDealValueCents = sumCents(
     clients.filter((client) => client.status === "LOST"),
@@ -89,6 +102,7 @@ export function calculateCrmMetrics(clients: Deal[], now = new Date()) {
     year,
     openPipeline: centsToDollars(openPipelineCents),
     wonDealValue: centsToDollars(wonDealValueCents),
+    periodWonDealValue: centsToDollars(periodWonDealValueCents),
     lostDealValue: centsToDollars(lostDealValueCents),
     monthlyWon,
     growth,

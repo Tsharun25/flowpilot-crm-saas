@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.4.0 — 2026-10-27
+
+- Made CRM summary cards derive from the same filtered client dataset as the board and CSV export; added regression coverage for search, zero results, and reset.
+- Enforced the persisted public-demo read-only policy across every dashboard mutation and added a browser check proving blocked writes leave data unchanged.
+- Normalized FlowPilot CRM positioning and added honest included/not-included documentation.
+- Added privacy, terms, configurable support/recovery guidance, canonical/Open Graph/Twitter metadata, a branded share image, robots rules, and a public-only sitemap.
+- Added UTC year selection for won-value reporting using recorded `wonAt` timestamps and explicit all-time labels for open/lost values.
+- Added an accessible inline task-status control to the workspace task board using the existing scoped mutation.
+- Added deployment, marketplace, release-checklist, architecture, and implementation handoff documentation.
+
 ## 1.3.0 — 2026-10-26
 
 - Added optional workspace-validated client links to project create/edit and linked-project context on client/project details.

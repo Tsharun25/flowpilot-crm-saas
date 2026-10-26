@@ -1,5 +1,7 @@
 # FlowPilot CRM — Vibe96 Listing Copy
 
+> Current submission copy is maintained in `MARKETPLACE_LISTING.md`. This file preserves the earlier 1.3 draft for release-history reference.
+
 ## Short description
 
 A polished, workspace-scoped CRM and project management starter with linked clients/projects, Won-deal conversion, dated follow-ups/tasks, activity, search, safe CSV export, analytics, authentication, demo data, and responsive UI.
@@ -60,7 +62,7 @@ Buyers should review the [Security Policy](SECURITY.md), [Release Audit](AUDIT_R
 
 Keep the demo online throughout review and while listed. Use this account only with non-sensitive sample data.
 
-The shipped product is a self-hosted CRM/project-management starter, not a hosted subscription service. Billing, subscriptions, invitations, password recovery, outbound email/reminder automation, drag-and-drop, invoicing, and a client portal are not included. Operators should reset the dedicated demo workspace on a schedule and never connect it to production customer data.
+The shipped product is a self-hosted CRM/project-management starter, not a hosted subscription service. Billing, subscriptions, invitations, self-service email password recovery, outbound email/reminder automation, drag-and-drop, invoicing, and a client portal are not included. Guarded operator-assisted recovery is documented. Operators should reset the dedicated read-only demo workspace on a schedule and never connect it to production customer data.
 
 The application does not schedule the demo reset itself; that remains a manual or operator-configured infrastructure task.
 

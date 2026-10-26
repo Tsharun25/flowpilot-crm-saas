@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace, requireWorkspaceManager } from "@/lib/current-user";
+import { assertWorkspaceWritable } from "@/lib/demo-workspace";
 import {
   projectIdSchema,
   projectSchema,
@@ -15,7 +16,8 @@ import {
 } from "@/lib/validators/workspace";
 
 export async function createProject(formData: FormData) {
-  const { workspace } = await getCurrentUserWithWorkspace();
+  const { user, workspace } = await getCurrentUserWithWorkspace();
+  assertWorkspaceWritable(workspace, user.email);
 
   const { name, description, clientId } = projectSchema.parse({
     name: formData.get("name"),
@@ -46,7 +48,8 @@ export async function createProject(formData: FormData) {
 }
 
 export async function updateProject(projectId: string, formData: FormData) {
-  const { workspace } = await getCurrentUserWithWorkspace();
+  const { user, workspace } = await getCurrentUserWithWorkspace();
+  assertWorkspaceWritable(workspace, user.email);
   const safeProjectId = projectIdSchema.parse(projectId);
   const { name, description, status, clientId } = projectSchema.parse({
     name: formData.get("name"),
@@ -86,7 +89,8 @@ export async function updateProject(projectId: string, formData: FormData) {
 }
 
 export async function deleteProject(projectId: string) {
-  const { workspace } = await requireWorkspaceManager();
+  const { user, workspace } = await requireWorkspaceManager();
+  assertWorkspaceWritable(workspace, user.email);
   const safeProjectId = projectIdSchema.parse(projectId);
 
   const project = await prisma.project.findFirst({
@@ -114,7 +118,8 @@ export async function deleteProject(projectId: string) {
 }
 
 export async function createTask(projectId: string, formData: FormData) {
-  const { workspace } = await getCurrentUserWithWorkspace();
+  const { user, workspace } = await getCurrentUserWithWorkspace();
+  assertWorkspaceWritable(workspace, user.email);
   const safeProjectId = projectIdSchema.parse(projectId);
   const { title, description, status, priority, dueDate } = taskSchema.parse({
     title: formData.get("title"),
@@ -156,7 +161,8 @@ export async function updateTaskStatus(
   taskId: string,
   status: string
 ) {
-  const { workspace } = await getCurrentUserWithWorkspace();
+  const { user, workspace } = await getCurrentUserWithWorkspace();
+  assertWorkspaceWritable(workspace, user.email);
   const safeProjectId = projectIdSchema.parse(projectId);
   const safeTaskId = taskIdSchema.parse(taskId);
   const safeStatus = taskStatusSchema.parse(status);
@@ -182,7 +188,8 @@ export async function updateTaskStatus(
 }
 
 export async function deleteTask(projectId: string, taskId: string) {
-  const { workspace } = await requireWorkspaceManager();
+  const { user, workspace } = await requireWorkspaceManager();
+  assertWorkspaceWritable(workspace, user.email);
   const safeProjectId = projectIdSchema.parse(projectId);
   const safeTaskId = taskIdSchema.parse(taskId);
 
@@ -206,7 +213,8 @@ export async function deleteTask(projectId: string, taskId: string) {
 }
 
 export async function updateTask(projectId: string, taskId: string, formData: FormData) {
-  const { workspace } = await getCurrentUserWithWorkspace();
+  const { user, workspace } = await getCurrentUserWithWorkspace();
+  assertWorkspaceWritable(workspace, user.email);
   const safeProjectId = projectIdSchema.parse(projectId);
   const safeTaskId = taskIdSchema.parse(taskId);
   const data = taskSchema.parse({

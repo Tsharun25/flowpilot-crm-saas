@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace, requireWorkspaceManager } from "@/lib/current-user";
+import { assertWorkspaceWritable } from "@/lib/demo-workspace";
 import { clientIdSchema, clientNoteSchema, clientSchema, clientStatusSchema, parseDateOnly, requestIdSchema } from "@/lib/validators/workspace";
 
 function refreshClientViews(clientId?: string) {
@@ -21,7 +22,8 @@ function parseClientForm(formData: FormData) {
 }
 
 export async function createClient(formData: FormData) {
-  const { workspace } = await getCurrentUserWithWorkspace();
+  const { user, workspace } = await getCurrentUserWithWorkspace();
+  assertWorkspaceWritable(workspace, user.email);
   const { value: valueCents, nextFollowUp, ...data } = parseClientForm(formData);
   await prisma.client.create({ data: { ...data, value: Number(valueCents / BigInt(100)), valueCents, wonAt: data.status === "WON" ? new Date() : null, nextFollowUp: parseDateOnly(nextFollowUp), workspaceId: workspace.id } });
   refreshClientViews();
@@ -30,6 +32,7 @@ export async function createClient(formData: FormData) {
 
 export async function updateClientStatus(clientId: string, status: string, eventKey: string) {
   const { user, workspace } = await getCurrentUserWithWorkspace();
+  assertWorkspaceWritable(workspace, user.email);
   const safeClientId = clientIdSchema.parse(clientId);
   const safeStatus = clientStatusSchema.parse(status);
   const safeEventKey = requestIdSchema.parse(eventKey);
@@ -46,6 +49,7 @@ export async function updateClientStatus(clientId: string, status: string, event
 
 export async function updateClient(clientId: string, formData: FormData) {
   const { user, workspace } = await getCurrentUserWithWorkspace();
+  assertWorkspaceWritable(workspace, user.email);
   const safeClientId = clientIdSchema.parse(clientId);
   const eventKey = requestIdSchema.parse(formData.get("eventKey"));
   const { value: valueCents, nextFollowUp, ...data } = parseClientForm(formData);
@@ -61,6 +65,7 @@ export async function updateClient(clientId: string, formData: FormData) {
 
 export async function addClientNote(clientId: string, formData: FormData) {
   const { user, workspace } = await getCurrentUserWithWorkspace();
+  assertWorkspaceWritable(workspace, user.email);
   const safeClientId = clientIdSchema.parse(clientId);
   const body = clientNoteSchema.parse(formData.get("body"));
   const requestId = requestIdSchema.parse(formData.get("requestId"));
@@ -77,6 +82,7 @@ export async function addClientNote(clientId: string, formData: FormData) {
 
 export async function convertWonClientToProject(clientId: string) {
   const { user, workspace } = await getCurrentUserWithWorkspace();
+  assertWorkspaceWritable(workspace, user.email);
   const safeClientId = clientIdSchema.parse(clientId);
   const existing = await prisma.dealConversion.findFirst({ where: { clientId: safeClientId, client: { workspaceId: workspace.id } }, select: { projectId: true } });
   if (existing) redirect(`/dashboard/projects/${existing.projectId}`);
@@ -101,7 +107,8 @@ export async function convertWonClientToProject(clientId: string) {
 }
 
 export async function deleteClient(clientId: string) {
-  const { workspace } = await requireWorkspaceManager();
+  const { user, workspace } = await requireWorkspaceManager();
+  assertWorkspaceWritable(workspace, user.email);
   const safeClientId = clientIdSchema.parse(clientId);
   const client = await prisma.client.findFirst({ where: { id: safeClientId, workspaceId: workspace.id }, select: { id: true } });
   if (!client) throw new Error("Client not found");

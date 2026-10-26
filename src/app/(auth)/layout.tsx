@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import PublicFooter from "@/components/public-footer";
 
 export const metadata: Metadata = {
   robots: {
@@ -12,5 +13,5 @@ export default function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <>{children}</>;
+  return <div className="bg-slate-950">{children}<PublicFooter dark /></div>;
 }

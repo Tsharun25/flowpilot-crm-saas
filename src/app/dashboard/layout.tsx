@@ -5,6 +5,7 @@ import { getCurrentUserWithWorkspace } from "@/lib/current-user";
 import DashboardSidebar from "./sidebar";
 import MobileSidebar from "./mobile-sidebar";
 import LogoutButton from "./logout-button";
+import { isDemoWorkspace } from "@/lib/demo-workspace";
 
 export const metadata: Metadata = {
   title: {
@@ -26,6 +27,7 @@ export default async function DashboardLayout({
   const { user, workspace } = await getCurrentUserWithWorkspace();
 
   if (!user?.id) redirect("/login");
+  const demoReadOnly = isDemoWorkspace(workspace, user.email);
 
   return (
     <div className="min-h-screen bg-[#f4f7fb]">
@@ -55,7 +57,14 @@ export default async function DashboardLayout({
             </div>
           </header>
 
-          <main className="min-w-0 p-3 sm:p-4 lg:p-8">{children}</main>
+          <main className="min-w-0 p-3 sm:p-4 lg:p-8">
+            {demoReadOnly ? (
+              <div role="status" className="mb-4 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-950">
+                Demo workspace — changes are disabled. Create your own account to try editing; browsing and exports remain available.
+              </div>
+            ) : null}
+            {children}
+          </main>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
-# FlowPilot CRM SaaS
+# FlowPilot CRM
 
-FlowPilot CRM SaaS is a premium full-stack SaaS CRM and project management application built with Next.js, TypeScript, Tailwind CSS, MongoDB, Prisma, NextAuth.js, Recharts, Sonner, and Lucide React.
+FlowPilot CRM is a self-hosted CRM and project management starter for freelancers and small agencies. It keeps client opportunities, linked projects, tasks, notes, follow-ups, exports, and deal-value reporting in one workspace.
 
 It includes authentication, protected dashboard routes, workspace-based architecture, client-linked projects, idempotent Won-deal conversion, dated follow-ups and tasks, client notes/activity, search and filters, safe CSV export, won-deal analytics, and a responsive premium UI.
 
@@ -25,12 +25,12 @@ Password: DemoFlow2026!
 
 ## Features
 
-FlowPilot 1.3 ships the focused agency workflow described below. It remains a self-hosted starter and does not include email reminders, billing, invoicing, a client portal, password recovery, or hosted operations.
+FlowPilot 1.4 ships the focused agency workflow described below. It remains a self-hosted starter.
 
 - User registration and login
 - Password hashing with bcryptjs
 - Protected dashboard routes
-- Workspace-based SaaS structure
+- Workspace-based data isolation
 - Project creation, editing, archiving, and deletion
 - Task creation, editing, status management, and deletion
 - Kanban task board
@@ -45,12 +45,15 @@ FlowPilot 1.3 ships the focused agency workflow described below. It remains a se
 - Exact two-decimal USD deal values
 - Live dashboard stats
 - Analytics chart
+- UTC year selector backed by recorded `wonAt` close timestamps
+- Read-only public demo enforcement across all dashboard mutations
+- Privacy, terms, support, canonical, Open Graph, Twitter, robots, and public-only sitemap routes
 - Profile and workspace settings
 - Toast notifications
 - Loading skeletons
 - Responsive dashboard UI
 - Demo data seeding
-- Premium SaaS landing page
+- Responsive product landing page
 - Mobile responsive sidebar
 - Documented Vercel deployment and configuration checklist
 
@@ -58,8 +61,12 @@ FlowPilot 1.3 ships the focused agency workflow described below. It remains a se
 
 - `OWNER` and `ADMIN`: authenticated create/edit/status workflows, destructive project/task/client actions, and workspace identity changes.
 - `MEMBER`: authenticated create/edit/status workflows; destructive project/task/client actions and workspace identity changes are denied.
-- Every role can update its own profile name.
-- The shared public demo workspace identity is locked even though its demo user has the `OWNER` role.
+- Every role can update its own profile name in a normal workspace.
+- The shared public demo is read-only even though its demo user has the `OWNER` role.
+
+### Not included
+
+Subscription billing, invoicing, invitations, advanced team collaboration, outbound password-reset email, automated campaigns/reminders, drag-and-drop, a mobile app, client portal, managed hosting/backups, or production security certification. Operator-assisted account recovery is documented in [HowToSetup.md](HowToSetup.md).
 
 All application reads and writes are scoped through the signed-in user's resolved workspace context. A controlled two-account browser/database audit covers protected routes, cross-workspace reads, scoped export, client-link options, a scoped write, and a nested task read. It is useful evidence, not a penetration-test certification; see [Security Policy](SECURITY.md) and [Release Audit](AUDIT_REPORT.md).
 
@@ -92,6 +99,10 @@ NEXTAUTH_SECRET="your-secret-key"
 RATE_LIMIT_SALT="a-separate-long-random-secret"
 
 NEXTAUTH_URL="http://localhost:3000"
+
+NEXT_PUBLIC_SITE_URL="http://localhost:3000"
+
+NEXT_PUBLIC_SUPPORT_URL="https://your-domain.com/support"
 ```
 
 For production:
@@ -104,6 +115,10 @@ NEXTAUTH_SECRET="your-production-secret"
 RATE_LIMIT_SALT="your-production-rate-limit-salt"
 
 NEXTAUTH_URL="https://flowpilot-crm-saas.vercel.app"
+
+NEXT_PUBLIC_SITE_URL="https://flowpilot-crm-saas.vercel.app"
+
+NEXT_PUBLIC_SUPPORT_URL="https://your-domain.com/support"
 ```
 
 ---
@@ -139,7 +154,7 @@ The public demo reset is not scheduled by the application. The operator must run
 
 ---
 
-## Upgrading to 1.3.0
+## Upgrading to 1.4.0
 
 Back up MongoDB, install the locked dependencies, regenerate Prisma Client, and apply the additive schema change:
 
@@ -192,9 +207,9 @@ Docker/VPS instructions are included, but the 1.3 release candidate has not been
 
 ## Project Highlights
 
-FlowPilot CRM SaaS demonstrates:
+FlowPilot CRM includes:
 
-- Full-stack SaaS architecture
+- Full-stack self-hosted architecture
 - Real authentication system
 - Protected dashboard experience
 - MongoDB database integration

@@ -10,12 +10,12 @@ FlowPilot is provided as a self-hosted starter. The documented deployment routes
 - npm 10 or newer
 - MongoDB Atlas or a MongoDB replica set
 
-MongoDB must run as a replica set because Prisma transactions are used for controlled project deletion, status activity, and Won-deal conversion. MongoDB Atlas clusters meet this requirement. FlowPilot 1.3 uses USD as its single display currency, stores new or edited deal amounts as exact integer cents, and groups won deals into calendar months using UTC.
+MongoDB must run as a replica set because Prisma transactions are used for controlled project deletion, status activity, and Won-deal conversion. MongoDB Atlas clusters meet this requirement. FlowPilot 1.4 uses USD as its single display currency, stores new or edited deal amounts as exact integer cents, and groups won deals into calendar months using UTC.
 
 ## Local installation
 
 1. Copy `.env.example` to `.env`.
-2. Set `DATABASE_URL`, `NEXTAUTH_SECRET`, `RATE_LIMIT_SALT`, and `NEXTAUTH_URL`.
+2. Set `DATABASE_URL`, `NEXTAUTH_SECRET`, `RATE_LIMIT_SALT`, `NEXTAUTH_URL`, `NEXT_PUBLIC_SITE_URL`, and optionally `NEXT_PUBLIC_SUPPORT_URL`.
 3. Install and prepare the application:
 
 ```bash
@@ -26,11 +26,11 @@ npm run seed:demo
 npm run dev
 ```
 
-Open `http://localhost:3000`. The explicit `seed:demo` command creates `demo@flowpilot.com` with password `DemoFlow2026!` and marks its workspace with the persistent `isDemo` flag. For upgrades, the seed recognizes the documented legacy demo slug patterns once and then persists that marker. It deletes that demo workspace's existing projects, tasks, and clients, so run it only against a dedicated demo database. The public demo workspace identity is locked in the UI and server action. Change or remove this account before accepting real users. Plain `npm run seed` intentionally refuses to delete data without the confirmation flag.
+Open `http://localhost:3000`. The explicit `seed:demo` command creates `demo@flowpilot.com` with password `DemoFlow2026!` and marks its workspace with the persistent `isDemo` flag. For upgrades, the seed recognizes the documented legacy demo slug patterns once and then persists that marker. It deletes that demo workspace's existing projects, tasks, and clients, so run it only against a dedicated demo database. The public demo is read-only across project, task, client, note, conversion, profile, and workspace mutations; the server enforces this from the persisted workspace marker. Change or remove this account before accepting real users. Plain `npm run seed` intentionally refuses to delete data without the confirmation flag.
 
 Demo reset scheduling is not built in. Run the reset manually or through infrastructure you control, and never reuse the demo database for real customer data.
 
-## Upgrade an existing installation to 1.3.0
+## Upgrade an existing installation to 1.4.0
 
 1. Back up the MongoDB database and verify that the backup can be restored.
 2. Install the release lockfile and regenerate Prisma Client.
@@ -42,7 +42,7 @@ npx prisma generate
 npx prisma db push
 ```
 
-The update retains the optional `Client.valueCents` compatibility behavior and adds optional client/project links, UTC date-only follow-up/due-date values, and dedicated conversion, note, activity, and rate-limit collections. Existing internal projects and undated records remain valid. It does not delete or rewrite existing deal values. Back up and test restoration first; no silent bulk backfill is performed.
+The 1.4 update does not require a new database collection. It makes the persisted demo workspace read-only, adds public trust pages and metadata, aligns filtered CRM totals, and exposes year-specific won-value reporting using the existing `wonAt` field. Existing records remain valid and no bulk backfill is performed.
 
 The earlier optional `wonAt` behavior is unchanged: historic Won records without a close date remain in the all-time Won total but do not appear in a monthly chart bucket until a date is established by an operator-controlled migration or by re-saving their Won state.
 
@@ -56,7 +56,7 @@ npm run build
 npm start
 ```
 
-Set `NEXTAUTH_URL` to the final HTTPS domain. Use a unique secret generated with `openssl rand -base64 32`.
+Set `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` to the final HTTPS origin. Use a unique secret generated with `openssl rand -base64 32`.
 
 ## Deployment route 1: Vercel
 
@@ -103,12 +103,19 @@ The browser audit and screenshot scripts need Chromium. Install Playwright's bro
 npx playwright install chromium
 npm run audit:a11y
 npm run audit:responsive
-npm run audit:workflow
+npm run audit:demo-readonly
 npm run audit:isolation
 npm run screenshots
 ```
 
-By default the scripts use `http://localhost:3000` and the documented demo credentials. Override `DEMO_URL`, `DEMO_EMAIL`, and `DEMO_PASSWORD` when needed. If you use an existing Chromium-family browser instead of Playwright's download, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to its executable path.
+By default the scripts use `http://localhost:3000`. The demo-readonly and screenshot scripts use the documented demo credentials; workflow and isolation checks create temporary non-demo workspaces and remove them afterward. Override `DEMO_URL`, `DEMO_EMAIL`, and `DEMO_PASSWORD` when needed. If you use an existing Chromium-family browser instead of Playwright's download, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to its executable path.
+
+Run mutation suites only against an isolated test database and opt in explicitly:
+
+```bash
+CONFIRM_ISOLATED_MUTATION=1 npm run audit:workflow
+CONFIRM_ISOLATION_MUTATION=1 npm run audit:isolation
+```
 
 The monetary browser audit intentionally creates and removes four temporary client records. Run it only against a dedicated demo database and opt in explicitly:
 
@@ -118,11 +125,22 @@ CONFIRM_DEMO_MUTATION=1 npm run audit:money-browser
 
 Run the monetary acceptance cases `0`, `0.01`, `1250.50`, and `$1,000,000,000.00` through both create and edit workflows. Confirm exact values after reload in cards, open/won/lost totals, overview metrics, and chart tooltips. Confirm that negative values, exponent notation, non-finite values, out-of-range values, and more than two decimal places are rejected.
 
-Authorization policy in 1.3:
+Authorization policy in 1.4:
 
 - `OWNER` and `ADMIN` may delete projects, tasks, and clients and rename the workspace.
 - `MEMBER` may use authenticated create, edit, and status workflows but may not perform those destructive actions or rename the workspace.
-- Every role may update its own profile name.
+- Every role may update its own profile name in a normal workspace.
+- The persisted public demo workspace is read-only for every role; direct server-action requests are rejected.
+
+## Operator-assisted account recovery
+
+Self-service password recovery is not shipped because no outbound email provider is configured. After privately verifying the account owner and taking a backup, an operator with database access can run the guarded maintenance command locally. Keep the password out of shell history where possible and clear the environment values afterward:
+
+```bash
+CONFIRM_OPERATOR_PASSWORD_RESET=1 RECOVERY_EMAIL="owner@example.com" RECOVERY_PASSWORD="NewPrivatePass123" npm run operator:reset-password
+```
+
+The command requires a 12–128 character password containing uppercase, lowercase, and a digit, hashes it with bcrypt, and never prints the credential. Existing sessions use JWTs and are not centrally revoked by this command; change `NEXTAUTH_SECRET` only when an incident requires invalidating all sessions.
 
 The guarded two-account audit tests fresh sessions, anonymous route protection, cross-workspace client/project reads, filtered export isolation, client-link selector isolation, one scoped write, and a nested task lookup. Run it only in an isolated test environment with `CONFIRM_ISOLATION_MUTATION=1`. Login attempts are limited per hashed IP/email pair and registration attempts per hashed IP through the shared MongoDB `RateLimit` collection. `RATE_LIMIT_SALT` must be private and consistent across instances. Add edge/WAF protection as an additional layer for high-risk deployments.
 

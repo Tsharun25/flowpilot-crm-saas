@@ -5,8 +5,9 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
 import { convertWonClientToProject, createClient, deleteClient, updateClient } from "./actions";
 import ClientStatusForm from "./status-form";
-import { formatMoney, getWorkspaceCrmMetrics } from "@/lib/analytics";
+import { formatMoney } from "@/lib/analytics";
 import {
+  calculateCrmMetrics,
   centsToDollars,
   getDealValueCents,
   getDealValueInput,
@@ -41,13 +42,14 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
     ...(q ? { OR: [{ name: { contains: q, mode: "insensitive" } }, { company: { contains: q, mode: "insensitive" } }, { email: { contains: q, mode: "insensitive" } }] } : {}),
   };
 
-  const [clients, metrics] = await Promise.all([prisma.client.findMany({
+  const clients = await prisma.client.findMany({
     where,
     include: { conversion: { select: { projectId: true } } },
     orderBy: {
       createdAt: "desc",
     },
-  }), getWorkspaceCrmMetrics(workspace.id)]);
+  });
+  const metrics = calculateCrmMetrics(clients);
 
   return (
     <div>
@@ -67,21 +69,21 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
 
       <section className="mb-8 grid gap-4 md:grid-cols-3">
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-bold text-slate-500">Total Clients</p>
+          <p className="text-sm font-bold text-slate-500">Filtered Clients</p>
           <p className="mt-3 break-words text-2xl font-black text-slate-950 xl:text-3xl">
             {clients.length}
           </p>
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-bold text-slate-500">Open Pipeline</p>
+          <p className="text-sm font-bold text-slate-500">Filtered Open Pipeline</p>
           <p className="mt-3 break-words text-2xl font-black text-slate-950 xl:text-3xl">
             {formatMoney(metrics.openPipeline)}
           </p>
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-bold text-slate-500">Won Deal Value</p>
+          <p className="text-sm font-bold text-slate-500">Filtered Won Deal Value</p>
           <p className="mt-3 break-words text-2xl font-black text-slate-950 xl:text-3xl">
             {formatMoney(metrics.wonDealValue)}
           </p>
@@ -214,10 +216,10 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
           {clients.length === 0 ? (
             <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-10 text-center">
               <p className="text-lg font-black text-slate-950">
-                No clients yet
+                {q || status ? "No clients match these filters" : "No clients yet"}
               </p>
               <p className="mt-2 text-sm text-slate-500">
-                Add your first client from the form on the left.
+                {q || status ? "Reset the filters or try a different search." : "Create your first client with the form above."}
               </p>
             </div>
           ) : (

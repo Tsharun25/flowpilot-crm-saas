@@ -4,6 +4,7 @@ import type { Prisma, Priority, TaskStatus } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
+import TaskStatusForm from "../projects/[projectId]/task-status-form";
 
 export const metadata: Metadata = {
   title: "Workspace tasks",
@@ -101,10 +102,9 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
 
                 <div className="space-y-3">
                   {columnTasks.map((task) => (
-                    <Link
+                    <article
                       key={task.id}
                       data-testid="workspace-task-card"
-                      href={`/dashboard/projects/${task.projectId}`}
                       className="block rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-cyan-300 hover:bg-white"
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -112,9 +112,7 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
                           <p className="break-words font-black text-slate-950">
                             {task.title}
                           </p>
-                          <p className="mt-1 break-words text-xs font-bold text-slate-500">
-                            {task.project.name}
-                          </p>
+                          <Link href={`/dashboard/projects/${task.projectId}`} className="mt-1 block break-words text-xs font-bold text-cyan-800 underline-offset-2 hover:underline">{task.project.name}</Link>
                         </div>
 
                         <span
@@ -132,7 +130,8 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
                         </p>
                       ) : null}
                       {task.dueDate ? <p className={`mt-3 rounded-full px-2.5 py-1 text-xs font-black ${task.status !== "DONE" && task.dueDate < todayUtc ? "bg-red-50 text-red-700" : "bg-blue-50 text-blue-800"}`}>{task.status !== "DONE" && task.dueDate < todayUtc ? "Overdue · " : "Due · "}{task.dueDate.toISOString().slice(0, 10)}</p> : null}
-                    </Link>
+                      <TaskStatusForm projectId={task.projectId} taskId={task.id} currentStatus={task.status} />
+                    </article>
                   ))}
                 </div>
               </section>

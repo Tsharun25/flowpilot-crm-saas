@@ -24,3 +24,12 @@ export function isDemoWorkspace(
         )))
   );
 }
+
+export function assertWorkspaceWritable(
+  workspace: DemoWorkspaceIdentity,
+  userEmail?: string | null,
+) {
+  if (isDemoWorkspace(workspace, userEmail)) {
+    throw new Error("Demo workspace — changes are disabled. Create your own workspace to try editing.");
+  }
+}

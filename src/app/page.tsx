@@ -11,11 +11,13 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import PublicFooter from "@/components/public-footer";
 
 export const metadata: Metadata = {
   title: "FlowPilot CRM — Self-hosted CRM & Project Management Starter",
   description:
     "Explore FlowPilot, a self-hosted CRM starter with projects, Kanban tasks, client opportunities, and workspace analytics.",
+  alternates: { canonical: "/" },
 };
 
 const features = [
@@ -65,7 +67,7 @@ export default function HomePage() {
             <div>
               <p className="text-xl font-black leading-none">FlowPilot</p>
               <p className="mt-1 text-xs font-bold uppercase tracking-wide text-cyan-300">
-                SaaS CRM
+                CRM Starter
               </p>
             </div>
           </Link>
@@ -94,13 +96,12 @@ export default function HomePage() {
             </div>
 
             <h1 className="max-w-4xl text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              Manage projects, tasks, clients, and deal value in one polished workspace.
+              Track clients. Move deals. Deliver projects.
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-              FlowPilot is a full-stack SaaS platform built with Next.js,
-              MongoDB, Auth, CRM pipeline, Kanban tasks, analytics, and a premium
-              dashboard experience.
+              A self-hosted workspace for freelancers and small agencies to manage
+              opportunities, linked projects, due tasks, notes, and deal-value reporting.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
@@ -108,7 +109,7 @@ export default function HomePage() {
                 href="/register"
                 className="inline-flex items-center gap-2 rounded-full bg-cyan-400 px-7 py-4 font-black text-slate-950 shadow-xl shadow-cyan-400/20 transition hover:bg-cyan-300"
               >
-                Create Demo Account
+                Create Your Workspace
                 <ArrowRight size={18} />
               </Link>
 
@@ -233,11 +234,11 @@ export default function HomePage() {
             Features
           </p>
           <h2 className="mt-3 text-4xl font-black tracking-tight md:text-5xl">
-            Everything a modern SaaS dashboard needs.
+            Practical tools for client work from lead to delivery.
           </h2>
           <p className="mt-4 leading-7 text-slate-400">
-            Built to show real product thinking, database architecture, polished
-            UI, and practical business workflows.
+            Keep client context, project delivery, due work, and pipeline reporting
+            together without claiming billing, email automation, or managed hosting.
           </p>
         </div>
 
@@ -297,8 +298,8 @@ export default function HomePage() {
             Ready to explore FlowPilot?
           </h2>
           <p className="mx-auto mt-4 max-w-2xl font-medium leading-7">
-            Login with the demo account or create your own workspace to test the
-            full SaaS CRM experience.
+            Browse the read-only demo or create your own workspace to test the
+            editable CRM and project workflows.
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-4">
@@ -317,6 +318,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <PublicFooter dark />
     </main>
   );
 }

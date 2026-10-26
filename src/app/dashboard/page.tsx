@@ -76,7 +76,7 @@ export default async function DashboardPage() {
             Command Center
           </h2>
           <p className="mt-3 max-w-2xl text-slate-500">
-            A premium SaaS dashboard for projects, tasks, clients, and deal value.
+            Keep client opportunities, project delivery, tasks, and deal value in one workspace.
           </p>
         </div>
 

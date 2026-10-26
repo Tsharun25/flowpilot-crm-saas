@@ -75,4 +75,13 @@ assert.equal(
   "1250.50",
 );
 assert.equal(getDealValueInput({ value: 1250 }), "1250.00");
+
+// FP-01 regression: summary cards must use the same filtered records as the board/export.
+const filteredDanielMetrics = calculateCrmMetrics(
+  [{ value: 85_000, valueCents: BigInt(8_500_000), status: "LEAD", wonAt: null }],
+  now,
+);
+assert.equal(filteredDanielMetrics.openPipeline, 85_000);
+assert.equal(filteredDanielMetrics.wonDealValue, 0);
+assert.equal(calculateCrmMetrics([], now).openPipeline, 0);
 console.log("CRM metric acceptance tests passed.");

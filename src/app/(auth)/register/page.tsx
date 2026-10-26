@@ -29,11 +29,15 @@ export default async function RegisterPage() {
           <div className="mb-8 text-center">
             <h1 className="text-3xl font-black">Create your account</h1>
             <p className="mt-2 text-sm text-slate-400">
-              Start your SaaS workspace in seconds.
+              Create an editable CRM and project workspace.
             </p>
           </div>
 
           <RegisterForm />
+
+          <p className="mt-4 text-center text-xs leading-5 text-slate-400">
+            By creating an account, you acknowledge the deployment owner&apos;s <Link href="/terms" className="text-cyan-300">terms</Link> and <Link href="/privacy" className="text-cyan-300">privacy notice</Link>.
+          </p>
 
           <p className="mt-6 text-center text-sm text-slate-400">
             Already have an account?{" "}

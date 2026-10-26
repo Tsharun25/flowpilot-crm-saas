@@ -1,6 +1,6 @@
 # Third-Party Software Notices
 
-FlowPilot 1.2.0 uses the following direct open-source dependencies. Each dependency remains subject to its own license; this project does not relicense third-party code. Exact resolved versions, including transitive packages, are recorded in `package-lock.json`, and installed packages include their own license files and package metadata.
+FlowPilot 1.4.0 uses the following direct open-source dependencies. Each dependency remains subject to its own license; this project does not relicense third-party code. Exact resolved versions, including transitive packages, are recorded in `package-lock.json`, and installed packages include their own license files and package metadata.
 
 ## Runtime dependencies
 
@@ -15,7 +15,7 @@ FlowPilot 1.2.0 uses the following direct open-source dependencies. Each depende
 | `react-dom` | 19.2.4 | MIT |
 | `recharts` | 3.8.1 | MIT |
 | `sonner` | 2.0.7 | MIT |
-| `zod` | 4.4.3 | MIT |
+| `zod` | 4.6.7 | MIT |
 
 ## Development dependencies
 

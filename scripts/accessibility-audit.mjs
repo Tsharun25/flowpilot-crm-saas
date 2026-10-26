@@ -9,6 +9,9 @@ const publicRoutes = [
   { name: "landing", path: "/", expectNoIndex: false },
   { name: "login", path: "/login", expectNoIndex: true },
   { name: "register", path: "/register", expectNoIndex: true },
+  { name: "privacy", path: "/privacy", expectNoIndex: false },
+  { name: "terms", path: "/terms", expectNoIndex: false },
+  { name: "support", path: "/support", expectNoIndex: false },
 ];
 
 const authenticatedRoutes = [

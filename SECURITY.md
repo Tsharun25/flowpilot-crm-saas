@@ -13,6 +13,7 @@ Buyers should open a private Vibe96 support ticket and include the affected Flow
 FlowPilot is a self-hosted starter. Before processing real customer data, the operator must:
 
 - replace the public demo account and use unique production secrets;
+- keep the public demo `isDemo` marker intact while it is published; all shipped dashboard mutations reject marked demo workspaces server-side;
 - restrict MongoDB network access and maintain tested backups;
 - serve the application over HTTPS;
 - apply schema changes and dependency updates in a staging environment first;
@@ -20,3 +21,5 @@ FlowPilot is a self-hosted starter. Before processing real customer data, the op
 - keep `RATE_LIMIT_SALT` private and consistent across instances, monitor the included MongoDB-backed authentication limits, add edge/WAF controls where appropriate, and configure recovery procedures plus any jurisdiction-specific privacy controls required by the deployment.
 
 The repository intentionally contains no telemetry, analytics tracker, hidden outbound service, licensing lock, or production credential.
+
+Self-service password recovery is intentionally absent because no email provider is configured. The guarded operator-assisted procedure is documented in `HowToSetup.md`; it is not exposed as a public endpoint and does not log the new password.
