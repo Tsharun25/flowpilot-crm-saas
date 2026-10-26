@@ -9,11 +9,12 @@ FlowPilot helps freelancers and small agencies track client opportunities, turn 
 - Idempotent Won-deal conversion, UTC follow-up/due dates, overdue states and inline task status updates
 - Filter-consistent CRM totals and year-selectable won-value chart based on `wonAt`
 - Read-only synthetic public demo, authentication rate limits, responsive navigation and accessible loading/error states
+- Configurable email password reset with hashed 20-minute single-use tokens and prior-session invalidation
 - Vercel and Docker/VPS instructions, guarded seed, audit scripts, nine 1920×1080 synthetic screenshots
 
 ## Not included
 
-Billing, subscriptions, invoices, invitations, advanced team collaboration, password-reset email delivery, automated campaigns/reminders, drag-and-drop, a mobile app, client portal, managed hosting/backups, or production security certification.
+Billing, subscriptions, invoices, invitations, advanced team collaboration, automated campaigns/reminders, drag-and-drop, a mobile app, client portal, managed hosting/backups, transactional-email fees/configuration, or production security certification.
 
 ## Requirements
 

@@ -22,6 +22,8 @@ const routes = [
   { name: "privacy", path: "/privacy", public: true },
   { name: "terms", path: "/terms", public: true },
   { name: "support", path: "/support", public: true },
+  { name: "forgot-password", path: "/forgot-password", public: true },
+  { name: "reset-password", path: "/reset-password", public: true },
   { name: "dashboard", path: "/dashboard" },
   { name: "projects", path: "/dashboard/projects" },
   { name: "tasks", path: "/dashboard/tasks" },

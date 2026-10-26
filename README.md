@@ -25,7 +25,7 @@ Password: DemoFlow2026!
 
 ## Features
 
-FlowPilot 1.4 ships the focused agency workflow described below. It remains a self-hosted starter.
+FlowPilot 1.5 ships the focused agency workflow described below. It remains a self-hosted starter.
 
 - User registration and login
 - Password hashing with bcryptjs
@@ -42,6 +42,7 @@ FlowPilot 1.4 ships the focused agency workflow described below. It remains a se
 - Workspace-scoped client, project, and task search/filters
 - Filtered CSV export with Unicode, quoting, newline, and spreadsheet-formula safeguards
 - Shared MongoDB-backed login and registration rate limits
+- Self-service, single-use email password reset through Resend with session invalidation
 - Exact two-decimal USD deal values
 - Live dashboard stats
 - Analytics chart
@@ -66,7 +67,7 @@ FlowPilot 1.4 ships the focused agency workflow described below. It remains a se
 
 ### Not included
 
-Subscription billing, invoicing, invitations, advanced team collaboration, outbound password-reset email, automated campaigns/reminders, drag-and-drop, a mobile app, client portal, managed hosting/backups, or production security certification. Operator-assisted account recovery is documented in [HowToSetup.md](HowToSetup.md).
+Subscription billing, invoicing, invitations, advanced team collaboration, automated campaigns/reminders, drag-and-drop, a mobile app, client portal, managed hosting/backups, or production security certification. Password-reset delivery requires buyer-supplied Resend credentials and a verified sender domain.
 
 All application reads and writes are scoped through the signed-in user's resolved workspace context. A controlled two-account browser/database audit covers protected routes, cross-workspace reads, scoped export, client-link options, a scoped write, and a nested task read. It is useful evidence, not a penetration-test certification; see [Security Policy](SECURITY.md) and [Release Audit](AUDIT_REPORT.md).
 
@@ -103,6 +104,9 @@ NEXTAUTH_URL="http://localhost:3000"
 NEXT_PUBLIC_SITE_URL="http://localhost:3000"
 
 NEXT_PUBLIC_SUPPORT_URL="https://your-domain.com/support"
+
+RESEND_API_KEY="re_your-server-side-key"
+EMAIL_FROM="FlowPilot <no-reply@your-verified-domain.com>"
 ```
 
 For production:
@@ -119,6 +123,9 @@ NEXTAUTH_URL="https://flowpilot-crm-saas.vercel.app"
 NEXT_PUBLIC_SITE_URL="https://flowpilot-crm-saas.vercel.app"
 
 NEXT_PUBLIC_SUPPORT_URL="https://your-domain.com/support"
+
+RESEND_API_KEY="re_your-production-key"
+EMAIL_FROM="FlowPilot <no-reply@your-verified-domain.com>"
 ```
 
 ---
@@ -154,7 +161,7 @@ The public demo reset is not scheduled by the application. The operator must run
 
 ---
 
-## Upgrading to 1.4.1
+## Upgrading to 1.5.0
 
 Back up MongoDB, install the locked dependencies, regenerate Prisma Client, and apply the additive schema change:
 
@@ -164,7 +171,7 @@ npx prisma generate
 npx prisma db push
 ```
 
-Version 1.3 keeps the 1.2 money compatibility behavior and adds optional project/client links, optional UTC date-only follow-up/due-date values, conversion records, notes, activity, and rate-limit collections/indexes. Existing internal projects and undated clients/tasks remain valid. Back up MongoDB before `npx prisma db push`; the application does not perform a destructive bulk backfill.
+Version 1.5 adds the `PasswordResetToken` collection and indexes. Tokens are random, stored only as SHA-256 hashes, expire after 20 minutes, and are consumed transactionally. Back up MongoDB before `npx prisma db push`; the application does not perform a destructive bulk backfill.
 
 Historic Won records without `wonAt` remain in the all-time Won total but are not assigned to a monthly chart bucket until an operator supplies a date through an approved migration or the record's Won state is re-saved.
 

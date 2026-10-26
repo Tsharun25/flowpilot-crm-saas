@@ -22,4 +22,4 @@ FlowPilot is a self-hosted starter. Before processing real customer data, the op
 
 The repository intentionally contains no telemetry, analytics tracker, hidden outbound service, licensing lock, or production credential.
 
-Self-service password recovery is intentionally absent because no email provider is configured. The guarded operator-assisted procedure is documented in `HowToSetup.md`; it is not exposed as a public endpoint and does not log the new password.
+Self-service recovery uses owner-configured Resend delivery, hashed 20-minute single-use tokens, shared MongoDB rate limits, transactional consumption and `sessionVersion` invalidation. Keep `RESEND_API_KEY` server-only, verify the sender domain and trusted HTTPS origin, and test a permitted inbox before launch. The guarded operator-assisted fallback remains documented in `HowToSetup.md` and never logs the new password.

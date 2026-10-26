@@ -12,6 +12,8 @@ const publicRoutes = [
   { name: "privacy", path: "/privacy", expectNoIndex: false },
   { name: "terms", path: "/terms", expectNoIndex: false },
   { name: "support", path: "/support", expectNoIndex: false },
+  { name: "forgot-password", path: "/forgot-password", expectNoIndex: true },
+  { name: "reset-password", path: "/reset-password", expectNoIndex: true },
 ];
 
 const authenticatedRoutes = [

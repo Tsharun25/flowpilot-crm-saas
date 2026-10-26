@@ -20,6 +20,8 @@ async function capture(name, path) {
 
 try {
   await capture("01-landing-page", "/");
+  await capture("10-forgot-password", "/forgot-password");
+  await capture("11-reset-password", "/reset-password");
 
   await page.goto(`${baseUrl}/login`, { waitUntil: "networkidle" });
   await page.getByLabel(/email/i).fill(email);

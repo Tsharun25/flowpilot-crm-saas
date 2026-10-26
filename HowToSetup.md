@@ -10,12 +10,12 @@ FlowPilot is provided as a self-hosted starter. The documented deployment routes
 - npm 10 or newer
 - MongoDB Atlas or a MongoDB replica set
 
-MongoDB must run as a replica set because Prisma transactions are used for controlled project deletion, status activity, and Won-deal conversion. MongoDB Atlas clusters meet this requirement. FlowPilot 1.4 uses USD as its single display currency, stores new or edited deal amounts as exact integer cents, and groups won deals into calendar months using UTC.
+MongoDB must run as a replica set because Prisma transactions are used for controlled project deletion, status activity, Won-deal conversion, and password reset. MongoDB Atlas clusters meet this requirement. FlowPilot 1.5 uses USD as its single display currency, stores new or edited deal amounts as exact integer cents, and groups won deals into calendar months using UTC.
 
 ## Local installation
 
 1. Copy `.env.example` to `.env`.
-2. Set `DATABASE_URL`, `NEXTAUTH_SECRET`, `RATE_LIMIT_SALT`, `NEXTAUTH_URL`, `NEXT_PUBLIC_SITE_URL`, and optionally `NEXT_PUBLIC_SUPPORT_URL`.
+2. Set `DATABASE_URL`, `NEXTAUTH_SECRET`, `RATE_LIMIT_SALT`, `NEXTAUTH_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPPORT_URL`, `RESEND_API_KEY`, and `EMAIL_FROM`.
 3. Install and prepare the application:
 
 ```bash
@@ -30,7 +30,7 @@ Open `http://localhost:3000`. The explicit `seed:demo` command creates `demo@flo
 
 Demo reset scheduling is not built in. Run the reset manually or through infrastructure you control, and never reuse the demo database for real customer data.
 
-## Upgrade an existing installation to 1.4.1
+## Upgrade an existing installation to 1.5.0
 
 1. Back up the MongoDB database and verify that the backup can be restored.
 2. Install the release lockfile and regenerate Prisma Client.
@@ -42,7 +42,7 @@ npx prisma generate
 npx prisma db push
 ```
 
-The 1.4.1 update adds an optional `User.sessionVersion` field used to invalidate earlier JWT sessions after an operator password reset. Existing users without the field are treated as version zero until their first reset. It retains the 1.4 demo policy, public trust pages, metadata, filtered CRM totals, and `wonAt` reporting without a destructive backfill.
+The 1.5 update adds the `PasswordResetToken` collection and indexes. Existing users and workspaces are unchanged. Successful password reset increments `User.sessionVersion`, invalidating earlier JWT sessions on their next protected request.
 
 The earlier optional `wonAt` behavior is unchanged: historic Won records without a close date remain in the all-time Won total but do not appear in a monthly chart bucket until a date is established by an operator-controlled migration or by re-saving their Won state.
 
@@ -61,7 +61,7 @@ Set `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` to the final HTTPS origin. Use a u
 ## Deployment route 1: Vercel
 
 1. Import the Git repository into Vercel.
-2. Add all four variables from `.env.example` with production values.
+2. Add every variable from `.env.example` with production values.
 3. Keep the standard Next.js build command (`npm run build`).
 4. Run `npx prisma db push` once against the production database before first use.
 5. Deploy, then set `NEXTAUTH_URL` to the final domain and redeploy.
@@ -133,9 +133,17 @@ Authorization policy in 1.4:
 - Every role may update its own profile name in a normal workspace.
 - The persisted public demo workspace is read-only for every role; direct server-action requests are rejected.
 
-## Operator-assisted account recovery
+## Email password reset
 
-Self-service password recovery is not shipped because no outbound email provider is configured. After privately verifying the account owner and taking a backup, an operator with database access can run the guarded maintenance command locally. Keep the password out of shell history where possible and clear the environment values afterward:
+FlowPilot sends transactional email through the Resend HTTPS API. Create a Resend account, verify the sender domain, publish the DNS records Resend provides, create a restricted production API key, and set `RESEND_API_KEY` plus `EMAIL_FROM`. Set `NEXT_PUBLIC_SITE_URL` to the exact trusted HTTPS origin; reset links are never built from request headers. Do not expose the API key through a `NEXT_PUBLIC_` variable.
+
+Reset tokens use 32 cryptographically random bytes, are stored only as SHA-256 hashes, expire after 20 minutes, and are single-use. Successful reset changes the bcrypt password, increments `sessionVersion`, and consumes every other active reset token in one MongoDB transaction. Request limits are stored in the shared MongoDB `RateLimit` collection: 8 requests per IP and 3 per account per hour. Completion is limited to 10 attempts per IP per hour. The public demo is denied server-side while keeping the request response neutral.
+
+Production never prints reset links. When email configuration is absent, the endpoint reports that delivery is unavailable and directs the user to support. Provider delivery failures are logged without tokens, URLs, message bodies, credentials, or recipients. Verify delivery to a permitted inbox, link origin, expiry, and password-change notification before opening registration. Provider acceptance is not proof of inbox delivery.
+
+## Operator-assisted recovery fallback
+
+If the user no longer controls their email or delivery is unavailable, an operator may use this guarded fallback only after privately verifying the account owner and taking a backup. Keep the password out of shell history where possible and clear the environment values afterward:
 
 ```bash
 CONFIRM_OPERATOR_PASSWORD_RESET=1 RECOVERY_EMAIL="owner@example.com" RECOVERY_PASSWORD="NewPrivatePass123" npm run operator:reset-password

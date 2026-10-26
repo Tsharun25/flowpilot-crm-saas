@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.0 — 2026-10-27
+
+- Added self-service email password reset through Resend with neutral request responses, MongoDB-backed per-IP/per-account rate limits, hashed 20-minute tokens, atomic single use, invalidation of outstanding links and prior JWT sessions, and password-change notifications.
+- Added responsive forgot/reset/success/error screens, private-route indexing/referrer/cache protections, reset regression coverage, configuration documentation and owner release gates.
+
 ## 1.4.1 — 2026-10-27
 
 - Added per-user JWT session-version validation; guarded operator password resets now invalidate every earlier session on its next protected request.

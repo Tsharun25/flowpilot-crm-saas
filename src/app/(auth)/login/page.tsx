@@ -35,7 +35,7 @@ export default async function LoginPage() {
           <LoginForm />
 
           <p className="mt-4 text-center text-sm">
-            <Link href="/support" className="font-semibold text-cyan-300">Need account recovery help?</Link>
+            <Link href="/forgot-password" className="font-semibold text-cyan-300">Forgot password?</Link>
           </p>
 
           <p className="mt-6 text-center text-sm text-slate-400">

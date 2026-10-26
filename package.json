@@ -1,6 +1,6 @@
 {
   "name": "flowpilot-crm",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "private": true,
   "license": "UNLICENSED",
   "engines": {
@@ -29,8 +29,9 @@
     "test:demo-safety": "tsx scripts/test-demo-workspace.ts",
     "test:workflow-utils": "tsx scripts/test-workflow-utils.ts",
     "test:rate-limit": "tsx scripts/test-rate-limit.ts",
+    "test:password-reset": "tsx scripts/test-password-reset.ts",
     "operator:reset-password": "node --env-file=.env --import tsx scripts/operator-reset-password.ts",
-    "verify": "prisma generate && prisma validate && npm run test:metrics && npm run test:demo-safety && npm run test:workflow-utils && npm run test:rate-limit && npm run lint && npm run build"
+    "verify": "prisma generate && prisma validate && npm run test:metrics && npm run test:demo-safety && npm run test:workflow-utils && npm run test:rate-limit && npm run test:password-reset && npm run lint && npm run build"
   },
   "dependencies": {
     "@prisma/client": "6.19.3",
