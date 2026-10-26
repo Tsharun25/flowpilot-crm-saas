@@ -32,6 +32,7 @@ Deployment/publication: not performed, as required by the brief
 - Updated `README.md`, `HowToSetup.md`, `SECURITY.md`, `SUPPORT.md`, `THIRD_PARTY_NOTICES.md`, `CHANGELOG.md`, `.env.example`, and `AGENTS.md`.
 - Added `DEPLOYMENT.md`, `MARKETPLACE_LISTING.md`, `RELEASE_CHECKLIST.md`, and this report.
 - Nine 1920×1080 synthetic screenshots were refreshed from the local 1.4.0 release candidate under `marketplace-assets/screenshots/`; the landing capture was visually inspected.
+- A clean Git archive is delivered as `D:\Project\FlowPilot CRM\FlowPilot-CRM-v1.4.0.zip`; its inventory excludes `.env`, Git metadata, dependencies, build caches, logs and database dumps.
 - Vibe96 requirements were rechecked on 2026-10-27 at `https://vibe96.com/sell` and `https://vibe96.com/seller-agreement`: source plus live demo, setup/agent documentation, two deployment routes, at least five 1920×1080 screenshots, automated score of at least 75/100 with no failing check, human review, and agreement review/signing. No score, acceptance, sale, submission, signature, or deployment is claimed.
 
 ## Exact validation results
