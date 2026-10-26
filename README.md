@@ -154,7 +154,7 @@ The public demo reset is not scheduled by the application. The operator must run
 
 ---
 
-## Upgrading to 1.4.0
+## Upgrading to 1.4.1
 
 Back up MongoDB, install the locked dependencies, regenerate Prisma Client, and apply the additive schema change:
 
@@ -201,7 +201,7 @@ After changing environment variables in Vercel, redeploy the project.
 
 Before processing real customer data, configure private production secrets, provision a supported MongoDB replica set, run the Prisma schema sync, replace the public demo credentials, and verify security, workspace isolation, accessibility, backups, and recovery in the target environment. FlowPilot is a self-hosted starter, not a security-audited or turnkey hosted service.
 
-Docker/VPS instructions are included, but the 1.3 release candidate has not been built in Docker in the current audit environment because the Docker CLI was unavailable. Treat that route as `BLOCKED` until tested on a Docker-capable host.
+Docker/VPS instructions are included, but the 1.4.1 release candidate has not been built in Docker in the current audit environment because the Docker CLI was unavailable. Treat that route as `BLOCKED` until tested on a Docker-capable host.
 
 ---
 

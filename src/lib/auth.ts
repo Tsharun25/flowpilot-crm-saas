@@ -50,6 +50,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           email: user.email,
           image: user.image,
+          sessionVersion: user.sessionVersion ?? 0,
         };
       },
     }),
@@ -59,12 +60,24 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.sessionVersion = user.sessionVersion;
+        token.invalidated = false;
+      } else if (token.id) {
+        const current = await prisma.user.findUnique({
+          where: { id: token.id },
+          select: { sessionVersion: true },
+        });
+        token.invalidated =
+          !current || (current.sessionVersion ?? 0) !== token.sessionVersion;
       }
 
       return token;
     },
 
     async session({ session, token }) {
+      if (token.invalidated || !token.id) {
+        return { expires: new Date(0).toISOString() } as typeof session;
+      }
       if (session.user) {
         session.user.id = token.id as string;
       }

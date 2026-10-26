@@ -14,6 +14,7 @@ import {
 } from "@/lib/crm-metrics";
 import ConfirmSubmitButton from "@/components/confirm-submit-button";
 import SubmitButton from "@/components/submit-button";
+import { isDemoWorkspace } from "@/lib/demo-workspace";
 
 const columns = [
   { label: "Lead", value: "LEAD" },
@@ -30,7 +31,8 @@ function getStatusStyle(status: string) {
 }
 
 export default async function ClientsPage({ searchParams }: { searchParams: Promise<{ q?: string; status?: string }> }) {
-  const { workspace, membership } = await getCurrentUserWithWorkspace();
+  const { user, workspace, membership } = await getCurrentUserWithWorkspace();
+  const demoReadOnly = isDemoWorkspace(workspace, user.email);
   const canDelete = membership.role === "OWNER" || membership.role === "ADMIN";
   const params = await searchParams;
   const q = (params.q ?? "").trim().slice(0, 100);
@@ -194,6 +196,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
             </div>
 
             <SubmitButton
+              disabled={demoReadOnly}
               pendingText="Adding Client..."
               className="w-full rounded-2xl bg-cyan-400 px-5 py-3 font-black text-slate-950 transition hover:bg-cyan-300"
             >
@@ -312,6 +315,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
                               <ClientStatusForm
                                 clientId={client.id}
                                 currentStatus={client.status}
+                                disabled={demoReadOnly}
                               />
 
                               <details className="mt-3 rounded-xl border border-slate-200 p-3">
@@ -329,6 +333,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
                                   <input type="hidden" name="status" value={client.status} />
                                   <input type="hidden" name="eventKey" value={randomUUID()} />
                                   <SubmitButton
+                                    disabled={demoReadOnly}
                                     pendingText="Saving..."
                                     className="w-full rounded-xl bg-slate-950 px-3 py-2 text-xs font-black text-white"
                                   >
@@ -341,13 +346,13 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
                                 <Link href={`/dashboard/projects/${client.conversion.projectId}`} className="mt-3 block rounded-xl bg-emerald-50 px-3 py-2 text-center text-xs font-black text-emerald-800">Open converted project</Link>
                               ) : (
                                 <form action={convertWonClientToProject.bind(null, client.id)}>
-                                  <SubmitButton pendingText="Converting..." className="mt-3 w-full rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white">Convert Won Deal to Project</SubmitButton>
+                                  <SubmitButton disabled={demoReadOnly} pendingText="Converting..." className="mt-3 w-full rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white">Convert Won Deal to Project</SubmitButton>
                                 </form>
                               ) : null}
 
                               {canDelete ? (
                                 <form action={deleteClientWithId}>
-                                  <ConfirmSubmitButton message={`Delete ${client.name}? This cannot be undone.`} className="mt-3 w-full rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-100">
+                                  <ConfirmSubmitButton disabled={demoReadOnly} message={`Delete ${client.name}? This cannot be undone.`} className="mt-3 w-full rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-100">
                                     Delete Client
                                   </ConfirmSubmitButton>
                                 </form>

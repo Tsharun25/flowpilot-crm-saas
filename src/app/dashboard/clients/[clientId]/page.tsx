@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import SubmitButton from "@/components/submit-button";
 import { formatMoney } from "@/lib/analytics";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
+import { isDemoWorkspace } from "@/lib/demo-workspace";
 import { centsToDollars, getDealValueCents } from "@/lib/crm-metrics";
 import { prisma } from "@/lib/prisma";
 import { clientIdSchema } from "@/lib/validators/workspace";
@@ -20,7 +21,8 @@ function dateLabel(date: Date) {
 export default async function ClientDetailsPage({ params }: { params: Promise<{ clientId: string }> }) {
   const parsed = clientIdSchema.safeParse((await params).clientId);
   if (!parsed.success) notFound();
-  const { workspace } = await getCurrentUserWithWorkspace();
+  const { user, workspace } = await getCurrentUserWithWorkspace();
+  const demoReadOnly = isDemoWorkspace(workspace, user.email);
   const client = await prisma.client.findFirst({
     where: { id: parsed.data, workspaceId: workspace.id },
     include: {
@@ -46,7 +48,7 @@ export default async function ClientDetailsPage({ params }: { params: Promise<{ 
           <p className="text-2xl font-black">{formatMoney(centsToDollars(getDealValueCents(client)))}</p>
         </div>
         <p className="mt-4 text-sm font-bold text-slate-600">Next follow-up: {client.nextFollowUp ? client.nextFollowUp.toISOString().slice(0, 10) + " (UTC date)" : "Not scheduled"}</p>
-        {client.status === "WON" ? client.conversion ? <Link href={`/dashboard/projects/${client.conversion.projectId}`} className="mt-4 inline-flex rounded-xl bg-emerald-50 px-4 py-3 font-black text-emerald-800">Open converted project</Link> : <form action={convertWonClientToProject.bind(null, client.id)}><SubmitButton pendingText="Converting..." className="mt-4 rounded-xl bg-emerald-600 px-4 py-3 font-black text-white">Convert Won Deal to Project</SubmitButton></form> : null}
+        {client.status === "WON" ? client.conversion ? <Link href={`/dashboard/projects/${client.conversion.projectId}`} className="mt-4 inline-flex rounded-xl bg-emerald-50 px-4 py-3 font-black text-emerald-800">Open converted project</Link> : <form action={convertWonClientToProject.bind(null, client.id)}><SubmitButton disabled={demoReadOnly} pendingText="Converting..." className="mt-4 rounded-xl bg-emerald-600 px-4 py-3 font-black text-white">Convert Won Deal to Project</SubmitButton></form> : null}
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
@@ -59,7 +61,7 @@ export default async function ClientDetailsPage({ params }: { params: Promise<{ 
           <input type="hidden" name="requestId" value={randomUUID()} />
           <label htmlFor="client-note" className="mt-4 block text-sm font-bold">Plain-text note</label>
           <textarea id="client-note" name="body" required maxLength={2000} rows={6} className="mt-2 w-full rounded-2xl border border-slate-200 p-4" />
-          <SubmitButton pendingText="Adding..." className="mt-3 rounded-xl bg-slate-950 px-5 py-3 font-black text-white">Add Note</SubmitButton>
+          <SubmitButton disabled={demoReadOnly} pendingText="Adding..." className="mt-3 rounded-xl bg-slate-950 px-5 py-3 font-black text-white">Add Note</SubmitButton>
         </form>
       </section>
 

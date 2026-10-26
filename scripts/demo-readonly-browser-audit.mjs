@@ -24,11 +24,14 @@ try {
   await page.goto(`${baseUrl}/dashboard/clients`, { waitUntil: "networkidle" });
   await page.locator("#client-name").fill(`Blocked ${Date.now()}`);
   await page.locator("#client-value").fill("1.00");
+  const addButton = page.getByRole("button", { name: "Add Client" });
+  assert.equal(await addButton.isDisabled(), true, "Demo mutation controls must be visibly disabled");
+  await addButton.evaluate((button) => button.removeAttribute("disabled"));
   const responsePromise = page.waitForResponse((response) => response.request().method() === "POST" && response.url().includes("/dashboard/clients"));
-  await page.getByRole("button", { name: "Add Client" }).click();
+  await addButton.click();
   await responsePromise;
   assert.equal(await prisma.client.count({ where: { workspaceId: workspace.id } }), before, "A blocked demo mutation must leave data unchanged");
-  console.log("PASS demo mutation rejected and client data remained unchanged");
+  console.log("PASS demo control disabled; forged submission rejected and client data remained unchanged");
 } finally {
   await prisma.$disconnect();
   await browser.close();

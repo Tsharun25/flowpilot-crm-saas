@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.1 — 2026-10-27
+
+- Added per-user JWT session-version validation; guarded operator password resets now invalidate every earlier session on its next protected request.
+- Disabled shared-demo mutation controls in the UI while retaining server-side rejection against forged submissions.
+- Added branded Home/Login navigation to public trust pages and a real configurable support CTA with an explicit unconfigured state.
+- Migrated legacy money/priority browser-audit entry points to isolated temporary workspaces.
+- Added an isolated two-session recovery regression and a visible version marker for release provenance.
+
 ## 1.4.0 — 2026-10-27
 
 - Made CRM summary cards derive from the same filtered client dataset as the board and CSV export; added regression coverage for search, zero results, and reset.

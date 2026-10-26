@@ -6,6 +6,7 @@ import { isDemoWorkspace } from "@/lib/demo-workspace";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
 import SubmitButton from "@/components/submit-button";
 import { updateProfile, updateWorkspace } from "./actions";
+import { APP_VERSION } from "@/lib/version";
 
 export const metadata: Metadata = {
   title: "Workspace settings",
@@ -70,6 +71,7 @@ export default async function SettingsPage() {
     membership.role === "OWNER" || membership.role === "ADMIN";
   const canEditWorkspace =
     canManageWorkspace && !isDemoWorkspace(workspace, user.email);
+  const demoReadOnly = isDemoWorkspace(workspace, user.email);
   const workspaceReadOnlyReason = canManageWorkspace
     ? "The public demo workspace is read-only. Use a non-demo workspace to change its identity."
     : "Only workspace owners and administrators can change workspace identity.";
@@ -237,6 +239,7 @@ export default async function SettingsPage() {
             </div>
 
             <SubmitButton
+              disabled={demoReadOnly}
               pendingText="Saving Profile..."
               className="rounded-2xl bg-slate-950 px-6 py-3 font-black text-white transition hover:bg-slate-800"
             >
@@ -288,7 +291,7 @@ export default async function SettingsPage() {
         </div>
 
         <div className="rounded-[2rem] bg-gradient-to-br from-slate-950 to-slate-800 p-6 text-white shadow-xl shadow-slate-300">
-          <p className="text-sm font-black text-cyan-300">Deployment Note</p>
+          <p className="text-sm font-black text-cyan-300">FlowPilot CRM v{APP_VERSION}</p>
           <h3 className="mt-3 text-2xl font-black">Ready for your workflow</h3>
           <p className="mt-3 text-sm leading-6 text-slate-300">
             Customize the brand, seed your workspace, and deploy with the

@@ -9,9 +9,11 @@ type ClientStatus = "LEAD" | "CONTACTED" | "WON" | "LOST";
 export default function ClientStatusForm({
   clientId,
   currentStatus,
+  disabled = false,
 }: {
   clientId: string;
   currentStatus: ClientStatus;
+  disabled?: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
 
@@ -30,7 +32,7 @@ export default function ClientStatusForm({
     <select
       aria-label="Client status"
       value={currentStatus}
-      disabled={isPending}
+      disabled={isPending || disabled}
       onChange={(event) => handleChange(event.target.value as ClientStatus)}
       className="mt-4 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:border-cyan-400 disabled:opacity-60"
     >

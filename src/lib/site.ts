@@ -13,13 +13,17 @@ export function getSiteUrl() {
 }
 
 export function getSupportHref() {
+  return getConfiguredSupportUrl() ?? "/support";
+}
+
+export function getConfiguredSupportUrl() {
   const configured = process.env.NEXT_PUBLIC_SUPPORT_URL?.trim();
-  if (!configured) return "/support";
+  if (!configured) return null;
 
   try {
     const url = new URL(configured);
-    return url.protocol === "https:" ? url.toString() : "/support";
+    return url.protocol === "https:" ? url.toString() : null;
   } catch {
-    return "/support";
+    return null;
   }
 }

@@ -1,4 +1,4 @@
-# FlowPilot CRM 1.4.0 release checklist
+# FlowPilot CRM 1.4.1 release checklist
 
 ## Automated gates
 

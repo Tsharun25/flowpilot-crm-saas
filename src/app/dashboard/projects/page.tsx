@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
 import SubmitButton from "@/components/submit-button";
 import { createProject } from "./actions";
+import { isDemoWorkspace } from "@/lib/demo-workspace";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -19,7 +20,8 @@ function getStatusStyle(status: string) {
 }
 
 export default async function ProjectsPage({ searchParams }: { searchParams: Promise<{ q?: string; status?: string; clientId?: string }> }) {
-  const { workspace } = await getCurrentUserWithWorkspace();
+  const { user, workspace } = await getCurrentUserWithWorkspace();
+  const demoReadOnly = isDemoWorkspace(workspace, user.email);
   const params = await searchParams;
   const q = (params.q ?? "").trim().slice(0, 100);
   const allowedStatuses = new Set(["ACTIVE", "COMPLETED", "ARCHIVED"]);
@@ -115,6 +117,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
             </div>
 
             <SubmitButton
+              disabled={demoReadOnly}
               pendingText="Creating Project..."
               className="w-full rounded-2xl bg-slate-950 px-5 py-3 font-black text-white transition hover:bg-slate-800"
             >

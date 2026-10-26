@@ -1,6 +1,6 @@
 {
   "name": "flowpilot-crm",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "private": true,
   "license": "UNLICENSED",
   "engines": {
@@ -22,6 +22,8 @@
     "audit:workflow": "node scripts/workflow-browser-audit.mjs",
     "audit:demo-readonly": "node scripts/demo-readonly-browser-audit.mjs",
     "audit:crm-filter": "node scripts/crm-filter-browser-audit.mjs",
+    "audit:session-invalidation": "node scripts/session-invalidation-browser-audit.mjs",
+    "audit:failure-states": "node scripts/failure-state-browser-audit.mjs",
     "audit:isolation": "node scripts/isolation-browser-audit.mjs",
     "test:metrics": "tsx scripts/test-crm-metrics.ts",
     "test:demo-safety": "tsx scripts/test-demo-workspace.ts",

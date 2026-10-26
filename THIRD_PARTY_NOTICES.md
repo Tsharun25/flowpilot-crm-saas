@@ -1,6 +1,6 @@
 # Third-Party Software Notices
 
-FlowPilot 1.4.0 uses the following direct open-source dependencies. Each dependency remains subject to its own license; this project does not relicense third-party code. Exact resolved versions, including transitive packages, are recorded in `package-lock.json`, and installed packages include their own license files and package metadata.
+FlowPilot 1.4.1 uses the following direct open-source dependencies. Each dependency remains subject to its own license; this project does not relicense third-party code. Exact resolved versions, including transitive packages, are recorded in `package-lock.json`, and installed packages include their own license files and package metadata.
 
 ## Runtime dependencies
 

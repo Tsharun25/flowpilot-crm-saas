@@ -5,6 +5,7 @@ import type { Prisma, Priority, TaskStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
 import TaskStatusForm from "../projects/[projectId]/task-status-form";
+import { isDemoWorkspace } from "@/lib/demo-workspace";
 
 export const metadata: Metadata = {
   title: "Workspace tasks",
@@ -26,7 +27,8 @@ function getPriorityStyle(priority: string) {
 }
 
 export default async function TasksPage({ searchParams }: { searchParams: Promise<{ q?: string; projectId?: string; status?: string; priority?: string; overdue?: string }> }) {
-  const { workspace } = await getCurrentUserWithWorkspace();
+  const { user, workspace } = await getCurrentUserWithWorkspace();
+  const demoReadOnly = isDemoWorkspace(workspace, user.email);
   const params = await searchParams;
   const q = (params.q ?? "").trim().slice(0, 100);
   const status = new Set(["TODO", "IN_PROGRESS", "REVIEW", "DONE"]).has(params.status ?? "") ? params.status as TaskStatus : undefined;
@@ -130,7 +132,7 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
                         </p>
                       ) : null}
                       {task.dueDate ? <p className={`mt-3 rounded-full px-2.5 py-1 text-xs font-black ${task.status !== "DONE" && task.dueDate < todayUtc ? "bg-red-50 text-red-700" : "bg-blue-50 text-blue-800"}`}>{task.status !== "DONE" && task.dueDate < todayUtc ? "Overdue · " : "Due · "}{task.dueDate.toISOString().slice(0, 10)}</p> : null}
-                      <TaskStatusForm projectId={task.projectId} taskId={task.id} currentStatus={task.status} />
+                      <TaskStatusForm projectId={task.projectId} taskId={task.id} currentStatus={task.status} disabled={demoReadOnly} />
                     </article>
                   ))}
                 </div>

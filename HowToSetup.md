@@ -30,7 +30,7 @@ Open `http://localhost:3000`. The explicit `seed:demo` command creates `demo@flo
 
 Demo reset scheduling is not built in. Run the reset manually or through infrastructure you control, and never reuse the demo database for real customer data.
 
-## Upgrade an existing installation to 1.4.0
+## Upgrade an existing installation to 1.4.1
 
 1. Back up the MongoDB database and verify that the backup can be restored.
 2. Install the release lockfile and regenerate Prisma Client.
@@ -42,7 +42,7 @@ npx prisma generate
 npx prisma db push
 ```
 
-The 1.4 update does not require a new database collection. It makes the persisted demo workspace read-only, adds public trust pages and metadata, aligns filtered CRM totals, and exposes year-specific won-value reporting using the existing `wonAt` field. Existing records remain valid and no bulk backfill is performed.
+The 1.4.1 update adds an optional `User.sessionVersion` field used to invalidate earlier JWT sessions after an operator password reset. Existing users without the field are treated as version zero until their first reset. It retains the 1.4 demo policy, public trust pages, metadata, filtered CRM totals, and `wonAt` reporting without a destructive backfill.
 
 The earlier optional `wonAt` behavior is unchanged: historic Won records without a close date remain in the all-time Won total but do not appear in a monthly chart bucket until a date is established by an operator-controlled migration or by re-saving their Won state.
 
@@ -117,10 +117,11 @@ CONFIRM_ISOLATED_MUTATION=1 npm run audit:workflow
 CONFIRM_ISOLATION_MUTATION=1 npm run audit:isolation
 ```
 
-The monetary browser audit intentionally creates and removes four temporary client records. Run it only against a dedicated demo database and opt in explicitly:
+The legacy money and task-priority entry points now delegate to the isolated workflow so they never mutate the shared demo. Use the isolated opt-in flag:
 
 ```bash
-CONFIRM_DEMO_MUTATION=1 npm run audit:money-browser
+CONFIRM_ISOLATED_MUTATION=1 npm run audit:money-browser
+CONFIRM_ISOLATED_MUTATION=1 npm run audit:task-priority
 ```
 
 Run the monetary acceptance cases `0`, `0.01`, `1250.50`, and `$1,000,000,000.00` through both create and edit workflows. Confirm exact values after reload in cards, open/won/lost totals, overview metrics, and chart tooltips. Confirm that negative values, exponent notation, non-finite values, out-of-range values, and more than two decimal places are rejected.
@@ -140,7 +141,7 @@ Self-service password recovery is not shipped because no outbound email provider
 CONFIRM_OPERATOR_PASSWORD_RESET=1 RECOVERY_EMAIL="owner@example.com" RECOVERY_PASSWORD="NewPrivatePass123" npm run operator:reset-password
 ```
 
-The command requires a 12–128 character password containing uppercase, lowercase, and a digit, hashes it with bcrypt, and never prints the credential. Existing sessions use JWTs and are not centrally revoked by this command; change `NEXTAUTH_SECRET` only when an incident requires invalidating all sessions.
+The command requires a 12–128 character password containing uppercase, lowercase, and a digit, hashes it with bcrypt, increments `sessionVersion`, and never prints the credential. Existing JWT sessions become invalid on their next authenticated request; a fresh login with the new password receives the new version.
 
 The guarded two-account audit tests fresh sessions, anonymous route protection, cross-workspace client/project reads, filtered export isolation, client-link selector isolation, one scoped write, and a nested task lookup. Run it only in an isolated test environment with `CONFIRM_ISOLATION_MUTATION=1`. Login attempts are limited per hashed IP/email pair and registration attempts per hashed IP through the shared MongoDB `RateLimit` collection. `RATE_LIMIT_SALT` must be private and consistent across instances. Add edge/WAF protection as an additional layer for high-risk deployments.
 

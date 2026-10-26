@@ -15,6 +15,7 @@ import {
 import TaskStatusForm from "./task-status-form";
 import ConfirmSubmitButton from "@/components/confirm-submit-button";
 import SubmitButton from "@/components/submit-button";
+import { isDemoWorkspace } from "@/lib/demo-workspace";
 
 export const metadata: Metadata = {
   title: "Project details",
@@ -60,7 +61,8 @@ export default async function ProjectDetailsPage({
   if (!parsedProjectId.success) notFound();
 
   const projectId = parsedProjectId.data;
-  const { workspace, membership } = await getCurrentUserWithWorkspace();
+  const { user, workspace, membership } = await getCurrentUserWithWorkspace();
+  const demoReadOnly = isDemoWorkspace(workspace, user.email);
   const canDelete = membership.role === "OWNER" || membership.role === "ADMIN";
 
   const [project, clients] = await Promise.all([prisma.project.findFirst({
@@ -258,6 +260,7 @@ export default async function ProjectDetailsPage({
                                   projectId={project.id}
                                   taskId={task.id}
                                   currentStatus={task.status}
+                                  disabled={demoReadOnly}
                                 />
 
                                 <details className="mt-3 rounded-xl border border-slate-200 p-3">
@@ -273,6 +276,7 @@ export default async function ProjectDetailsPage({
                                     <input aria-label="Task due date" name="dueDate" type="date" defaultValue={task.dueDate?.toISOString().slice(0, 10) ?? ""} className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                                     <input type="hidden" name="status" value={task.status} />
                                     <SubmitButton
+                                      disabled={demoReadOnly}
                                       pendingText="Saving..."
                                       className="w-full rounded-xl bg-slate-950 px-3 py-2 text-xs font-black text-white"
                                     >
@@ -283,7 +287,7 @@ export default async function ProjectDetailsPage({
 
                                 {canDelete ? (
                                   <form action={deleteTaskWithIds}>
-                                    <ConfirmSubmitButton message={`Delete ${task.title}? This cannot be undone.`} className="mt-3 w-full rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-100">
+                                    <ConfirmSubmitButton disabled={demoReadOnly} message={`Delete ${task.title}? This cannot be undone.`} className="mt-3 w-full rounded-xl bg-red-50 px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-100">
                                       Delete Task
                                     </ConfirmSubmitButton>
                                   </form>
@@ -386,6 +390,7 @@ export default async function ProjectDetailsPage({
               <div><label htmlFor="new-task-due-date" className="mb-2 block text-sm font-bold text-slate-700">Due Date (optional, UTC date)</label><input id="new-task-due-date" name="dueDate" type="date" className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3" /></div>
 
               <SubmitButton
+                disabled={demoReadOnly}
                 pendingText="Adding Task..."
                 className="w-full rounded-2xl bg-cyan-400 px-5 py-3 font-black text-slate-950 transition hover:bg-cyan-300"
               >
@@ -456,6 +461,7 @@ export default async function ProjectDetailsPage({
               </div>
 
               <SubmitButton
+                disabled={demoReadOnly}
                 pendingText="Saving..."
                 className="w-full rounded-2xl bg-slate-950 px-5 py-3 font-black text-white transition hover:bg-slate-800"
               >
@@ -474,7 +480,7 @@ export default async function ProjectDetailsPage({
                 Deleting this project will also remove all tasks attached to it.
               </p>
 
-              <ConfirmSubmitButton message={`Delete ${project.name} and all of its tasks? This cannot be undone.`} className="mt-5 w-full rounded-2xl bg-red-600 px-5 py-3 font-black text-white transition hover:bg-red-700">
+              <ConfirmSubmitButton disabled={demoReadOnly} message={`Delete ${project.name} and all of its tasks? This cannot be undone.`} className="mt-5 w-full rounded-2xl bg-red-600 px-5 py-3 font-black text-white transition hover:bg-red-700">
                 Delete Project
               </ConfirmSubmitButton>
             </form>

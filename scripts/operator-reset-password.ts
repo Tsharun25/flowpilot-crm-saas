@@ -9,6 +9,12 @@ const email = z.string().trim().toLowerCase().email().parse(process.env.RECOVERY
 const password = z.string().min(12).max(128).regex(/[a-z]/).regex(/[A-Z]/).regex(/\d/).parse(process.env.RECOVERY_PASSWORD);
 const user = await prisma.user.findUnique({ where: { email }, select: { id: true } });
 if (!user) throw new Error("Account not found.");
-await prisma.user.update({ where: { id: user.id }, data: { password: await bcrypt.hash(password, 12) } });
+await prisma.user.update({
+  where: { id: user.id },
+  data: {
+    password: await bcrypt.hash(password, 12),
+    sessionVersion: { increment: 1 },
+  },
+});
 await prisma.$disconnect();
 console.log("Password reset completed. No credential value was logged.");

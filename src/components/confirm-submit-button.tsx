@@ -7,18 +7,20 @@ export default function ConfirmSubmitButton({
   message,
   className,
   pendingText = "Deleting...",
+  disabled = false,
 }: {
   children: React.ReactNode;
   message: string;
   className: string;
   pendingText?: string;
+  disabled?: boolean;
 }) {
   const { pending } = useFormStatus();
 
   return (
     <button
       type="submit"
-      disabled={pending}
+      disabled={pending || disabled}
       className={`${className} disabled:cursor-not-allowed disabled:opacity-60`}
       onClick={(event) => {
         if (!window.confirm(message)) event.preventDefault();
