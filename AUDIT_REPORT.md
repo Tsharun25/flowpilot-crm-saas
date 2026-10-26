@@ -4,7 +4,7 @@ Audit snapshot: 2026-10-26
 
 ## Summary
 
-FlowPilot 1.3 implements the scoped agency workflow: client/project linking, idempotent Won conversion, follow-up and task dates, client notes/activity, combined search/filter controls, safe filtered CSV export, and shared authentication rate limits. Local production-build, business-workflow, two-account isolation, responsive, accessibility, schema-sync, and utility tests passed within the scopes below. Deployment and refreshed marketplace media are recorded only after the final commit reaches Vercel.
+FlowPilot 1.3 implements the scoped agency workflow: client/project linking, idempotent Won conversion, follow-up and task dates, client notes/activity, combined search/filter controls, safe filtered CSV export, and shared authentication rate limits. Local production-build, schema-sync, and utility checks passed; business-workflow, two-account isolation, responsive, and accessibility checks also passed against the Vercel deployment of commit `9c227f7`. Nine marketplace screenshots were refreshed from that live build.
 
 ## Verification status
 

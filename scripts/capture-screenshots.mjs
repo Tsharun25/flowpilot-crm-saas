@@ -41,9 +41,13 @@ try {
 
   await capture("04-project-details", firstProjectHref);
   await capture("05-crm-pipeline", "/dashboard/clients");
-  const firstClientHref = await page.locator('a[href^="/dashboard/clients/"]').first().getAttribute("href");
-  if (!firstClientHref) throw new Error("No demo client was available for the client-detail screenshot.");
-  await capture("06-client-details", firstClientHref);
+  const featuredClientHref = await page
+    .getByTestId("client-card")
+    .filter({ has: page.getByText("Sarah Khan", { exact: true }) })
+    .locator('a[href^="/dashboard/clients/"]')
+    .getAttribute("href");
+  if (!featuredClientHref) throw new Error("The featured demo client was unavailable for the client-detail screenshot.");
+  await capture("06-client-details", featuredClientHref);
   await capture("07-tasks-and-filters", "/dashboard/tasks");
   await capture("08-analytics", "/dashboard/analytics");
   await capture("09-settings", "/dashboard/settings");
