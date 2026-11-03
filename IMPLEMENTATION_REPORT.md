@@ -6,11 +6,11 @@ Scope: `FLOWPILOT_FINAL_CORRECTIONS_CODEX.md`
 
 Starting revision: `f1a3064`
 
-Implemented revision: `a52f7a9`
+Implemented revision: `1535a02`
 
-Release metadata revision: the Git `HEAD` recorded beside the generated ZIP checksum
+Final release ref: Git tag `v1.5.1`; exact commit and SHA-256 are recorded beside the generated ZIP
 
-Deployment status: not deployed or production-verified in this correction run
+Deployment status: Vercel production deployment `dpl_EDWxJSXfUnjDkVfYRwenuGmR2iH1` reached `Ready` on 2026-11-03; canonical alias and version were verified
 
 `PASS` means the named command was executed in the stated environment. It is not a security, accessibility, legal, marketplace, or inbox-delivery certification.
 
@@ -22,7 +22,7 @@ Deployment status: not deployed or production-verified in this correction run
 | C2 usable support channel | BLOCKED | The configurable HTTPS CTA remains. The owner has not supplied a verified destination, handler or response-time commitment; the honest unconfigured state remains. |
 | C3 deployment-owner notices | BLOCKED | Privacy/Terms templates cannot be finalized without verified operator identity/contact, jurisdiction, retention/deletion process and commitments. No values were invented. |
 | C4 second deployment route | BLOCKED | Docker/VPS instructions were updated for 1.5.1, but Docker CLI is unavailable on this machine; no runtime pass is claimed. |
-| C5 package/report | IMPLEMENTED / OWNER CONFIG REQUIRED | Documentation, owner checklist, changelog, 11 final 1920×1080 screenshots and package metadata were updated. The source ZIP/checksum are generated from the release metadata commit. |
+| C5 package/report | IMPLEMENTED / OWNER CONFIG REQUIRED | Documentation, owner checklist, changelog, 11 final 1920×1080 screenshots and package metadata were updated. The source ZIP/checksum are generated from tag `v1.5.1`. |
 
 ## Security and behavior implemented
 
@@ -50,7 +50,14 @@ Deployment status: not deployed or production-verified in this correction run
 | responsive/accessibility suites | local production server | PASS — 98/98 route/viewport combinations without horizontal overflow; 195/195 scoped accessibility checks |
 | Resend email received at permitted inbox | external provider/inbox | BLOCKED — no verified owner domain/key/test inbox |
 | Docker build/run | current machine | BLOCKED — Docker CLI unavailable |
-| live production parity/deployment | Vercel | NOT PERFORMED in this run |
+| live production parity/deployment | Vercel | PASS for deployed source/version and public reset surface; real inbox delivery remains owner-blocked |
+
+## Production verification — 2026-11-03
+
+- Vercel production deployment `dpl_EDWxJSXfUnjDkVfYRwenuGmR2iH1`: `Ready`; canonical alias `https://flowpilot-crm-saas.vercel.app` attached.
+- Canonical homepage: HTTP 200 and visible version `1.5.1`; `/forgot-password`: HTTP 200.
+- With owner email variables still absent, the live reset request returned the documented honest HTTP 503 unavailable response. Real email delivery remains an open owner gate, not a claimed pass.
+- Clean exported archive: forbidden-artifact inventory 0; `npm ci` found 0 vulnerabilities; `npm run build` passed all 23 routes without a local `.env`.
 
 ## Remaining owner actions
 
