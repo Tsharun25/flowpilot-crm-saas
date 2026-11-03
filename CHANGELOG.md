@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.1 — 2026-11-03
+
+- Resolved the newly published development-tooling `minimatch` denial-of-service advisory through a Node 20-compatible lockfile override.
+- Revalidated the Vibe96 release package and marketplace requirements against the current November 2026 guidance.
+
 ## 1.5.0 — 2026-10-27
 
 - Added self-service email password reset through Resend with neutral request responses, MongoDB-backed per-IP/per-account rate limits, hashed 20-minute tokens, atomic single use, invalidation of outstanding links and prior JWT sessions, and password-change notifications.

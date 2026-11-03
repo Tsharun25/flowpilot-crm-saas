@@ -1,6 +1,6 @@
-# FlowPilot CRM 1.5.0 implementation report
+# FlowPilot CRM 1.5.1 implementation report
 
-Date: 2026-10-27 (Asia/Dhaka)
+Date: 2026-11-03 (Asia/Dhaka)
 
 Scope: `FLOWPILOT_FINAL_CORRECTIONS_CODEX.md`
 
@@ -21,7 +21,7 @@ Deployment status: not deployed or production-verified in this correction run
 | C1 self-service password reset | IMPLEMENTED / OWNER CONFIG REQUIRED | Added Forgot Password entry, responsive request/reset/success/error UI, Resend delivery, neutral eligible-account response, random hashed 20-minute tokens, MongoDB-backed limits, transactional single use, invalidation of other links and prior sessions, demo denial, and password-change notice. Local database regression covers password/session update, expiry, alteration, reuse and concurrent reuse. Real inbox delivery remains unverified. |
 | C2 usable support channel | BLOCKED | The configurable HTTPS CTA remains. The owner has not supplied a verified destination, handler or response-time commitment; the honest unconfigured state remains. |
 | C3 deployment-owner notices | BLOCKED | Privacy/Terms templates cannot be finalized without verified operator identity/contact, jurisdiction, retention/deletion process and commitments. No values were invented. |
-| C4 second deployment route | BLOCKED | Docker/VPS instructions were updated for 1.5.0, but Docker CLI is unavailable on this machine; no runtime pass is claimed. |
+| C4 second deployment route | BLOCKED | Docker/VPS instructions were updated for 1.5.1, but Docker CLI is unavailable on this machine; no runtime pass is claimed. |
 | C5 package/report | IMPLEMENTED / OWNER CONFIG REQUIRED | Documentation, owner checklist, changelog, 11 final 1920×1080 screenshots and package metadata were updated. The source ZIP/checksum are generated from the release metadata commit. |
 
 ## Security and behavior implemented
@@ -45,7 +45,7 @@ Deployment status: not deployed or production-verified in this correction run
 | `npx prisma db push` | configured local/test MongoDB | PASS — reset-token collection and indexes synchronized |
 | `npm run test:password-reset` | isolated synthetic account | PASS — credentials/session version, single-use, outstanding links, expiry, alteration and concurrent reuse; records removed |
 | `npm run verify` | local | PASS — Prisma generate/validate, unit/regression tests, ESLint, TypeScript, Next.js 16.4.2 production build, 23 routes and standalone assets |
-| `npm audit` / `npm audit --omit=dev` | local | PASS — 0 known vulnerabilities |
+| `npm audit` / `npm audit --omit=dev` | local, rechecked 2026-11-03 | PASS — 0 known vulnerabilities after the `minimatch` 11.0.1 security override |
 | reset UI/API/provider-unavailable state | local production server | PASS — known/unknown valid emails both returned the same honest 503 while unconfigured; altered token returned 400; private headers verified |
 | responsive/accessibility suites | local production server | PASS — 98/98 route/viewport combinations without horizontal overflow; 195/195 scoped accessibility checks |
 | Resend email received at permitted inbox | external provider/inbox | BLOCKED — no verified owner domain/key/test inbox |
