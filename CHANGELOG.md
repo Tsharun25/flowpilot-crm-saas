@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.2 — 2026-11-04
+
+- Fixed task status and overdue filters so dashboard results and CSV exports intersect every selected condition instead of overwriting status.
+- Added a filter-aware empty task state and focused task-filter regression coverage.
+- Added a dedicated server-only `PASSWORD_RESET_ORIGIN`; production reset delivery now fails closed before account lookup or token issuance when the origin is missing or unsafe.
+- Updated the marketplace listing, release evidence and owner checklist for eleven screenshots and the remaining email/support/legal owner configuration.
+
 ## 1.5.1 — 2026-11-03
 
 - Resolved the newly published development-tooling `minimatch` denial-of-service advisory through a Node 20-compatible lockfile override.

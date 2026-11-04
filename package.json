@@ -1,6 +1,6 @@
 {
   "name": "flowpilot-crm",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "private": true,
   "license": "UNLICENSED",
   "engines": {
@@ -24,14 +24,17 @@
     "audit:crm-filter": "node scripts/crm-filter-browser-audit.mjs",
     "audit:session-invalidation": "node scripts/session-invalidation-browser-audit.mjs",
     "audit:failure-states": "node scripts/failure-state-browser-audit.mjs",
+    "audit:task-filters": "node scripts/task-filter-browser-audit.mjs",
     "audit:isolation": "node scripts/isolation-browser-audit.mjs",
     "test:metrics": "tsx scripts/test-crm-metrics.ts",
     "test:demo-safety": "tsx scripts/test-demo-workspace.ts",
     "test:workflow-utils": "tsx scripts/test-workflow-utils.ts",
     "test:rate-limit": "tsx scripts/test-rate-limit.ts",
     "test:password-reset": "tsx scripts/test-password-reset.ts",
+    "test:password-reset-origin": "tsx scripts/test-password-reset-origin.ts",
+    "test:task-filters": "tsx scripts/test-task-filters.ts",
     "operator:reset-password": "node --env-file=.env --import tsx scripts/operator-reset-password.ts",
-    "verify": "prisma generate && prisma validate && npm run test:metrics && npm run test:demo-safety && npm run test:workflow-utils && npm run test:rate-limit && npm run test:password-reset && npm run lint && npm run build"
+    "verify": "prisma generate && prisma validate && npm run test:metrics && npm run test:demo-safety && npm run test:workflow-utils && npm run test:rate-limit && npm run test:password-reset && npm run test:password-reset-origin && npm run test:task-filters && npm run lint && npm run build"
   },
   "dependencies": {
     "@prisma/client": "6.19.3",

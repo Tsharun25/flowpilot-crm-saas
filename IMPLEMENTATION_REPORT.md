@@ -1,14 +1,16 @@
-# FlowPilot CRM 1.5.1 implementation report
+# FlowPilot CRM 1.5.2 implementation report
 
-Date: 2026-11-03 (Asia/Dhaka)
+Date: 2026-11-04 (Asia/Dhaka)
 
-Scope: `FLOWPILOT_FINAL_CORRECTIONS_CODEX.md`
+Original scope: `FLOWPILOT_FINAL_CORRECTIONS_CODEX.md`
+
+Current correction scope: `FLOWPILOT_SUBMISSION_AUDIT_2026-11-03.md`
 
 Starting revision: `f1a3064`
 
-Implemented revision: `1535a02`
+Baseline implementation revision: `1535a02`
 
-Final release ref: Git tag `v1.5.1`; exact commit and SHA-256 are recorded beside the generated ZIP
+Baseline release ref: Git tag `v1.5.1`; the submission-correction release receives a new final ref/ZIP/checksum after S3/S4 verification
 
 Deployment status: Vercel production deployment `dpl_EDWxJSXfUnjDkVfYRwenuGmR2iH1` reached `Ready` on 2026-11-03; canonical alias and version were verified
 
@@ -21,12 +23,22 @@ Deployment status: Vercel production deployment `dpl_EDWxJSXfUnjDkVfYRwenuGmR2iH
 | C1 self-service password reset | IMPLEMENTED / OWNER CONFIG REQUIRED | Added Forgot Password entry, responsive request/reset/success/error UI, Resend delivery, neutral eligible-account response, random hashed 20-minute tokens, MongoDB-backed limits, transactional single use, invalidation of other links and prior sessions, demo denial, and password-change notice. Local database regression covers password/session update, expiry, alteration, reuse and concurrent reuse. Real inbox delivery remains unverified. |
 | C2 usable support channel | BLOCKED | The configurable HTTPS CTA remains. The owner has not supplied a verified destination, handler or response-time commitment; the honest unconfigured state remains. |
 | C3 deployment-owner notices | BLOCKED | Privacy/Terms templates cannot be finalized without verified operator identity/contact, jurisdiction, retention/deletion process and commitments. No values were invented. |
-| C4 second deployment route | BLOCKED | Docker/VPS instructions were updated for 1.5.1, but Docker CLI is unavailable on this machine; no runtime pass is claimed. |
-| C5 package/report | IMPLEMENTED / OWNER CONFIG REQUIRED | Documentation, owner checklist, changelog, 11 final 1920×1080 screenshots and package metadata were updated. The source ZIP/checksum are generated from tag `v1.5.1`. |
+| C4 second deployment route | DOCUMENTED / RUNTIME UNVERIFIED | Docker/VPS instructions are included, but Docker CLI is unavailable on this machine; no runtime pass is claimed and none is required merely to keep an honestly labelled documented route. |
+| C5 package/report | REBUILD REQUIRED AFTER S3/S4 | Documentation, owner checklist and eleven 1920×1080 screenshots exist. The prior `v1.5.1` ZIP/checksum must be replaced by one generated from the final submission-correction revision. |
+
+## Submission audit S1–S5 status
+
+| Item | Status | Result |
+|---|---|---|
+| S1 live email delivery | IMPLEMENTED / OWNER CONFIG REQUIRED | Reset code and isolated security regression pass; real Resend credentials, sender DNS and permitted-inbox proof were not supplied, so live delivery remains honestly unavailable. |
+| S2 support and owner notices | BLOCKED — OWNER INPUT REQUIRED | Existing configurable support/legal templates are retained. Verified operator identity/contact, support URL/handler, retention/deletion procedure and owner-reviewed terms were not supplied and were not invented. |
+| S3 task filter composition | DONE AND VERIFIED | Dashboard and CSV now share one validated query builder. Selected status and overdue predicates intersect; filtered empty state offers Reset. Unit and authenticated browser/CSV regressions pass. |
+| S4 trusted reset origin | DONE AND VERIFIED | Security-sensitive links use server-only `PASSWORD_RESET_ORIGIN`; production rejects missing, malformed, HTTP, credential-bearing, path/query/fragment and trailing-dot values before account lookup or token creation. |
+| S5 release handoff | IN PROGRESS | Listing/docs updated; final commit/tag, clean archive/checksum and production parity are completed after this report update. |
 
 ## Security and behavior implemented
 
-- Reset URLs use only `NEXT_PUBLIC_SITE_URL`; production rejects a non-HTTPS trusted origin and never trusts request Host headers or return URLs.
+- Reset URLs use only the dedicated server-side `PASSWORD_RESET_ORIGIN`; production rejects a missing or unsafe origin before account lookup/token issuance and never trusts request Host headers, metadata fallbacks or return URLs.
 - Raw tokens, reset URLs, message bodies, credentials and recipients are never logged. Reset pages are noindex, nofollow, noarchive, no-store and no-referrer and are absent from the sitemap.
 - Missing provider configuration is reported honestly for every address. Known, unknown and demo accounts otherwise receive the same 202 message/status. Demo requests never create a token or change credentials.
 - Failed validation happens before token consumption. Password update, token claim, session-version increment and outstanding-token invalidation share one transaction. Concurrent reuse permits at most one success.
@@ -44,12 +56,16 @@ Deployment status: Vercel production deployment `dpl_EDWxJSXfUnjDkVfYRwenuGmR2iH
 |---|---|---|
 | `npx prisma db push` | configured local/test MongoDB | PASS — reset-token collection and indexes synchronized |
 | `npm run test:password-reset` | isolated synthetic account | PASS — credentials/session version, single-use, outstanding links, expiry, alteration and concurrent reuse; records removed |
+| `npm run test:password-reset-origin` | local | PASS — valid buyer HTTPS origin and explicit localhost development accepted; unsafe/missing production origins rejected |
+| `npm run test:task-filters` | local | PASS — Done/In Progress/Review plus overdue predicate composition, all-status overdue and combined project/priority/search scoping |
 | `npm run verify` | local | PASS — Prisma generate/validate, unit/regression tests, ESLint, TypeScript, Next.js 16.4.2 production build, 23 routes and standalone assets |
 | `npm audit` / `npm audit --omit=dev` | local, rechecked 2026-11-03 | PASS — 0 known vulnerabilities after the `minimatch` 11.0.1 security override |
 | reset UI/API/provider-unavailable state | local production server | PASS — known/unknown valid emails both returned the same honest 503 while unconfigured; altered token returned 400; private headers verified |
 | responsive/accessibility suites | local production server | PASS — 98/98 route/viewport combinations without horizontal overflow; 195/195 scoped accessibility checks |
+| `npm run audit:task-filters` | local production server | PASS — board and authenticated CSV parity for Done/In Progress/Review/all-status overdue selections |
+| isolated workflow/isolation/demo/session browser suites | local production server + isolated synthetic data | PASS — full workflow cleanup, cross-workspace protections, forged demo mutation rejection and two-session invalidation/fresh login |
 | Resend email received at permitted inbox | external provider/inbox | BLOCKED — no verified owner domain/key/test inbox |
-| Docker build/run | current machine | BLOCKED — Docker CLI unavailable |
+| Docker build/run | current machine | NOT RUN — Docker CLI unavailable; route remains documented and explicitly unverified |
 | live production parity/deployment | Vercel | PASS for deployed source/version and public reset surface; real inbox delivery remains owner-blocked |
 
 ## Production verification — 2026-11-03
@@ -61,6 +77,6 @@ Deployment status: Vercel production deployment `dpl_EDWxJSXfUnjDkVfYRwenuGmR2iH
 
 ## Remaining owner actions
 
-The authoritative checklist is [OWNER_SETUP.md](OWNER_SETUP.md). Required release gates are Resend/domain configuration and inbox proof, final HTTPS origins, verified support operation, deployment-specific legal notices, and Docker evidence if advertised as verified. Vibe96 submission, agreement and pricing remain owner actions.
+The authoritative checklist is [OWNER_SETUP.md](OWNER_SETUP.md). Required owner gates are Resend/domain configuration and inbox proof before claiming live recovery, final HTTPS origins, verified support operation, and deployment-specific legal notices. Docker evidence is required only if the route is advertised as runtime-verified. Vibe96 submission, agreement and pricing remain owner actions.
 
 Do not describe this build as 100% audited, fully production-secure, Vibe96-approved, or guaranteed to earn income.

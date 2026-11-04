@@ -4,7 +4,7 @@ FlowPilot is a self-hosted source-code starter. Both routes require Node.js 20+,
 
 ## Required environment
 
-Copy `.env.example`; replace every placeholder. `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` must be the final HTTPS origin. Keep `DATABASE_URL`, `NEXTAUTH_SECRET`, `RATE_LIMIT_SALT`, and `RESEND_API_KEY` server-only. Verify the `EMAIL_FROM` domain in Resend and configure `NEXT_PUBLIC_SUPPORT_URL` with the seller/deployment owner's HTTPS support page.
+Copy `.env.example`; replace every placeholder. `NEXTAUTH_URL`, `NEXT_PUBLIC_SITE_URL`, and the server-only `PASSWORD_RESET_ORIGIN` must be the exact final HTTPS origin. Keep `DATABASE_URL`, `NEXTAUTH_SECRET`, `RATE_LIMIT_SALT`, `PASSWORD_RESET_ORIGIN`, and `RESEND_API_KEY` server-only. Verify the `EMAIL_FROM` domain in Resend and configure `NEXT_PUBLIC_SUPPORT_URL` with the seller/deployment owner's HTTPS support page. Reset delivery fails closed before token issuance if its trusted origin is missing or invalid.
 
 ## Route 1 — Vercel
 
@@ -20,8 +20,8 @@ The reference Vercel deployment has been exercised, but a buyer's environment re
 Run schema synchronization from a trusted one-off environment, then:
 
 ```bash
-docker build -t flowpilot-crm:1.5.1 .
-docker run -d --name flowpilot-crm --env-file .env -p 3000:3000 flowpilot-crm:1.5.1
+docker build -t flowpilot-crm:1.5.2 .
+docker run -d --name flowpilot-crm --env-file .env -p 3000:3000 flowpilot-crm:1.5.2
 ```
 
 Terminate HTTPS with Caddy, Nginx, or a managed load balancer. Do not expose MongoDB publicly. The Dockerfile is included, but Docker runtime verification is blocked on the current audit machine because Docker CLI is unavailable.

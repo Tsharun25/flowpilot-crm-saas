@@ -15,7 +15,7 @@ MongoDB must run as a replica set because Prisma transactions are used for contr
 ## Local installation
 
 1. Copy `.env.example` to `.env`.
-2. Set `DATABASE_URL`, `NEXTAUTH_SECRET`, `RATE_LIMIT_SALT`, `NEXTAUTH_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPPORT_URL`, `RESEND_API_KEY`, and `EMAIL_FROM`.
+2. Set `DATABASE_URL`, `NEXTAUTH_SECRET`, `RATE_LIMIT_SALT`, `NEXTAUTH_URL`, `NEXT_PUBLIC_SITE_URL`, `PASSWORD_RESET_ORIGIN`, `NEXT_PUBLIC_SUPPORT_URL`, `RESEND_API_KEY`, and `EMAIL_FROM`.
 3. Install and prepare the application:
 
 ```bash
@@ -30,7 +30,7 @@ Open `http://localhost:3000`. The explicit `seed:demo` command creates `demo@flo
 
 Demo reset scheduling is not built in. Run the reset manually or through infrastructure you control, and never reuse the demo database for real customer data.
 
-## Upgrade an existing installation to 1.5.1
+## Upgrade an existing installation to 1.5.2
 
 1. Back up the MongoDB database and verify that the backup can be restored.
 2. Install the release lockfile and regenerate Prisma Client.
@@ -56,7 +56,7 @@ npm run build
 npm start
 ```
 
-Set `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` to the final HTTPS origin. Use a unique secret generated with `openssl rand -base64 32`.
+Set `NEXTAUTH_URL`, `NEXT_PUBLIC_SITE_URL`, and `PASSWORD_RESET_ORIGIN` to the final HTTPS origin. Use a unique secret generated with `openssl rand -base64 32`.
 
 ## Deployment route 1: Vercel
 
@@ -135,7 +135,7 @@ Authorization policy in 1.4:
 
 ## Email password reset
 
-FlowPilot sends transactional email through the Resend HTTPS API. Create a Resend account, verify the sender domain, publish the DNS records Resend provides, create a restricted production API key, and set `RESEND_API_KEY` plus `EMAIL_FROM`. Set `NEXT_PUBLIC_SITE_URL` to the exact trusted HTTPS origin; reset links are never built from request headers. Do not expose the API key through a `NEXT_PUBLIC_` variable.
+FlowPilot sends transactional email through the Resend HTTPS API. Create a Resend account, verify the sender domain, publish the DNS records Resend provides, create a restricted production API key, and set `RESEND_API_KEY` plus `EMAIL_FROM`. Set the server-only `PASSWORD_RESET_ORIGIN` to the exact trusted HTTPS origin; reset links are never built from request headers or the public metadata fallback. Production rejects a missing value, HTTP, credentials, paths, queries, fragments, and malformed URLs before account lookup or token issuance. `next dev` may use the documented `http://localhost:3000` default or another explicit localhost origin; a production server always requires HTTPS. Do not expose the API key through a `NEXT_PUBLIC_` variable.
 
 Reset tokens use 32 cryptographically random bytes, are stored only as SHA-256 hashes, expire after 20 minutes, and are single-use. Successful reset changes the bcrypt password, increments `sessionVersion`, and consumes every other active reset token in one MongoDB transaction. Request limits are stored in the shared MongoDB `RateLimit` collection: 8 requests per IP and 3 per account per hour. Completion is limited to 10 attempts per IP per hour. The public demo is denied server-side while keeping the request response neutral.
 

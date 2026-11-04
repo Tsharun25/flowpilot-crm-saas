@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import type { Prisma, Priority, TaskStatus } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
 import TaskStatusForm from "../projects/[projectId]/task-status-form";
 import { isDemoWorkspace } from "@/lib/demo-workspace";
+import { buildTaskWhere, hasTaskFilters, parseTaskFilters } from "@/lib/task-filters";
 
 export const metadata: Metadata = {
   title: "Workspace tasks",
@@ -26,18 +26,15 @@ function getPriorityStyle(priority: string) {
   return "bg-blue-100 text-blue-700";
 }
 
-export default async function TasksPage({ searchParams }: { searchParams: Promise<{ q?: string; projectId?: string; status?: string; priority?: string; overdue?: string }> }) {
+export default async function TasksPage({ searchParams }: { searchParams: Promise<{ q?: string | string[]; projectId?: string | string[]; status?: string | string[]; priority?: string | string[]; overdue?: string | string[] }> }) {
   const { user, workspace } = await getCurrentUserWithWorkspace();
   const demoReadOnly = isDemoWorkspace(workspace, user.email);
   const params = await searchParams;
-  const q = (params.q ?? "").trim().slice(0, 100);
-  const status = new Set(["TODO", "IN_PROGRESS", "REVIEW", "DONE"]).has(params.status ?? "") ? params.status as TaskStatus : undefined;
-  const priority = new Set(["LOW", "MEDIUM", "HIGH", "URGENT"]).has(params.priority ?? "") ? params.priority as Priority : undefined;
-  const projectId = /^[a-f\d]{24}$/i.test(params.projectId ?? "") ? params.projectId : undefined;
-  const overdue = params.overdue === "1";
+  const filters = parseTaskFilters(params);
+  const { q, status, priority, projectId, overdue } = filters;
   const now = new Date();
   const todayUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-  const where: Prisma.TaskWhereInput = { project: { workspaceId: workspace.id }, ...(q ? { title: { contains: q, mode: "insensitive" } } : {}), ...(status ? { status } : {}), ...(priority ? { priority } : {}), ...(projectId ? { projectId } : {}), ...(overdue ? { dueDate: { lt: todayUtc }, status: { not: "DONE" } } : {}) };
+  const where = buildTaskWhere(workspace.id, filters, todayUtc);
 
   const [tasks, projects] = await Promise.all([prisma.task.findMany({
     where,
@@ -75,15 +72,15 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
 
       {tasks.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
-          <p className="text-lg font-black text-slate-950">No tasks yet</p>
+          <p className="text-lg font-black text-slate-950">{hasTaskFilters(filters) ? "No tasks match these filters" : "No tasks yet"}</p>
           <p className="mt-2 text-sm text-slate-500">
-            Open a project and create your first task.
+            {hasTaskFilters(filters) ? "Try a different combination or reset all task filters." : "Open a project and create your first task."}
           </p>
           <Link
-            href="/dashboard/projects"
+            href={hasTaskFilters(filters) ? "/dashboard/tasks" : "/dashboard/projects"}
             className="mt-6 inline-flex rounded-full bg-slate-950 px-5 py-3 text-sm font-black text-white"
           >
-            Go to Projects
+            {hasTaskFilters(filters) ? "Reset filters" : "Go to Projects"}
           </Link>
         </div>
       ) : (

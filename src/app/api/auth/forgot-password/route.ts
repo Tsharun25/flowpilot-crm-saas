@@ -7,7 +7,9 @@ import {
   createPasswordResetToken,
   PASSWORD_RESET_TTL_MS,
   passwordResetUrl,
+  PasswordResetOriginError,
   RESET_PUBLIC_MESSAGE,
+  resolvePasswordResetOrigin,
 } from "@/lib/password-reset";
 import { forgotPasswordSchema } from "@/lib/validators/auth";
 
@@ -45,6 +47,18 @@ export async function POST(request: Request) {
     );
   }
 
+  let resetOrigin: string;
+  try {
+    resetOrigin = resolvePasswordResetOrigin();
+  } catch (error) {
+    if (!(error instanceof PasswordResetOriginError)) throw error;
+    console.error("PASSWORD_RESET_ORIGIN_INVALID");
+    return NextResponse.json(
+      { message: "Password reset delivery is temporarily unavailable. Please use the support option." },
+      { status: 503, headers: responseHeaders },
+    );
+  }
+
   const user = await prisma.user.findUnique({
     where: { email: parsed.data.email },
     select: { id: true, email: true, memberships: { select: { workspace: { select: { isDemo: true } } } } },
@@ -58,7 +72,7 @@ export async function POST(request: Request) {
       select: { id: true },
     });
     try {
-      await sendAccountEmail({ to: user.email, kind: "password-reset", resetUrl: passwordResetUrl(token) });
+      await sendAccountEmail({ to: user.email, kind: "password-reset", resetUrl: passwordResetUrl(token, resetOrigin) });
     } catch (error) {
       await prisma.passwordResetToken.delete({ where: { id: record.id } }).catch(() => undefined);
       console.error("PASSWORD_RESET_EMAIL_DELIVERY_FAILED", error instanceof Error ? error.message : "unknown");
