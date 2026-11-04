@@ -30,7 +30,7 @@ Open `http://localhost:3000`. The explicit `seed:demo` command creates `demo@flo
 
 Demo reset scheduling is not built in. Run the reset manually or through infrastructure you control, and never reuse the demo database for real customer data.
 
-## Upgrade an existing installation to 1.5.2
+## Upgrade an existing installation to 1.5.3
 
 1. Back up the MongoDB database and verify that the backup can be restored.
 2. Install the release lockfile and regenerate Prisma Client.
@@ -68,6 +68,15 @@ Set `NEXTAUTH_URL`, `NEXT_PUBLIC_SITE_URL`, and `PASSWORD_RESET_ORIGIN` to the f
 
 ## Deployment route 2: Docker / VPS
 
+For a one-command local self-hosted stack, copy `.env.example` to `.env`, replace every placeholder, and run:
+
+```bash
+docker compose up --build -d
+docker compose exec app npx prisma db push
+```
+
+The included Compose file starts MongoDB as a single-node `rs0` replica set for evaluation/self-hosting and connects the application to it. Do not expose MongoDB publicly. Production operators must add authentication, encrypted transport, backups, monitoring, and an appropriate multi-node/managed replica set.
+
 Before starting the application container, apply the Prisma schema/index definitions once from a trusted host or one-off container with the production `DATABASE_URL`:
 
 ```bash
@@ -84,6 +93,12 @@ docker run -d --name flowpilot-crm -p 3000:3000 --env-file .env flowpilot-crm
 ```
 
 Put Caddy, Nginx, or a managed load balancer in front of port 3000 for HTTPS. Back up MongoDB separately and never commit `.env`.
+
+## First owner login and branding
+
+For a normal installation, open `/register` and create the first account; it receives an `OWNER` membership in its new workspace. Do not use the shared demo account for production. After login, use **Settings** to change the profile and workspace name.
+
+Branding text and public metadata live in `src/app/page.tsx`, `src/app/layout.tsx`, `src/app/opengraph-image.tsx`, and `src/lib/version.ts`. The icon is `src/app/icon.svg`; global colors and layout tokens are in `src/app/globals.css`. Rebuild and recheck responsive layouts after changing them.
 
 ## Verification
 

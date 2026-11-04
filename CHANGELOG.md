@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.3 — 2026-11-04
+
+- Aligned the marketplace archive with Vibe96 submission requirements: explicit single-app architecture, buyer license note, database seed/index documentation, and first-owner/branding setup.
+- Added an expanded AI architecture guide, Docker Compose MongoDB replica-set template, CSV unit regression, and route/server-action reference.
+- Preserved the Vibe96 Standard License restriction against source-code resale despite conflicting generated requirement wording.
+
 ## 1.5.2 — 2026-11-04
 
 - Fixed task status and overdue filters so dashboard results and CSV exports intersect every selected condition instead of overwriting status.

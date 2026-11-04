@@ -2,6 +2,8 @@
 
 FlowPilot CRM is a self-hosted CRM and project management starter for freelancers and small agencies. It keeps client opportunities, linked projects, tasks, notes, follow-ups, exports, and deal-value reporting in one workspace.
 
+The archive contains one complete Next.js App Router application. There is no separate mobile application and no separate API service; route handlers and server actions are part of the same Next.js source tree.
+
 It includes authentication, protected dashboard routes, workspace-based architecture, client-linked projects, idempotent Won-deal conversion, dated follow-ups and tasks, client notes/activity, search and filters, safe CSV export, won-deal analytics, and a responsive premium UI.
 
 FlowPilot is distributed as a self-hosted application starter. The public demo and included deployment guides demonstrate the shipped workflows; they do not certify a buyer's customized environment for production use.
@@ -25,7 +27,7 @@ Password: DemoFlow2026!
 
 ## Features
 
-FlowPilot 1.5.2 ships the focused agency workflow described below. It remains a self-hosted starter.
+FlowPilot 1.5.3 ships the focused agency workflow described below. It remains a self-hosted starter.
 
 - User registration and login
 - Password hashing with bcryptjs
@@ -165,7 +167,7 @@ The public demo reset is not scheduled by the application. The operator must run
 
 ---
 
-## Upgrading to 1.5.2
+## Upgrading to 1.5.3
 
 Back up MongoDB, install the locked dependencies, regenerate Prisma Client, and apply the additive schema change:
 
@@ -212,7 +214,7 @@ After changing environment variables in Vercel, redeploy the project.
 
 Before processing real customer data, configure private production secrets, provision a supported MongoDB replica set, run the Prisma schema sync, replace the public demo credentials, and verify security, workspace isolation, accessibility, backups, and recovery in the target environment. FlowPilot is a self-hosted starter, not a security-audited or turnkey hosted service.
 
-Docker/VPS instructions are included, but the 1.5.2 release candidate has not been built in Docker in the current audit environment because the Docker CLI is unavailable. The route is documented but runtime-unverified; do not advertise it as tested until it is exercised on a Docker-capable host.
+Docker/VPS instructions are included, but the 1.5.3 release candidate has not been built in Docker in the current audit environment because the Docker CLI is unavailable. The route is documented but runtime-unverified; do not advertise it as tested until it is exercised on a Docker-capable host.
 
 ---
 
