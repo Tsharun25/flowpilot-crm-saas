@@ -27,7 +27,7 @@ Password: DemoFlow2026!
 
 ## Features
 
-FlowPilot 1.5.3 ships the focused agency workflow described below. It remains a self-hosted starter.
+FlowPilot 1.5.4 ships the focused agency workflow described below. It remains a self-hosted starter.
 
 - User registration and login
 - Password hashing with bcryptjs
@@ -167,7 +167,7 @@ The public demo reset is not scheduled by the application. The operator must run
 
 ---
 
-## Upgrading to 1.5.3
+## Upgrading to 1.5.4
 
 Back up MongoDB, install the locked dependencies, regenerate Prisma Client, and apply the additive schema change:
 
@@ -214,7 +214,7 @@ After changing environment variables in Vercel, redeploy the project.
 
 Before processing real customer data, configure private production secrets, provision a supported MongoDB replica set, run the Prisma schema sync, replace the public demo credentials, and verify security, workspace isolation, accessibility, backups, and recovery in the target environment. FlowPilot is a self-hosted starter, not a security-audited or turnkey hosted service.
 
-Docker/VPS instructions are included, but the 1.5.3 release candidate has not been built in Docker in the current audit environment because the Docker CLI is unavailable. The route is documented but runtime-unverified; do not advertise it as tested until it is exercised on a Docker-capable host.
+Docker/VPS instructions are included, but the 1.5.4 release candidate has not been built in Docker in the current audit environment because the Docker CLI is unavailable. The route is documented but runtime-unverified; do not advertise it as tested until it is exercised on a Docker-capable host.
 
 ---
 

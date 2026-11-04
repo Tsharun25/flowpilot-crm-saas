@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/lib/auth";
+import { assertWorkspaceManagerRole } from "@/lib/authorization-policy";
 import { prisma } from "@/lib/prisma";
 import "server-only";
 
@@ -54,9 +55,7 @@ export async function getCurrentUserWithWorkspace() {
 export async function requireWorkspaceManager() {
   const context = await getCurrentUserWithWorkspace();
 
-  if (context.membership.role !== "OWNER" && context.membership.role !== "ADMIN") {
-    throw new Error("Forbidden");
-  }
+  assertWorkspaceManagerRole(context.membership.role);
 
   return context;
 }

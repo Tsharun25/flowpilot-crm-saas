@@ -21,3 +21,22 @@ FlowPilot is one Next.js application, not a standalone public API. Route handler
 ## Data model summary
 
 `User` joins `Workspace` through `Membership`. A workspace owns `Project` and `Client`; projects own `Task` and may link to a client. `DealConversion` links one won client to one project. Client notes/activity keep author/actor references. Reset tokens belong to users, and shared rate-limit windows are stored in MongoDB.
+
+## Entity relationship diagram
+
+```mermaid
+erDiagram
+  User ||--o{ Membership : joins
+  Workspace ||--o{ Membership : contains
+  Workspace ||--o{ Project : owns
+  Workspace ||--o{ Client : owns
+  Project ||--o{ Task : contains
+  Client o|--o{ Project : links
+  Client ||--o{ ClientNote : has
+  Client ||--o{ ClientActivity : records
+  User ||--o{ ClientNote : authors
+  User ||--o{ ClientActivity : acts
+  User ||--o{ PasswordResetToken : receives
+  Client ||--o| DealConversion : converts
+  Project ||--o| DealConversion : created_by
+```

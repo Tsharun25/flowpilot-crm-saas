@@ -84,6 +84,7 @@ model Project {
   updatedAt  DateTime        @updatedAt
 
   @@index([workspaceId])
+  @@index([clientId])
 }
 
 model Task {
@@ -156,6 +157,7 @@ model ClientNote {
   createdAt DateTime @default(now())
 
   @@index([clientId, createdAt])
+  @@index([authorId])
 }
 
 model ClientActivity {
@@ -170,6 +172,7 @@ model ClientActivity {
   createdAt DateTime           @default(now())
 
   @@index([clientId, createdAt])
+  @@index([actorId])
 }
 
 model RateLimit {

@@ -1,6 +1,16 @@
-# FlowPilot 1.3.0 Release Audit
+# FlowPilot release audit evidence
 
-Audit snapshot: 2026-10-26
+Latest audit snapshot: 2026-11-04
+
+## 1.5.4 submission evidence
+
+- `npm ci` completed from the exported archive and reported zero vulnerabilities.
+- `npm audit` and `npm audit --omit=dev` reported zero known vulnerabilities.
+- `npm outdated next-auth` returned no outdated 4.24.x patch; Auth.js v5 migration remains a future major-version task because changing the authentication line requires a dedicated session/security migration.
+- `npm ls minimatch deepmerge-ts` resolved `minimatch@11.0.1` throughout ESLint tooling and `deepmerge-ts@8.0.2` under Prisma configuration. The overrides retain patched versions and `npm run verify` covers compatibility.
+- `npm run verify` passed Prisma generate/validate, metrics, CSV, authorization policy, demo safety, workflow utilities, rate limits, password reset/origin, task filters, lint, TypeScript, 23-route production build, and standalone asset preparation.
+- The authorization unit regression proves OWNER/ADMIN management access, MEMBER denial, normal-workspace writes, and demo-workspace denial. The isolated browser/database suite remains the end-to-end cross-workspace evidence.
+- Vibe96 audit run 1853 scored 78/100 with no failing check; its digest omitted some full file bodies, so unverified findings are not treated as proof of missing guards.
 
 ## Summary
 

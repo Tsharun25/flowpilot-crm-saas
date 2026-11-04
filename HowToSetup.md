@@ -30,7 +30,7 @@ Open `http://localhost:3000`. The explicit `seed:demo` command creates `demo@flo
 
 Demo reset scheduling is not built in. Run the reset manually or through infrastructure you control, and never reuse the demo database for real customer data.
 
-## Upgrade an existing installation to 1.5.3
+## Upgrade an existing installation to 1.5.4
 
 1. Back up the MongoDB database and verify that the backup can be restored.
 2. Install the release lockfile and regenerate Prisma Client.

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.4 — 2026-11-04
+
+- Responded to Vibe96 audit run 1853 with environment-supplied demo seeding, production seed refusal, a unit-level authorization policy regression, and additional MongoDB relation indexes.
+- Added explicit fixed-status pipeline documentation, transactional deletion rationale, clean-install/dependency evidence, expanded VPS/Compose instructions, and a Prisma ERD.
+- Confirmed `npm audit` and production audit report zero known vulnerabilities; retained tested dependency overrides and documented the future Auth.js major migration boundary.
+
 ## 1.5.3 — 2026-11-04
 
 - Aligned the marketplace archive with Vibe96 submission requirements: explicit single-app architecture, buyer license note, database seed/index documentation, and first-owner/branding setup.

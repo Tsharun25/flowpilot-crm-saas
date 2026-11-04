@@ -8,6 +8,10 @@ import {
 const prisma = new PrismaClient();
 
 async function main() {
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("Demo seeding is disabled when NODE_ENV=production.");
+  }
+
   if (!process.argv.includes("--confirm-demo-reset")) {
     throw new Error(
       "Demo seeding deletes and recreates data. Run `npm run seed:demo` only against a dedicated demo database.",
@@ -15,7 +19,13 @@ async function main() {
   }
 
   const demoEmail = DEMO_ACCOUNT_EMAIL;
-  const demoPassword = await bcrypt.hash("DemoFlow2026!", 12);
+  const plainDemoPassword = process.env.DEMO_PASSWORD;
+  if (!plainDemoPassword || plainDemoPassword.length < 12) {
+    throw new Error(
+      "Set DEMO_PASSWORD to a dedicated value of at least 12 characters before running the demo seed.",
+    );
+  }
+  const demoPassword = await bcrypt.hash(plainDemoPassword, 12);
 
   let user = await prisma.user.findUnique({
     where: {
@@ -219,7 +229,7 @@ async function main() {
   });
 
   console.log("Demo data seeded successfully.");
-  console.log("Demo login: demo@flowpilot.com / DemoFlow2026!");
+  console.log("Demo login email: demo@flowpilot.com (password supplied through DEMO_PASSWORD)");
   console.log(`Workspace: ${workspace.name}`);
   console.log(`Main project: ${websiteProject.name}`);
 }

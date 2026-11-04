@@ -17,14 +17,28 @@ The reference Vercel deployment has been exercised, but a buyer's environment re
 
 ## Route 2 — Docker/VPS
 
+Prerequisites are Node.js 20.9+, npm 10+, a MongoDB replica set, and a completed `.env` copied from `.env.example`. On a VPS, install and build in this order:
+
+```bash
+npm ci
+npx prisma generate
+npx prisma db push
+npm run build
+npm start
+```
+
+`npm start` requires `.env` and the standalone output produced by `npm run build`. Register the first production account at `/register`; it becomes owner only of its newly created workspace. Branding locations are documented in `HowToSetup.md`.
+
 Run schema synchronization from a trusted one-off environment, then:
 
 ```bash
-docker build -t flowpilot-crm:1.5.2 .
-docker run -d --name flowpilot-crm --env-file .env -p 3000:3000 flowpilot-crm:1.5.2
+docker build -t flowpilot-crm:1.5.4 .
+docker run -d --name flowpilot-crm --env-file .env -p 3000:3000 flowpilot-crm:1.5.4
 ```
 
 Terminate HTTPS with Caddy, Nginx, or a managed load balancer. Do not expose MongoDB publicly. The Dockerfile is included, but Docker runtime verification is blocked on the current audit machine because Docker CLI is unavailable.
+
+The included `docker-compose.yml` initializes a local single-node `rs0` replica set. After it is healthy, run `docker compose exec app npx prisma db push`. To seed a dedicated non-production database, run the host command `DEMO_PASSWORD=<dedicated-value> npm run seed:demo` with `DATABASE_URL` pointed at that replica set; the standalone runtime image intentionally excludes development tooling.
 
 ## Upgrade and recovery
 
