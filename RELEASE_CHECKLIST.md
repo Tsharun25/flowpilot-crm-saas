@@ -10,7 +10,7 @@
 - [x] `CONFIRM_ISOLATION_MUTATION=1 npm run audit:isolation`
 - [x] `npm run audit:demo-readonly`
 - [x] `npm run audit:a11y` and `npm run audit:responsive`
-- [ ] Rebuild the final archive from the S3/S4 correction revision; verify it excludes `.env`, `.git`, `node_modules`, `.next`, logs, database dumps and private records
+- [x] Rebuilt `FlowPilot-CRM-v1.5.2.zip` from the tagged S3/S4 correction revision; verified it excludes `.env`, `.git`, `node_modules`, `.next`, logs, database dumps and private records
 
 ## Owner/submission gates
 

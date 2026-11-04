@@ -10,9 +10,9 @@ Starting revision: `f1a3064`
 
 Baseline implementation revision: `1535a02`
 
-Baseline release ref: Git tag `v1.5.1`; the submission-correction release receives a new final ref/ZIP/checksum after S3/S4 verification
+Release ref: Git tag `v1.5.2`
 
-Deployment status: Vercel production deployment `dpl_EDWxJSXfUnjDkVfYRwenuGmR2iH1` reached `Ready` on 2026-11-03; canonical alias and version were verified
+Deployment status: Vercel production deployment `https://flowpilot-crm-saas-2jw7b9eln-tsharun25s-projects.vercel.app` reached `Ready` on 2026-11-04; canonical alias and version were verified
 
 `PASS` means the named command was executed in the stated environment. It is not a security, accessibility, legal, marketplace, or inbox-delivery certification.
 
@@ -24,7 +24,7 @@ Deployment status: Vercel production deployment `dpl_EDWxJSXfUnjDkVfYRwenuGmR2iH
 | C2 usable support channel | BLOCKED | The configurable HTTPS CTA remains. The owner has not supplied a verified destination, handler or response-time commitment; the honest unconfigured state remains. |
 | C3 deployment-owner notices | BLOCKED | Privacy/Terms templates cannot be finalized without verified operator identity/contact, jurisdiction, retention/deletion process and commitments. No values were invented. |
 | C4 second deployment route | DOCUMENTED / RUNTIME UNVERIFIED | Docker/VPS instructions are included, but Docker CLI is unavailable on this machine; no runtime pass is claimed and none is required merely to keep an honestly labelled documented route. |
-| C5 package/report | REBUILD REQUIRED AFTER S3/S4 | Documentation, owner checklist and eleven 1920×1080 screenshots exist. The prior `v1.5.1` ZIP/checksum must be replaced by one generated from the final submission-correction revision. |
+| C5 package/report | DONE | Documentation, owner checklist and eleven 1920×1080 screenshots exist. The final `v1.5.2` ZIP/checksum is generated from the tagged submission-correction revision and clean-build verified. |
 
 ## Submission audit S1–S5 status
 
@@ -34,7 +34,7 @@ Deployment status: Vercel production deployment `dpl_EDWxJSXfUnjDkVfYRwenuGmR2iH
 | S2 support and owner notices | BLOCKED — OWNER INPUT REQUIRED | Existing configurable support/legal templates are retained. Verified operator identity/contact, support URL/handler, retention/deletion procedure and owner-reviewed terms were not supplied and were not invented. |
 | S3 task filter composition | DONE AND VERIFIED | Dashboard and CSV now share one validated query builder. Selected status and overdue predicates intersect; filtered empty state offers Reset. Unit and authenticated browser/CSV regressions pass. |
 | S4 trusted reset origin | DONE AND VERIFIED | Security-sensitive links use server-only `PASSWORD_RESET_ORIGIN`; production rejects missing, malformed, HTTP, credential-bearing, path/query/fragment and trailing-dot values before account lookup or token creation. |
-| S5 release handoff | IN PROGRESS | Listing/docs updated; final commit/tag, clean archive/checksum and production parity are completed after this report update. |
+| S5 release handoff | DONE | Listing/docs updated; `v1.5.2` tag pushed, clean archive/checksum generated, archive build verified, and Vercel production parity confirmed. |
 
 ## Security and behavior implemented
 
@@ -68,12 +68,12 @@ Deployment status: Vercel production deployment `dpl_EDWxJSXfUnjDkVfYRwenuGmR2iH
 | Docker build/run | current machine | NOT RUN — Docker CLI unavailable; route remains documented and explicitly unverified |
 | live production parity/deployment | Vercel | PASS for deployed source/version and public reset surface; real inbox delivery remains owner-blocked |
 
-## Production verification — 2026-11-03
+## Production verification — 2026-11-04
 
-- Vercel production deployment `dpl_EDWxJSXfUnjDkVfYRwenuGmR2iH1`: `Ready`; canonical alias `https://flowpilot-crm-saas.vercel.app` attached.
-- Canonical homepage: HTTP 200 and visible version `1.5.1`; `/forgot-password`: HTTP 200.
+- Vercel production deployment `https://flowpilot-crm-saas-2jw7b9eln-tsharun25s-projects.vercel.app`: `Ready`; canonical alias `https://flowpilot-crm-saas.vercel.app` attached.
+- Canonical homepage: HTTP 200 and visible version `1.5.2`; authenticated task-board/CSV composition audit passed.
 - With owner email variables still absent, the live reset request returned the documented honest HTTP 503 unavailable response. Real email delivery remains an open owner gate, not a claimed pass.
-- Clean exported archive: forbidden-artifact inventory 0; `npm ci` found 0 vulnerabilities; `npm run build` passed all 23 routes without a local `.env`.
+- Clean exported archive `FlowPilot-CRM-v1.5.2.zip`: forbidden-artifact inventory 0; clean extraction `npm ci` and `npm run build` passed all 23 routes without a local `.env`.
 
 ## Remaining owner actions
 
