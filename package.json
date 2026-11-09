@@ -1,6 +1,6 @@
 {
   "name": "flowpilot-crm",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "private": true,
   "license": "UNLICENSED",
   "engines": {
@@ -14,6 +14,8 @@
     "lint": "eslint",
     "seed": "tsx prisma/seed.ts",
     "seed:demo": "tsx prisma/seed.ts --confirm-demo-reset",
+    "demo:roles:check": "node --env-file=.env --import tsx scripts/provision-demo-roles.ts",
+    "demo:roles:provision": "node --env-file=.env --import tsx scripts/provision-demo-roles.ts --confirm",
     "screenshots": "node scripts/capture-screenshots.mjs",
     "audit:responsive": "node scripts/responsive-audit.mjs",
     "audit:a11y": "node scripts/accessibility-audit.mjs",
@@ -21,6 +23,7 @@
     "audit:task-priority": "node scripts/task-priority-browser-audit.mjs",
     "audit:workflow": "node scripts/workflow-browser-audit.mjs",
     "audit:demo-readonly": "node scripts/demo-readonly-browser-audit.mjs",
+    "audit:demo-roles": "node scripts/demo-role-browser-audit.mjs",
     "audit:crm-filter": "node scripts/crm-filter-browser-audit.mjs",
     "audit:session-invalidation": "node scripts/session-invalidation-browser-audit.mjs",
     "audit:failure-states": "node scripts/failure-state-browser-audit.mjs",

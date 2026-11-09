@@ -1,4 +1,16 @@
-# FlowPilot CRM 1.5.2 implementation report
+# FlowPilot CRM 1.5.5 implementation report
+
+## Vibe96 human-review corrections — 2026-11-09
+
+Vibe96 submission `SUB-2026-1044` requested a square cover/media set, one-click logins for every role, and a stronger product landing page. Version 1.5.5 implements those three requests.
+
+| Requested change | Status | Verification |
+|---|---|---|
+| Square cover and consistent media | DONE | Generated one branded cover and nine supporting images at exactly 1080×1080. No contact details, URLs, or social links appear on the cover. |
+| One-click demo logins | DONE | Separate Owner, Admin, and Member accounts were provisioned in the marked read-only demo workspace. `npm run audit:demo-roles` authenticated every button, checked the displayed role, and passed. |
+| Premium landing page | DONE | Rebuilt hero, real product preview, feature, product, benefit, and closing demo CTA sections. Browser audit found no horizontal overflow at 360, 768, or 1440 px. |
+
+`npm run verify` passed on 2026-11-09: Prisma generation/validation, all unit regressions, ESLint, TypeScript, Next.js 16.4.2 production build, 23 routes, and standalone asset preparation. Marketplace approval and sales remain external outcomes and are not guaranteed.
 
 Date: 2026-11-04 (Asia/Dhaka)
 

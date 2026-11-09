@@ -4,6 +4,7 @@ import {
   DEMO_ACCOUNT_EMAIL,
   isDemoWorkspace,
 } from "../src/lib/demo-workspace";
+import { DEMO_ACCOUNTS } from "../src/lib/demo-accounts";
 
 const prisma = new PrismaClient();
 
@@ -97,6 +98,33 @@ async function main() {
 
   if (!workspace) {
     throw new Error("Dedicated demo workspace not found.");
+  }
+
+  for (const account of DEMO_ACCOUNTS) {
+    const roleUser = await prisma.user.upsert({
+      where: { email: account.email },
+      update: { name: account.label, password: demoPassword },
+      create: {
+        name: account.label,
+        email: account.email,
+        password: demoPassword,
+      },
+    });
+
+    await prisma.membership.upsert({
+      where: {
+        userId_workspaceId: {
+          userId: roleUser.id,
+          workspaceId: workspace.id,
+        },
+      },
+      update: { role: account.role },
+      create: {
+        role: account.role,
+        userId: roleUser.id,
+        workspaceId: workspace.id,
+      },
+    });
   }
 
   await prisma.clientNote.deleteMany({ where: { client: { workspaceId: workspace.id } } });

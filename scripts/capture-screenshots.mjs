@@ -20,6 +20,7 @@ async function capture(name, path) {
 
 try {
   await capture("01-landing-page", "/");
+  await capture("12-demo-role-login", "/login");
   await capture("10-forgot-password", "/forgot-password");
   await capture("11-reset-password", "/reset-password");
 

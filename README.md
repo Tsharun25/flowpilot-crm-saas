@@ -18,16 +18,20 @@ FlowPilot is distributed as a self-hosted application starter. The public demo a
 
 ## Demo Login
 
+Choose a one-click role demo on the login screen. The public sample workspace is read-only for every role.
+
 ```txt
-Email: demo@flowpilot.com
-Password: DemoFlow2026!
+Owner: demo@flowpilot.com
+Admin: admin.demo@flowpilot.com
+Member: member.demo@flowpilot.com
+Password for all three: DemoFlow2026!
 ```
 
 ---
 
 ## Features
 
-FlowPilot 1.5.4 ships the focused agency workflow described below. It remains a self-hosted starter.
+FlowPilot 1.5.5 ships the focused agency workflow described below. It remains a self-hosted starter.
 
 - User registration and login
 - Password hashing with bcryptjs
@@ -65,7 +69,7 @@ FlowPilot 1.5.4 ships the focused agency workflow described below. It remains a 
 - `OWNER` and `ADMIN`: authenticated create/edit/status workflows, destructive project/task/client actions, and workspace identity changes.
 - `MEMBER`: authenticated create/edit/status workflows; destructive project/task/client actions and workspace identity changes are denied.
 - Every role can update its own profile name in a normal workspace.
-- The shared public demo is read-only even though its demo user has the `OWNER` role.
+- The shared public demo offers separate `OWNER`, `ADMIN`, and `MEMBER` accounts; its marked demo workspace remains read-only for every role.
 
 ### Not included
 
@@ -167,7 +171,7 @@ The public demo reset is not scheduled by the application. The operator must run
 
 ---
 
-## Upgrading to 1.5.4
+## Upgrading to 1.5.5
 
 Back up MongoDB, install the locked dependencies, regenerate Prisma Client, and apply the additive schema change:
 
@@ -214,7 +218,7 @@ After changing environment variables in Vercel, redeploy the project.
 
 Before processing real customer data, configure private production secrets, provision a supported MongoDB replica set, run the Prisma schema sync, replace the public demo credentials, and verify security, workspace isolation, accessibility, backups, and recovery in the target environment. FlowPilot is a self-hosted starter, not a security-audited or turnkey hosted service.
 
-Docker/VPS instructions are included, but the 1.5.4 release candidate has not been built in Docker in the current audit environment because the Docker CLI is unavailable. The route is documented but runtime-unverified; do not advertise it as tested until it is exercised on a Docker-capable host.
+Docker/VPS instructions are included, but the 1.5.5 release candidate has not been built in Docker in the current audit environment because the Docker CLI is unavailable. The route is documented but runtime-unverified; do not advertise it as tested until it is exercised on a Docker-capable host.
 
 ---
 

@@ -2,7 +2,10 @@
 
 Latest audit snapshot: 2026-11-04
 
-## 1.5.4 submission evidence
+## 1.5.5 submission evidence
+
+- Vibe96 reviewer corrections: premium landing page, 1080×1080 cover/media set, and one-click Owner/Admin/Member demos.
+- `npm run audit:demo-roles`: passed role authentication, displayed-role checks, and 360/768/1440 px landing/login overflow checks.
 
 - `npm ci` completed from the exported archive and reported zero vulnerabilities.
 - `npm audit` and `npm audit --omit=dev` reported zero known vulnerabilities.

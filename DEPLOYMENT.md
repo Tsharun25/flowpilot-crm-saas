@@ -32,8 +32,8 @@ npm start
 Run schema synchronization from a trusted one-off environment, then:
 
 ```bash
-docker build -t flowpilot-crm:1.5.4 .
-docker run -d --name flowpilot-crm --env-file .env -p 3000:3000 flowpilot-crm:1.5.4
+docker build -t flowpilot-crm:1.5.5 .
+docker run -d --name flowpilot-crm --env-file .env -p 3000:3000 flowpilot-crm:1.5.5
 ```
 
 Terminate HTTPS with Caddy, Nginx, or a managed load balancer. Do not expose MongoDB publicly. The Dockerfile is included, but Docker runtime verification is blocked on the current audit machine because Docker CLI is unavailable.
