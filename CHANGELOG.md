@@ -4,7 +4,7 @@
 
 - Added verified one-click public demo access for `OWNER`, `ADMIN`, and `MEMBER`, all scoped to the server-marked read-only demo workspace.
 - Rebuilt the public landing page with a premium product-focused hero, real application imagery, feature and benefit sections, and prominent live-demo calls to action.
-- Added a repeatable 1080×1080 Vibe96 media builder and a new cover image without contact details, website addresses, or social links.
+- Added a repeatable 1920×1920 Vibe96 media builder and a new cover image without contact details, website addresses, or social links.
 - Added a browser regression covering all three demo roles and landing/login responsive overflow.
 
 ## 1.5.4 — 2026-11-04

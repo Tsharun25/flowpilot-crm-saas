@@ -6,7 +6,7 @@ Vibe96 submission `SUB-2026-1044` requested a square cover/media set, one-click 
 
 | Requested change | Status | Verification |
 |---|---|---|
-| Square cover and consistent media | DONE | Generated one branded cover and nine supporting images at exactly 1080×1080. No contact details, URLs, or social links appear on the cover. |
+| Square cover and consistent media | DONE | Generated one branded cover and nine supporting images at exactly 1920×1920, satisfying the uploader's 1280 px minimum while preserving the requested 1:1 ratio. No contact details, URLs, or social links appear on the cover. |
 | One-click demo logins | DONE | Separate Owner, Admin, and Member accounts were provisioned in the marked read-only demo workspace. `npm run audit:demo-roles` authenticated every button, checked the displayed role, and passed. |
 | Premium landing page | DONE | Rebuilt hero, real product preview, feature, product, benefit, and closing demo CTA sections. Browser audit found no horizontal overflow at 360, 768, or 1440 px. |
 

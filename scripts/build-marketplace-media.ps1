@@ -26,11 +26,14 @@ function New-RoundedRectanglePath([System.Drawing.RectangleF]$rect, [float]$radi
 }
 
 function New-Canvas {
-  $bitmap = [System.Drawing.Bitmap]::new(1080, 1080)
+  $bitmap = [System.Drawing.Bitmap]::new(1920, 1920)
   $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
   $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
   $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
   $graphics.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAliasGridFit
+  # Compose in the original 1080-unit design grid while rendering at the
+  # marketplace-safe 1920×1920 output resolution.
+  $graphics.ScaleTransform(1920 / 1080, 1920 / 1080)
   return @{ Bitmap = $bitmap; Graphics = $graphics }
 }
 
