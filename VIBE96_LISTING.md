@@ -58,7 +58,7 @@ Buyers should review the [Security Policy](SECURITY.md), [Release Audit](AUDIT_R
 - Category: Business & Operations / CRM
 - Suggested launch price: $149–$199
 - Live demo: https://flowpilot-crm-saas.vercel.app
-- Demo login: `demo@flowpilot.com` / `DemoFlow2026!`
+- Demo login: use the one-click Owner, Admin, or Member buttons on the live login page; no shared password is published in the source package.
 
 Keep the demo online throughout review and while listed. Use this account only with non-sensitive sample data.
 

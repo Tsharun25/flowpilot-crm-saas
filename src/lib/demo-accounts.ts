@@ -1,5 +1,3 @@
-export const DEMO_PASSWORD = "DemoFlow2026!";
-
 export const DEMO_ACCOUNTS = [
   {
     role: "OWNER",

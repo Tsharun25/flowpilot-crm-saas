@@ -1,25 +1,25 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { DEMO_ACCOUNTS, DEMO_PASSWORD } from "@/lib/demo-accounts";
+import { DEMO_ACCOUNTS } from "@/lib/demo-accounts";
 
 export default function LoginForm() {
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
-
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  async function login(email: string, password: string) {
+  async function authenticate(
+    provider: "credentials" | "demo",
+    values: Record<string, string>,
+  ) {
     setError("");
     setIsLoading(true);
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
+      const result = await signIn(provider, {
+        ...values,
         redirect: false,
       });
 
@@ -44,17 +44,14 @@ export default function LoginForm() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    await login(String(formData.get("email")), String(formData.get("password")));
+    await authenticate("credentials", {
+      email: String(formData.get("email")),
+      password: String(formData.get("password")),
+    });
   }
 
-  async function handleDemoLogin(email: string) {
-    if (formRef.current) {
-      const emailInput = formRef.current.elements.namedItem("email") as HTMLInputElement | null;
-      const passwordInput = formRef.current.elements.namedItem("password") as HTMLInputElement | null;
-      if (emailInput) emailInput.value = email;
-      if (passwordInput) passwordInput.value = DEMO_PASSWORD;
-    }
-    await login(email, DEMO_PASSWORD);
+  async function handleDemoLogin(role: string) {
+    await authenticate("demo", { role });
   }
 
   return (
@@ -74,7 +71,7 @@ export default function LoginForm() {
               key={account.role}
               type="button"
               disabled={isLoading}
-              onClick={() => handleDemoLogin(account.email)}
+              onClick={() => handleDemoLogin(account.role)}
               className="group flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 text-left transition hover:border-cyan-300/50 hover:bg-cyan-300/10 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <span>
@@ -94,7 +91,6 @@ export default function LoginForm() {
       </div>
 
       <form
-        ref={formRef}
         method="post"
         onSubmit={handleSubmit}
         className="space-y-5"

@@ -24,17 +24,17 @@ export default function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-72 shrink-0 overflow-y-auto border-r border-slate-200 bg-white p-6 xl:block">
+    <aside className="sticky top-0 hidden h-screen w-72 shrink-0 overflow-y-auto border-r border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,.16),transparent_18rem),linear-gradient(180deg,#090e20_0%,#060914_100%)] p-6 text-white shadow-2xl xl:block">
       <Link href="/dashboard" className="mb-10 flex items-center gap-3">
-        <div className="grid size-12 place-items-center rounded-2xl bg-slate-950 text-xl font-black text-white shadow-lg">
+        <div className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-cyan-300 to-blue-500 text-xl font-black text-slate-950 shadow-lg shadow-cyan-500/20">
           F
         </div>
         <div>
-          <p className="text-2xl font-black leading-none text-slate-950">
+          <p className="text-2xl font-black leading-none text-white">
             FlowPilot
           </p>
-          <p className="mt-1 text-xs font-bold uppercase tracking-wide text-cyan-700">
-            CRM Starter
+          <p className="mt-1 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+            CRM + Projects
           </p>
         </div>
       </Link>
@@ -54,8 +54,8 @@ export default function DashboardSidebar() {
               aria-current={active ? "page" : undefined}
               className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-black transition ${
                 active
-                  ? "bg-slate-950 text-white shadow-lg shadow-slate-950/10"
-                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-950"
+                  ? "bg-gradient-to-r from-cyan-300 to-blue-400 text-slate-950 shadow-lg shadow-cyan-500/15"
+                  : "text-slate-400 hover:bg-white/10 hover:text-white"
               }`}
             >
               <Icon size={18} />

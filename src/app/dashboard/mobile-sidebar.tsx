@@ -76,7 +76,7 @@ export default function MobileSidebar() {
         aria-label="Open navigation"
         aria-expanded={open}
         aria-controls="mobile-dashboard-navigation"
-        className="grid size-10 shrink-0 place-items-center rounded-xl bg-slate-950 text-white sm:rounded-2xl"
+        className="grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-slate-950 to-indigo-950 text-white shadow-lg sm:rounded-2xl"
       >
         <Menu size={18} />
       </button>
@@ -92,14 +92,14 @@ export default function MobileSidebar() {
             role="dialog"
             aria-modal="true"
             aria-label="Dashboard navigation"
-            className="h-full w-80 max-w-[calc(100vw-2rem)] overflow-y-auto bg-white p-5 shadow-2xl sm:p-6"
+            className="h-full w-80 max-w-[calc(100vw-2rem)] overflow-y-auto bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,.16),transparent_18rem),linear-gradient(180deg,#090e20,#060914)] p-5 text-white shadow-2xl sm:p-6"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="mb-8 flex items-center justify-between">
               <Link
                 href="/dashboard"
                 onClick={() => setOpen(false)}
-                className="text-2xl font-black text-slate-950"
+                className="text-2xl font-black text-white"
               >
                 FlowPilot
               </Link>
@@ -109,7 +109,7 @@ export default function MobileSidebar() {
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close navigation"
-                className="grid size-10 place-items-center rounded-2xl bg-slate-100 text-slate-950"
+                className="grid size-10 place-items-center rounded-2xl bg-white/10 text-white"
               >
                 <X size={18} />
               </button>
@@ -130,8 +130,8 @@ export default function MobileSidebar() {
                     aria-current={active ? "page" : undefined}
                     className={`block rounded-2xl px-4 py-3 text-sm font-black transition ${
                       active
-                        ? "bg-slate-950 text-white"
-                        : "text-slate-600 hover:bg-slate-100"
+                        ? "bg-gradient-to-r from-cyan-300 to-blue-400 text-slate-950"
+                        : "text-slate-300 hover:bg-white/10 hover:text-white"
                     }`}
                   >
                     {item.label}

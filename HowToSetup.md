@@ -26,7 +26,7 @@ npm run seed:demo
 npm run dev
 ```
 
-Open `http://localhost:3000`. The explicit `seed:demo` command creates `demo@flowpilot.com` with password `DemoFlow2026!` and marks its workspace with the persistent `isDemo` flag. For upgrades, the seed recognizes the documented legacy demo slug patterns once and then persists that marker. It deletes that demo workspace's existing projects, tasks, and clients, so run it only against a dedicated demo database. The public demo is read-only across project, task, client, note, conversion, profile, and workspace mutations; the server enforces this from the persisted workspace marker. Change or remove this account before accepting real users. Plain `npm run seed` intentionally refuses to delete data without the confirmation flag.
+Open `http://localhost:3000`. The explicit `seed:demo` command creates the documented demo account using the dedicated `DEMO_PASSWORD` value from your private environment and marks its workspace with the persistent `isDemo` flag. For upgrades, the seed recognizes the documented legacy demo slug patterns once and then persists that marker. It deletes that demo workspace's existing projects, tasks, and clients, so run it only against a dedicated demo database. The public demo is read-only across project, task, client, note, conversion, profile, and workspace mutations; the server enforces this from the persisted workspace marker. Change or remove this account before accepting real users. Plain `npm run seed` intentionally refuses to delete data without the confirmation flag.
 
 Demo reset scheduling is not built in. Run the reset manually or through infrastructure you control, and never reuse the demo database for real customer data.
 

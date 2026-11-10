@@ -1,4 +1,4 @@
-# FlowPilot CRM 1.5.5 — Owner setup gate
+# FlowPilot CRM 1.5.6 — Owner setup gate
 
 These are the only owner-supplied values or external access still required. Do not paste secrets into source code, reports, marketplace messages, or ordinary chat.
 

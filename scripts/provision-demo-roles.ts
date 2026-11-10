@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
-import { DEMO_ACCOUNTS, DEMO_PASSWORD } from "../src/lib/demo-accounts";
+import { DEMO_ACCOUNTS } from "../src/lib/demo-accounts";
 import { DEMO_ACCOUNT_EMAIL } from "../src/lib/demo-workspace";
 
 const prisma = new PrismaClient();
@@ -27,7 +27,11 @@ async function main() {
     return;
   }
 
-  const password = await bcrypt.hash(DEMO_PASSWORD, 12);
+  const demoPassword = process.env.DEMO_PASSWORD;
+  if (!demoPassword || demoPassword.length < 12) {
+    throw new Error("DEMO_PASSWORD must be set to at least 12 characters before provisioning.");
+  }
+  const password = await bcrypt.hash(demoPassword, 12);
   for (const account of DEMO_ACCOUNTS) {
     const user = await prisma.user.upsert({
       where: { email: account.email },

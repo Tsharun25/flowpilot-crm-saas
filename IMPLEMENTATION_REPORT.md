@@ -1,16 +1,18 @@
-# FlowPilot CRM 1.5.5 implementation report
+# FlowPilot CRM 1.5.6 implementation report
 
-## Vibe96 human-review corrections — 2026-11-09
+## Vibe96 human-review corrections — 2026-11-10
 
-Vibe96 submission `SUB-2026-1044` requested a square cover/media set, one-click logins for every role, and a stronger product landing page. Version 1.5.5 implements those three requests.
+Vibe96 submission `SUB-2026-1044` first requested a square cover/media set, one-click logins for every role, and a stronger product landing page. The follow-up review requested a 400×225 cover and matching screenshots, a separate square list image, and a consistent premium responsive UI across the product. Version 1.5.6 implements the follow-up request.
 
 | Requested change | Status | Verification |
 |---|---|---|
-| Square cover and consistent media | DONE | Generated one branded cover and nine supporting images at exactly 1920×1920, satisfying the uploader's 1280 px minimum while preserving the requested 1:1 ratio. No contact details, URLs, or social links appear on the cover. |
-| One-click demo logins | DONE | Separate Owner, Admin, and Member accounts were provisioned in the marked read-only demo workspace. `npm run audit:demo-roles` authenticated every button, checked the displayed role, and passed. |
-| Premium landing page | DONE | Rebuilt hero, real product preview, feature, product, benefit, and closing demo CTA sections. Browser audit found no horizontal overflow at 360, 768, or 1440 px. |
+| 16:9 cover and consistent media | DONE | Generated one branded cover and nine supporting images at exactly 400×225, plus 1600×900 upload masters. No contact details, URLs, or social links appear in the media. |
+| Square list image | DONE | Generated a separate 1080×1080 list image with the same visual system and no contact details or links. |
+| One-click demo logins | DONE | Owner, Admin, and Member buttons now use a server-validated demo-only authentication provider. No shared demo password is shipped to the browser or source archive. `npm run audit:demo-roles` authenticated every role and passed. |
+| Premium landing page | DONE | The landing page contains a premium hero, real product preview, feature, product, benefit, and closing Live Demo CTA sections. |
+| Premium responsive product UI | DONE | Reworked login and the shared dashboard/admin shell with consistent navy/cyan styling, typography, spacing, focus states and responsive navigation. `npm run audit:responsive` passed every tested route at 360, 390, 768, 1024, 1280, 1366 and 1440 px. |
 
-`npm run verify` passed on 2026-11-09: Prisma generation/validation, all unit regressions, ESLint, TypeScript, Next.js 16.4.2 production build, 23 routes, and standalone asset preparation. Marketplace approval and sales remain external outcomes and are not guaranteed.
+`npm run verify` passed on 2026-11-10: Prisma generation/validation, all unit regressions, ESLint, TypeScript, Next.js 16.4.2 production build, 23 routes, and standalone asset preparation. The role-demo, responsive and accessibility browser suites also passed. Marketplace approval and sales remain external outcomes and are not guaranteed.
 
 Date: 2026-11-04 (Asia/Dhaka)
 

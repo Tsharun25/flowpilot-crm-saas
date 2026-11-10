@@ -4,6 +4,8 @@ import { chromium } from "playwright";
 const baseUrl = process.env.DEMO_URL ?? "http://localhost:3000";
 const browser = await chromium.launch({ executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE });
 const page = await browser.newPage();
+const password = process.env.DEMO_PASSWORD;
+if (!password) throw new Error("DEMO_PASSWORD is required for the CRM filter audit.");
 
 async function metric(label) {
   return page.getByText(label, { exact: true }).locator("..").locator("p").nth(1).innerText();
@@ -12,7 +14,7 @@ async function metric(label) {
 try {
   await page.goto(`${baseUrl}/login`);
   await page.getByLabel(/email/i).fill(process.env.DEMO_EMAIL ?? "demo@flowpilot.com");
-  await page.getByLabel(/password/i).fill(process.env.DEMO_PASSWORD ?? "DemoFlow2026!");
+  await page.getByLabel(/password/i).fill(password);
   await page.getByRole("button", { name: /login|sign in/i }).click();
   await page.waitForURL(/\/dashboard/, { timeout: 20_000 });
 

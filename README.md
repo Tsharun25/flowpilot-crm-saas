@@ -18,20 +18,21 @@ FlowPilot is distributed as a self-hosted application starter. The public demo a
 
 ## Demo Login
 
-Choose a one-click role demo on the login screen. The public sample workspace is read-only for every role.
+Choose a one-click role demo on the login screen. The hosted public sample workspace is read-only for every role. The buttons use a server-validated demo-only provider; no demo password is shipped in the application source.
 
 ```txt
 Owner: demo@flowpilot.com
 Admin: admin.demo@flowpilot.com
 Member: member.demo@flowpilot.com
-Password for all three: DemoFlow2026!
 ```
+
+These accounts belong only to the hosted read-only demo. Buyers must not copy or provision them in a production database; rotate or remove any synthetic demo users after local evaluation.
 
 ---
 
 ## Features
 
-FlowPilot 1.5.5 ships the focused agency workflow described below. It remains a self-hosted starter.
+FlowPilot 1.5.6 ships the focused agency workflow described below. It remains a self-hosted starter.
 
 - User registration and login
 - Password hashing with bcryptjs
@@ -171,7 +172,7 @@ The public demo reset is not scheduled by the application. The operator must run
 
 ---
 
-## Upgrading to 1.5.5
+## Upgrading to 1.5.6
 
 Back up MongoDB, install the locked dependencies, regenerate Prisma Client, and apply the additive schema change:
 
@@ -218,7 +219,7 @@ After changing environment variables in Vercel, redeploy the project.
 
 Before processing real customer data, configure private production secrets, provision a supported MongoDB replica set, run the Prisma schema sync, replace the public demo credentials, and verify security, workspace isolation, accessibility, backups, and recovery in the target environment. FlowPilot is a self-hosted starter, not a security-audited or turnkey hosted service.
 
-Docker/VPS instructions are included, but the 1.5.5 release candidate has not been built in Docker in the current audit environment because the Docker CLI is unavailable. The route is documented but runtime-unverified; do not advertise it as tested until it is exercised on a Docker-capable host.
+Docker/VPS instructions are included, but the 1.5.6 release candidate has not been built in Docker in the current audit environment because the Docker CLI is unavailable. The route is documented but runtime-unverified; do not advertise it as tested until it is exercised on a Docker-capable host.
 
 ---
 

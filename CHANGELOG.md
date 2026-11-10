@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.6 — 2026-11-10
+
+- Reworked the authentication screen into a responsive premium split layout.
+- Added server-validated one-click Owner, Admin, and Member demo sessions without shipping a shared demo password to the browser.
+- Unified the dashboard and admin shell with a dark navigation system, frosted header, consistent spacing, focus states, and responsive navigation.
+- Added a reviewer-specific 16:9 marketplace media workflow plus a separate square list image.
+- Refreshed release documentation and verification evidence for the second Vibe96 review request.
+
 ## 1.5.5 — 2026-11-09
 
 - Added verified one-click public demo access for `OWNER`, `ADMIN`, and `MEMBER`, all scoped to the server-marked read-only demo workspace.

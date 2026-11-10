@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { loginSchema } from "@/lib/validators/auth";
 import { checkRateLimit, requestAddress } from "@/lib/rate-limit";
+import { DEMO_ACCOUNTS } from "@/lib/demo-accounts";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -16,6 +17,43 @@ export const authOptions: NextAuthOptions = {
   },
 
   providers: [
+    CredentialsProvider({
+      id: "demo",
+      name: "Role demo",
+      credentials: {
+        role: { label: "Role", type: "text" },
+      },
+
+      async authorize(credentials, request) {
+        const account = DEMO_ACCOUNTS.find(({ role }) => role === credentials?.role);
+        if (!account) return null;
+
+        const address = requestAddress(new Headers(request.headers as Record<string, string>));
+        const rate = await checkRateLimit("demo-login", `${address}:${account.role}`, 30, 15 * 60 * 1000);
+        if (!rate.allowed) return null;
+
+        const user = await prisma.user.findUnique({
+          where: { email: account.email },
+          include: {
+            memberships: {
+              where: { role: account.role, workspace: { isDemo: true } },
+              select: { id: true },
+              take: 1,
+            },
+          },
+        });
+
+        if (!user || user.memberships.length !== 1) return null;
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+          sessionVersion: user.sessionVersion ?? 0,
+        };
+      },
+    }),
     CredentialsProvider({
       name: "Credentials",
 

@@ -3,7 +3,8 @@ import { chromium } from "playwright";
 
 const baseUrl = process.env.DEMO_URL ?? "http://localhost:3000";
 const email = process.env.DEMO_EMAIL ?? "demo@flowpilot.com";
-const password = process.env.DEMO_PASSWORD ?? "DemoFlow2026!";
+const password = process.env.DEMO_PASSWORD;
+if (!password) throw new Error("DEMO_PASSWORD is required for authenticated screenshots.");
 const outputDir = "marketplace-assets/screenshots";
 
 await mkdir(outputDir, { recursive: true });
