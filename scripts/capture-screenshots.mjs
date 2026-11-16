@@ -2,9 +2,6 @@ import { mkdir } from "node:fs/promises";
 import { chromium } from "playwright";
 
 const baseUrl = process.env.DEMO_URL ?? "http://localhost:3000";
-const email = process.env.DEMO_EMAIL ?? "demo@flowpilot.com";
-const password = process.env.DEMO_PASSWORD;
-if (!password) throw new Error("DEMO_PASSWORD is required for authenticated screenshots.");
 const outputDir = "marketplace-assets/screenshots";
 
 await mkdir(outputDir, { recursive: true });
@@ -26,9 +23,7 @@ try {
   await capture("11-reset-password", "/reset-password");
 
   await page.goto(`${baseUrl}/login`, { waitUntil: "networkidle" });
-  await page.getByLabel(/email/i).fill(email);
-  await page.getByLabel(/password/i).fill(password);
-  await page.getByRole("button", { name: /sign in|login/i }).click();
+  await page.getByRole("button", { name: /owner demo/i }).click();
   await page.waitForURL(/\/dashboard/, { timeout: 20_000 });
 
   await capture("02-dashboard", "/dashboard");

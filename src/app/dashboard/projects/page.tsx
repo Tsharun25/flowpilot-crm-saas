@@ -47,7 +47,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
           <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">
             Projects
           </p>
-          <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
             Manage Projects
           </h2>
           <p className="mt-2 max-w-2xl text-slate-500">

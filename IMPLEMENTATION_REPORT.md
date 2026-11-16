@@ -1,18 +1,18 @@
-# FlowPilot CRM 1.5.6 implementation report
+# FlowPilot CRM 1.5.7 implementation report
 
-## Vibe96 human-review corrections — 2026-11-10
+## Vibe96 human-review corrections — 2026-11-16
 
-Vibe96 submission `SUB-2026-1044` first requested a square cover/media set, one-click logins for every role, and a stronger product landing page. The follow-up review requested a 400×225 cover and matching screenshots, a separate square list image, and a consistent premium responsive UI across the product. Version 1.5.6 implements the follow-up request.
+Vibe96 submission `SUB-2026-1044` requested a more compact, consistent interface and revised marketplace media. Vibe96 Support later confirmed in writing that the reviewer's 400×225 instruction was incorrect and that the media uploader dimensions must be followed. Version 1.5.7 implements the typography refinement and uploader-compliant media workflow.
 
 | Requested change | Status | Verification |
 |---|---|---|
-| 16:9 cover and consistent media | DONE | Generated one branded cover and nine supporting images at exactly 400×225, plus 1600×900 upload masters. No contact details, URLs, or social links appear in the media. |
+| 16:9 cover and consistent media | DONE | Generated one branded cover and nine supporting images at exactly 1920×1080, following the uploader's preferred resolution. No contact details, URLs, or social links appear in the media. |
 | Square list image | DONE | Generated a separate 1080×1080 list image with the same visual system and no contact details or links. |
 | One-click demo logins | DONE | Owner, Admin, and Member buttons now use a server-validated demo-only authentication provider. No shared demo password is shipped to the browser or source archive. `npm run audit:demo-roles` authenticated every role and passed. |
 | Premium landing page | DONE | The landing page contains a premium hero, real product preview, feature, product, benefit, and closing Live Demo CTA sections. |
 | Premium responsive product UI | DONE | Reworked login and the shared dashboard/admin shell with consistent navy/cyan styling, typography, spacing, focus states and responsive navigation. `npm run audit:responsive` passed every tested route at 360, 390, 768, 1024, 1280, 1366 and 1440 px. |
 
-`npm run verify` passed on 2026-11-10: Prisma generation/validation, all unit regressions, ESLint, TypeScript, Next.js 16.4.2 production build, 23 routes, and standalone asset preparation. The role-demo, responsive and accessibility browser suites also passed. Marketplace approval and sales remain external outcomes and are not guaranteed.
+`npm run verify` passed on 2026-11-16: Prisma generation/validation, all unit regressions, ESLint, TypeScript, Next.js 16.4.2 production build, 23 routes, and standalone asset preparation. The role-demo, responsive and accessibility browser suites also passed after the typography revision. Marketplace approval and sales remain external outcomes and are not guaranteed.
 
 Date: 2026-11-04 (Asia/Dhaka)
 

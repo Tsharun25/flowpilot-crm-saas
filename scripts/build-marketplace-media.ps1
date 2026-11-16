@@ -1,6 +1,6 @@
 param(
   [string]$SourceDirectory = "marketplace-assets\screenshots",
-  [string]$OutputDirectory = "..\Vibe96-Resubmission-FlowPilot-v1.5.6\02-Media"
+  [string]$OutputDirectory = "..\Vibe96-Resubmission-FlowPilot-v1.5.7\02-Media"
 )
 
 Add-Type -AssemblyName System.Drawing
@@ -8,10 +8,9 @@ $ErrorActionPreference = "Stop"
 $workspace = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $source = [System.IO.Path]::GetFullPath((Join-Path $workspace $SourceDirectory))
 $output = [System.IO.Path]::GetFullPath((Join-Path $workspace $OutputDirectory))
-$wideOutput = Join-Path $output "01-Exact-400x225"
-$masterOutput = Join-Path $output "02-Upload-Masters-1600x900"
-$squareOutput = Join-Path $output "03-List-Image-1080x1080"
-New-Item -ItemType Directory -Force $wideOutput, $masterOutput, $squareOutput | Out-Null
+$masterOutput = Join-Path $output "01-Upload-Ready-1920x1080"
+$squareOutput = Join-Path $output "02-List-Image-1080x1080"
+New-Item -ItemType Directory -Force $masterOutput, $squareOutput | Out-Null
 
 function New-Canvas([int]$width, [int]$height) {
   $bitmap = [System.Drawing.Bitmap]::new($width, $height)
@@ -98,11 +97,9 @@ $items = @(
   @{ File = "09-settings.png"; Output = "10-roles-and-workspace.png"; Title = "Built for real teams"; Label = "OWNER / ADMIN / MEMBER" }
 )
 
-Draw-Cover 400 225 (Join-Path $wideOutput "01-cover-flowpilot-crm.png") $false
-Draw-Cover 1600 900 (Join-Path $masterOutput "01-cover-flowpilot-crm.png") $false
+Draw-Cover 1920 1080 (Join-Path $masterOutput "01-cover-flowpilot-crm.png") $false
 Draw-Cover 1080 1080 (Join-Path $squareOutput "FlowPilot-CRM-list-image-1080x1080.png") $true
 foreach ($item in $items) {
-  Draw-Feature $item 400 225 (Join-Path $wideOutput $item.Output)
-  Draw-Feature $item 1600 900 (Join-Path $masterOutput $item.Output)
+  Draw-Feature $item 1920 1080 (Join-Path $masterOutput $item.Output)
 }
 Write-Output "Marketplace media created in $output"

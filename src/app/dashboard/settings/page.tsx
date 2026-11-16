@@ -159,7 +159,7 @@ export default async function SettingsPage() {
         <p className="text-sm font-black uppercase tracking-wide text-cyan-700">
           Settings
         </p>
-        <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
+        <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl lg:text-4xl">
           Workspace Settings
         </h2>
         <p className="mt-3 max-w-2xl text-slate-500">
@@ -183,7 +183,7 @@ export default async function SettingsPage() {
               <p className="mt-6 text-sm font-bold text-slate-500">
                 {stat.label}
               </p>
-              <p className="mt-2 text-3xl font-black text-slate-950">
+              <p className="mt-2 text-2xl font-black text-slate-950">
                 {stat.value}
               </p>
             </div>

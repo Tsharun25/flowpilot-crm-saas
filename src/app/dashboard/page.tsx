@@ -72,7 +72,7 @@ export default async function DashboardPage() {
           <p className="text-sm font-black uppercase tracking-wide text-cyan-700">
             Overview
           </p>
-          <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
+          <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl lg:text-4xl">
             Command Center
           </h2>
           <p className="mt-3 max-w-2xl text-slate-500">
@@ -117,7 +117,7 @@ export default async function DashboardPage() {
               <p className="mt-6 text-sm font-bold text-slate-500">
                 {stat.label}
               </p>
-              <p className="mt-2 break-words text-xl font-black text-slate-950 sm:text-2xl 2xl:text-3xl">
+              <p className="mt-2 break-words text-xl font-black text-slate-950 sm:text-2xl">
                 {stat.value}
               </p>
               <p className="mt-2 text-sm font-bold text-emerald-600">
@@ -149,7 +149,7 @@ export default async function DashboardPage() {
 
         <div className="rounded-[2rem] bg-gradient-to-br from-slate-950 to-slate-800 p-6 text-white shadow-xl shadow-slate-300">
           <p className="text-sm font-black text-cyan-300">CRM Pulse</p>
-          <h3 className="mt-4 break-words text-2xl font-black sm:text-3xl 2xl:text-4xl">
+          <h3 className="mt-4 break-words text-2xl font-black sm:text-3xl">
             {formatMoney(crmMetrics.openPipeline)}
           </h3>
           <p className="mt-4 text-sm leading-6 text-slate-300">

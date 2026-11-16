@@ -52,7 +52,7 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
         <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">
           Tasks
         </p>
-        <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
+        <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
           Workspace Kanban
         </h2>
         <p className="mt-2 max-w-2xl text-slate-500">

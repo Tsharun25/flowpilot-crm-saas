@@ -60,7 +60,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
           <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">
             CRM
           </p>
-          <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
+          <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
             Client Pipeline
           </h2>
           <p className="mt-2 max-w-2xl text-slate-500">
@@ -72,21 +72,21 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
       <section className="mb-8 grid gap-4 md:grid-cols-3">
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="text-sm font-bold text-slate-500">Filtered Clients</p>
-          <p className="mt-3 break-words text-2xl font-black text-slate-950 xl:text-3xl">
+          <p className="mt-3 break-words text-xl font-black text-slate-950 xl:text-2xl">
             {clients.length}
           </p>
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="text-sm font-bold text-slate-500">Filtered Open Pipeline</p>
-          <p className="mt-3 break-words text-2xl font-black text-slate-950 xl:text-3xl">
+          <p className="mt-3 break-words text-xl font-black text-slate-950 xl:text-2xl">
             {formatMoney(metrics.openPipeline)}
           </p>
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="text-sm font-bold text-slate-500">Filtered Won Deal Value</p>
-          <p className="mt-3 break-words text-2xl font-black text-slate-950 xl:text-3xl">
+          <p className="mt-3 break-words text-xl font-black text-slate-950 xl:text-2xl">
             {formatMoney(metrics.wonDealValue)}
           </p>
         </div>

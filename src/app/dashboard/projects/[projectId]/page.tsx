@@ -112,7 +112,7 @@ export default async function ProjectDetailsPage({
               {project.status}
             </span>
 
-            <h2 className="mt-4 break-words text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
+            <h2 className="mt-4 break-words text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
               {project.name}
             </h2>
 
@@ -124,21 +124,21 @@ export default async function ProjectDetailsPage({
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               <div className="rounded-3xl bg-slate-50 p-5">
                 <p className="text-sm font-bold text-slate-500">Total Tasks</p>
-                <p className="mt-2 text-3xl font-black text-slate-950">
+                <p className="mt-2 text-2xl font-black text-slate-950">
                   {project.tasks.length}
                 </p>
               </div>
 
               <div className="rounded-3xl bg-slate-50 p-5">
                 <p className="text-sm font-bold text-slate-500">Completed</p>
-                <p className="mt-2 text-3xl font-black text-slate-950">
+                <p className="mt-2 text-2xl font-black text-slate-950">
                   {doneTasks}
                 </p>
               </div>
 
               <div className="rounded-3xl bg-slate-50 p-5">
                 <p className="text-sm font-bold text-slate-500">Progress</p>
-                <p className="mt-2 text-3xl font-black text-slate-950">
+                <p className="mt-2 text-2xl font-black text-slate-950">
                   {progress}%
                 </p>
               </div>

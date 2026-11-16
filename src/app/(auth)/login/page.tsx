@@ -33,7 +33,7 @@ export default async function LoginPage() {
     <main className="relative min-h-screen overflow-hidden bg-[#050814] px-4 py-5 text-white sm:px-6 sm:py-8 lg:grid lg:grid-cols-[1.08fr_.92fr] lg:items-stretch lg:gap-6 lg:p-6">
       <div className="pointer-events-none absolute left-[-14rem] top-[-14rem] size-[36rem] rounded-full bg-cyan-400/15 blur-[120px]" />
 
-      <section className="relative hidden min-h-[calc(100vh-3rem)] overflow-hidden rounded-[2.5rem] border border-white/10 bg-[radial-gradient(circle_at_15%_20%,rgba(34,211,238,.18),transparent_24rem),radial-gradient(circle_at_90%_80%,rgba(79,70,229,.2),transparent_28rem),linear-gradient(145deg,#0b1125,#080a17)] p-10 lg:flex lg:flex-col lg:justify-between xl:p-14">
+      <section className="relative hidden min-h-[calc(100vh-3rem)] overflow-hidden rounded-[2.25rem] border border-white/10 bg-[radial-gradient(circle_at_15%_20%,rgba(34,211,238,.18),transparent_24rem),radial-gradient(circle_at_90%_80%,rgba(79,70,229,.2),transparent_28rem),linear-gradient(145deg,#0b1125,#080a17)] p-8 lg:flex lg:flex-col lg:justify-between xl:p-10">
         <Link href="/" className="flex items-center gap-3" aria-label="FlowPilot home">
           <span className="grid size-11 place-items-center rounded-2xl bg-gradient-to-br from-cyan-300 to-blue-500 text-lg font-black text-slate-950 shadow-lg shadow-cyan-500/20">F</span>
           <span><span className="block text-xl font-black leading-none">FlowPilot</span><span className="mt-1 block text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">CRM + Projects</span></span>
@@ -41,7 +41,7 @@ export default async function LoginPage() {
 
         <div className="my-12">
           <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">Explore the real product</p>
-          <h1 className="mt-5 text-5xl font-black leading-[1.02] tracking-[-0.045em] xl:text-6xl">One workspace.<br /><span className="bg-gradient-to-r from-cyan-300 to-violet-300 bg-clip-text text-transparent">Every client workflow.</span></h1>
+          <h1 className="mt-5 text-4xl font-black leading-[1.04] tracking-[-0.04em] xl:text-5xl">One workspace.<br /><span className="bg-gradient-to-r from-cyan-300 to-violet-300 bg-clip-text text-transparent">Every client workflow.</span></h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-slate-300">Choose a role and step directly into a safe, read-only workspace with realistic projects, tasks, clients and analytics.</p>
 
           <div className="mt-9 grid gap-3 sm:grid-cols-2">
@@ -64,7 +64,7 @@ export default async function LoginPage() {
           <div className="rounded-[2rem] border border-white/10 bg-white/[0.065] p-6 shadow-2xl shadow-black/30 backdrop-blur-2xl sm:p-8">
             <div className="mb-7 text-center">
               <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">Secure workspace access</p>
-              <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">Welcome to FlowPilot</h2>
+              <h2 className="mt-3 text-2xl font-black tracking-tight sm:text-3xl">Welcome to FlowPilot</h2>
               <p className="mt-3 text-sm text-slate-400">Sign in normally or explore every role instantly.</p>
             </div>
 

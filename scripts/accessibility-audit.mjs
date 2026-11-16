@@ -1,9 +1,6 @@
 import { chromium } from "playwright";
 
 const baseUrl = process.env.DEMO_URL ?? "http://localhost:3000";
-const email = process.env.DEMO_EMAIL ?? "demo@flowpilot.com";
-const password = process.env.DEMO_PASSWORD;
-if (!password) throw new Error("DEMO_PASSWORD is required for authenticated accessibility checks.");
 const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE;
 
 const publicRoutes = [
@@ -295,9 +292,7 @@ try {
 
   await page.goto(`${baseUrl}/login`, { waitUntil: "domcontentloaded" });
   await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
-  await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill(password);
-  await page.getByRole("button", { name: "Login" }).click();
+  await page.getByRole("button", { name: /owner demo/i }).click();
   await page.waitForURL(/\/dashboard(?:\/|$)/, { timeout: 20_000 });
 
   for (const route of authenticatedRoutes) {

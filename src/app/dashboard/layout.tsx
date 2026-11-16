@@ -57,7 +57,7 @@ export default async function DashboardLayout({
             </div>
           </header>
 
-          <main className="mx-auto w-full max-w-[1600px] min-w-0 p-3 sm:p-5 lg:p-8 xl:p-10">
+          <main className="mx-auto w-full max-w-[1600px] min-w-0 p-3 sm:p-5 lg:p-7 xl:p-8">
             {demoReadOnly ? (
               <div role="status" className="mb-4 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-950">
                 Demo workspace — changes are disabled. Create your own account to try editing; browsing and exports remain available.

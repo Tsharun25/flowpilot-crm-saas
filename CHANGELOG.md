@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.7 — 2026-11-16
+
+- Reduced oversized headings and vertical spacing across the landing page, login flow, dashboard, CRM, projects, tasks, analytics and workspace settings.
+- Preserved a consistent navy, cyan and white visual system while improving information density on desktop, tablet and mobile.
+- Rebuilt the Vibe96 media set at the uploader-recommended 1920×1080 resolution, with a separate 1080×1080 square listing image.
+- Documented Vibe96 Support's clarification that the earlier 400×225 reviewer instruction was incorrect.
+
 ## 1.5.6 — 2026-11-10
 
 - Reworked the authentication screen into a responsive premium split layout.
