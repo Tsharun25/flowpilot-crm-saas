@@ -81,14 +81,14 @@ export default async function DashboardPage() {
         <div className="flex flex-wrap gap-3">
           <Link
             href="/dashboard/projects"
-            className="rounded-full bg-slate-950 px-6 py-3 text-center font-black text-white shadow-lg shadow-slate-950/10 transition hover:bg-slate-800"
+            className="flow-button flow-button-outline"
           >
             View projects
           </Link>
 
           <Link
             href="/dashboard/clients"
-            className="rounded-full bg-violet-700 px-6 py-3 text-center font-black text-white shadow-lg shadow-violet-700/15 transition hover:bg-violet-800"
+            className="flow-button"
           >
             View clients
           </Link>
@@ -186,7 +186,7 @@ export default async function DashboardPage() {
               <Link
                 key={project.id}
                 href={`/dashboard/projects/${project.id}`}
-                className="rounded-3xl border border-slate-200 bg-slate-50 p-5 transition hover:border-cyan-300 hover:bg-white hover:shadow-sm"
+                className="rounded-3xl border border-slate-200 bg-slate-50 p-5 transition hover:border-violet-300 hover:bg-white hover:shadow-sm"
               >
                 <p className="break-words font-black text-slate-950">{project.name}</p>
                 <p className="mt-2 text-sm text-slate-500">

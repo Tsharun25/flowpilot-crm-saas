@@ -4,16 +4,20 @@ Submission SUB-2026-1044 · B1035-61368
 
 Use `https://flowpilot-crm-saas.vercel.app/` as the Live Demo URL in Vibe96 after deploying this revision. The landing page introduces the product and leads to one-click Owner, Admin and Member demos via the Live Demo button.
 
-Upload the [round 4 gallery](vibe96-round4). Use `01-cover.png` as the cover, all other widescreen PNGs as gallery screenshots, and `08-landing-square.png` in the square landing image slot.
+Use the curated v1.5.9 upload folder if available. From the [full capture set](vibe96-round4), use the cover, workspace overview, client pipeline, task board and admin settings for the five widescreen slots. Use `08-landing-square.png` in the square landing image slot.
 
 ## Message for the review team after deployment and upload
 
 Hi Vibe96 Review Team,
 
-We’ve updated FlowPilot CRM for round 4. The landing page now includes a product overview, feature highlights, screenshots, benefits and a Live Demo button. The workspace has an updated sidebar, overview, pipeline, projects, tasks, analytics and role-aware settings. The demo supports one-click Owner, Admin and Member sign-in.
+We’ve updated FlowPilot CRM (SUB-2026-1044 · B1035-61368) for round 4 in version 1.5.9.
 
-The updated gallery includes a 1920 × 1080 cover that shows the product, stack and features, matching widescreen screenshots and a separate 1080 × 1080 landing image. The screenshots use synthetic demo data.
+• The landing page introduces the product and benefits, shows a real four-screen workflow tour, and provides a direct Live Demo CTA to Owner, Admin and Member access.
+• The workspace and sign-in flow share a consistent visual style. We improved task search, responsive filters, Kanban card readability and the support and recovery experience.
+• The gallery contains a designed cover with the stack and key features, plus four 1920 × 1080 product screenshots. A separate 1080 × 1080 landing image is included. The screenshots show synthetic demo data.
 
-The live demo link opens the landing page at https://flowpilot-crm-saas.vercel.app/.
+Live Demo landing page
+https://flowpilot-crm-saas.vercel.app/
 
 Thank you for reviewing the update.
+Tsharun

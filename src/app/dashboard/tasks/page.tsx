@@ -60,15 +60,18 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
         </p>
       </div>
 
-      <form method="get" className="mb-6 grid gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-3 xl:grid-cols-7">
-        <input aria-label="Search tasks" name="q" defaultValue={q} placeholder="Search task title" className="rounded-xl border border-slate-200 px-3 py-2" />
+      <form method="get" className="task-filters mb-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <input aria-label="Search tasks" name="q" defaultValue={q} placeholder="Search by task title" className="task-filter-search rounded-xl border border-slate-200 px-3 py-2" />
         <select aria-label="Filter task project" name="projectId" defaultValue={projectId ?? ""} className="rounded-xl border border-slate-200 px-3 py-2"><option value="">All projects</option>{projects.map((project) => <option key={project.id} value={project.id}>{project.name}</option>)}</select>
         <select aria-label="Filter task status" name="status" defaultValue={status ?? ""} className="rounded-xl border border-slate-200 px-3 py-2"><option value="">All statuses</option><option value="TODO">Todo</option><option value="IN_PROGRESS">In progress</option><option value="REVIEW">Review</option><option value="DONE">Done</option></select>
         <select aria-label="Filter task priority" name="priority" defaultValue={priority ?? ""} className="rounded-xl border border-slate-200 px-3 py-2"><option value="">All priorities</option><option value="LOW">Low</option><option value="MEDIUM">Medium</option><option value="HIGH">High</option><option value="URGENT">Urgent</option></select>
         <label className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold"><input type="checkbox" name="overdue" value="1" defaultChecked={overdue} /> Overdue only</label>
-        <button className="rounded-xl bg-slate-950 px-4 py-2 font-bold text-white">Apply</button><Link href="/dashboard/tasks" className="rounded-xl border border-slate-200 px-4 py-2 text-center font-bold">Reset</Link>
+        <div className="task-filter-actions">
+          <button className="flow-button">Apply</button>
+          <Link href="/dashboard/tasks" className="flow-button flow-button-outline">Reset</Link>
+        </div>
       </form>
-      <div className="mb-6 flex justify-end"><a href={`/api/export/tasks?${new URLSearchParams({ ...(q ? { q } : {}), ...(projectId ? { projectId } : {}), ...(status ? { status } : {}), ...(priority ? { priority } : {}), ...(overdue ? { overdue: "1" } : {}) })}`} className="rounded-xl border border-cyan-300 bg-cyan-50 px-4 py-2 text-sm font-black text-cyan-900">Export filtered CSV</a></div>
+      <div className="mb-6 flex justify-end"><a href={`/api/export/tasks?${new URLSearchParams({ ...(q ? { q } : {}), ...(projectId ? { projectId } : {}), ...(status ? { status } : {}), ...(priority ? { priority } : {}), ...(overdue ? { overdue: "1" } : {}) })}`} className="flow-button flow-button-outline">Export filtered CSV</a></div>
 
       {tasks.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
@@ -78,64 +81,56 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
           </p>
           <Link
             href={hasTaskFilters(filters) ? "/dashboard/tasks" : "/dashboard/projects"}
-            className="mt-6 inline-flex rounded-full bg-slate-950 px-5 py-3 text-sm font-black text-white"
+            className="flow-button mt-6"
           >
             {hasTaskFilters(filters) ? "Reset filters" : "Go to Projects"}
           </Link>
         </div>
       ) : (
-        <div className="grid gap-4 xl:grid-cols-4">
-          {columns.map((column) => {
-            const columnTasks = tasks.filter(
-              (task) => task.status === column.value
-            );
+        <div className="task-board-container">
+          <div className="task-board">
+            {columns.map((column) => {
+              const columnTasks = tasks.filter(
+                (task) => task.status === column.value
+              );
 
-            return (
-              <section key={column.value} className="rounded-3xl bg-white p-4">
-                <div className="mb-4 flex items-center justify-between">
-                  <h3 className="font-black text-slate-950">{column.label}</h3>
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">
-                    {columnTasks.length}
-                  </span>
-                </div>
+              return (
+                <section key={column.value} className="min-w-0 rounded-2xl border border-slate-200 bg-white p-3">
+                  <div className="mb-4 flex items-center justify-between">
+                    <h2 className="font-bold text-slate-950">{column.label}</h2>
+                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600">
+                      {columnTasks.length}
+                    </span>
+                  </div>
 
-                <div className="space-y-3">
-                  {columnTasks.map((task) => (
-                    <article
-                      key={task.id}
-                      data-testid="workspace-task-card"
-                      className="block rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-cyan-300 hover:bg-white"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <p className="break-words font-black text-slate-950">
-                            {task.title}
-                          </p>
-                          <Link href={`/dashboard/projects/${task.projectId}`} className="mt-1 block break-words text-xs font-bold text-cyan-800 underline-offset-2 hover:underline">{task.project.name}</Link>
-                        </div>
-
-                        <span
-                          className={`rounded-full px-2.5 py-1 text-[10px] font-black ${getPriorityStyle(
-                            task.priority
-                          )}`}
-                        >
+                  <div className="space-y-3">
+                    {columnTasks.length === 0 ? <p className="p-2 text-sm text-slate-600">No tasks in this stage.</p> : null}
+                    {columnTasks.map((task) => (
+                      <article
+                        key={task.id}
+                        data-testid="workspace-task-card"
+                        className="rounded-xl border border-slate-200 bg-slate-50 p-3 transition hover:border-violet-300 hover:bg-white"
+                      >
+                        <p className="wrap-anywhere font-semibold leading-snug text-slate-950">{task.title}</p>
+                        <Link href={`/dashboard/projects/${task.projectId}`} className="mt-1 block wrap-anywhere text-sm font-medium text-violet-800 underline-offset-2 hover:underline">{task.project.name}</Link>
+                        <span className={`mt-2 inline-flex rounded-md px-2 py-1 text-xs font-semibold ${getPriorityStyle(task.priority)}`}>
                           {task.priority}
                         </span>
-                      </div>
 
-                      {task.description ? (
-                        <p className="mt-3 break-words text-sm leading-6 text-slate-500">
-                          {task.description}
-                        </p>
-                      ) : null}
-                      {task.dueDate ? <p className={`mt-3 rounded-full px-2.5 py-1 text-xs font-black ${task.status !== "DONE" && task.dueDate < todayUtc ? "bg-red-50 text-red-700" : "bg-blue-50 text-blue-800"}`}>{task.status !== "DONE" && task.dueDate < todayUtc ? "Overdue · " : "Due · "}{task.dueDate.toISOString().slice(0, 10)}</p> : null}
-                      <TaskStatusForm projectId={task.projectId} taskId={task.id} currentStatus={task.status} disabled={demoReadOnly} />
-                    </article>
-                  ))}
-                </div>
-              </section>
-            );
-          })}
+                        {task.description ? (
+                          <p className="mt-2 wrap-anywhere text-sm leading-5 text-slate-600">
+                            {task.description}
+                          </p>
+                        ) : null}
+                        {task.dueDate ? <p className={`mt-2 inline-flex rounded-md px-2 py-1 text-xs font-semibold ${task.status !== "DONE" && task.dueDate < todayUtc ? "bg-red-50 text-red-700" : "bg-blue-50 text-blue-800"}`}>{task.status !== "DONE" && task.dueDate < todayUtc ? "Overdue · " : "Due · "}{task.dueDate.toISOString().slice(0, 10)}</p> : null}
+                        <TaskStatusForm projectId={task.projectId} taskId={task.id} currentStatus={task.status} disabled={demoReadOnly} />
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

@@ -69,8 +69,8 @@ select {
 .flow-button-outline { color: var(--flow-ink); background: transparent; border-color: var(--flow-line); }
 .flow-button-outline:hover { background: var(--flow-tint); border-color: #cfc1f0; }
 .flow-kicker { color: var(--flow-accent-dark); font-size: .82rem; letter-spacing: .1em; font-weight: 750; text-transform: uppercase; }
-.flow-hero { display: grid; grid-template-columns: .86fr 1.2fr; align-items: center; gap: clamp(2rem, 5vw, 5rem); padding-block: clamp(4rem, 9vw, 9rem); }
-.flow-hero h1 { max-width: 11ch; margin-top: 1.1rem; font-size: clamp(3.3rem, 6.2vw, 6.7rem); font-weight: 710; letter-spacing: -.085em; line-height: .99; }
+.flow-hero { display: grid; grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr); align-items: center; gap: clamp(1.5rem, 3vw, 3.25rem); padding-block: clamp(3rem, 6vw, 6rem); }
+.flow-hero h1 { max-width: 16ch; margin-top: 1.1rem; font-size: clamp(2.8rem, 4.2vw, 5rem); font-weight: 710; letter-spacing: -.068em; line-height: 1.04; }
 .flow-hero h1 em { color: var(--flow-accent); font-style: normal; }
 .flow-hero-copy > p:not(.flow-kicker) { max-width: 30rem; margin-top: 1.45rem; color: var(--flow-muted); font-size: 1.08rem; line-height: 1.65; }
 .flow-hero-copy > p.flow-hero-note { margin-top: .9rem; font-size: .875rem; }
@@ -86,7 +86,12 @@ select {
 .flow-feature-icon { display: grid; place-items: center; width: 2.85rem; height: 2.85rem; border-radius: .7rem; color: var(--flow-accent); background: var(--flow-tint); }
 .flow-feature-grid h3 { margin-top: 1.35rem; font-size: 1.2rem; font-weight: 700; letter-spacing: -.025em; }
 .flow-feature-grid p, .flow-tour div > p:not(.flow-kicker), .flow-benefits li p, .flow-final p { margin-top: .65rem; color: var(--flow-muted); line-height: 1.65; }
-.flow-tour { display: grid; grid-template-columns: .7fr 1.3fr; align-items: center; gap: clamp(2rem, 6vw, 6rem); padding-block: clamp(4rem, 8vw, 8rem); }
+.flow-tour { padding-block: clamp(4rem, 7vw, 7rem); }
+.flow-tour-grid { display: grid; gap: 1rem; margin-top: 2rem; }
+.flow-tour-grid figure { min-width: 0; background: white; border: 1px solid var(--flow-line); border-radius: 1rem; padding: .85rem; }
+.flow-tour-grid figcaption { padding: .65rem .2rem .15rem; color: var(--flow-muted); line-height: 1.5; }
+.flow-tour-grid figcaption strong { display: block; color: var(--flow-ink); }
+@media (min-width: 720px) { .flow-tour-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .flow-tour .flow-button { margin-top: 1.4rem; }
 .flow-tour img { box-shadow: 0 1.3rem 2.8rem -1.5rem #57389b55; }
 .flow-benefits { display: grid; grid-template-columns: .9fr 1.1fr; gap: 2rem; padding: clamp(1.6rem, 5vw, 4.5rem); border-radius: 1.15rem; background: var(--flow-tint); }
@@ -97,8 +102,8 @@ select {
 .flow-final { padding-block: 5rem; text-align: center; }
 .flow-final .flow-button { margin-top: 1.3rem; }
 @media (max-width: 900px) {
-  .flow-hero, .flow-tour { grid-template-columns: 1fr; }
-  .flow-hero h1 { max-width: 13ch; }
+  .flow-hero { grid-template-columns: 1fr; }
+  .flow-hero h1 { max-width: 16ch; }
   .flow-feature-grid { grid-template-columns: repeat(2, 1fr); }
   .flow-feature-grid article:nth-child(3) { border-left: 0; }
   .flow-feature-grid article:nth-child(n+3) { border-top: 1px solid var(--flow-line); }
@@ -151,3 +156,22 @@ select {
 .flow-document { line-height: 1.7; }
 
 #new-client, #new-project { scroll-margin-top: 6rem; }
+
+
+.flow-button:disabled { opacity: .6; cursor: not-allowed; }
+.task-filters { display: grid; grid-template-columns: minmax(0, 1fr); gap: .75rem; }
+.task-filters > :is(input, select) { width: 100%; min-width: 0; }
+.task-filter-actions { display: flex; flex-wrap: wrap; gap: .6rem; }
+.task-board-container { container-type: inline-size; }
+.task-board { display: grid; grid-template-columns: minmax(0, 1fr); gap: .75rem; }
+@container (min-width: 34rem) { .task-board { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container (min-width: 68rem) { .task-board { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 24rem) {
+  .task-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .task-filter-search, .task-filter-actions { grid-column: 1 / -1; }
+}
+@media (min-width: 77rem) {
+  .task-filters { grid-template-columns: minmax(13rem, 1.55fr) repeat(4, minmax(0, 1fr)); }
+  .task-filter-search { grid-column: auto; }
+  .task-filter-actions { grid-column: 1 / -1; }
+}

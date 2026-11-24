@@ -1,4 +1,4 @@
-# FlowPilot CRM 1.5.8 release checklist
+# FlowPilot CRM 1.5.9 release checklist
 
 ## Local release checks
 

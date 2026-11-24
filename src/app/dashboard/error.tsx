@@ -28,7 +28,7 @@ export default function DashboardError({
         <button
           type="button"
           onClick={() => retry()}
-          className="rounded-full bg-slate-950 px-6 py-3 font-black text-white transition hover:bg-slate-800"
+          className="flow-button"
         >
           Reload this view
         </button>

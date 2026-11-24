@@ -144,7 +144,7 @@ export default function RegisterForm() {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full rounded-2xl bg-violet-700 px-5 py-3 font-bold text-white transition hover:bg-violet-800 disabled:cursor-not-allowed disabled:opacity-60"
+        className="flow-button w-full"
       >
         {isLoading ? "Creating account..." : "Create account"}
       </button>

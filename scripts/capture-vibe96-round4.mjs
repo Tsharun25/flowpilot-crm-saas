@@ -38,20 +38,22 @@ try {
     throw new Error("Marketplace captures require the synthetic read-only demo workspace.");
   }
 
-  for (const [filename, pathname] of [
-    ["02-workspace-overview", "/dashboard"],
-    ["03-client-pipeline", "/dashboard/clients"],
-    ["04-project-delivery", "/dashboard/projects"],
-    ["05-task-board", "/dashboard/tasks"],
-    ["06-analytics", "/dashboard/analytics"],
-  ]) {
+  const productScreens = [
+    ["02-workspace-overview", "/dashboard", "workspace-overview"],
+    ["03-client-pipeline", "/dashboard/clients", "client-pipeline"],
+    ["04-project-delivery", "/dashboard/projects", "project-delivery"],
+    ["05-task-board", "/dashboard/tasks", "task-board"],
+    ["06-analytics", "/dashboard/analytics", "analytics"],
+  ];
+  for (const [filename, pathname] of productScreens) {
     await open(page, pathname);
     await capture(page, filename);
   }
 
   if (process.argv.includes("--refresh-product-previews")) {
-    await copyFile(`${directory}/02-workspace-overview.png`, "public/product/workspace-overview-round4.png");
-    await copyFile(`${directory}/03-client-pipeline.png`, "public/product/client-pipeline-round4.png");
+    for (const [filename, , assetName] of productScreens) {
+      await copyFile(`${directory}/${filename}.png`, `public/product/${assetName}-round4.png`);
+    }
   }
 
   await context.clearCookies();
@@ -94,6 +96,15 @@ try {
 
   await page.setViewportSize({ width: 1080, height: 1080 });
   await open(page, "/");
+  await page.addStyleTag({ content: `
+    .flow-hero { grid-template-columns: 1fr; gap: 1.25rem; padding-block: 2.4rem; max-width: 56rem; }
+    .flow-hero h1 { max-width: 19ch; font-size: 3.5rem; }
+    .flow-hero h1 em { display: block; }
+    .flow-hero-copy > p:not(.flow-kicker) { max-width: 44rem; margin-top: .8rem; }
+    .flow-actions { margin-top: 1rem; }
+    .flow-features { display: none; }
+  ` });
+  await page.locator(".flow-hero-preview img").evaluate((image) => image.decode());
   await capture(page, "08-landing-square");
 } finally {
   await browser.close();

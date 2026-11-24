@@ -61,7 +61,7 @@ export default async function ClientDetailsPage({ params }: { params: Promise<{ 
           <input type="hidden" name="requestId" value={randomUUID()} />
           <label htmlFor="client-note" className="mt-4 block text-sm font-bold">Plain-text note</label>
           <textarea id="client-note" name="body" required maxLength={2000} rows={6} className="mt-2 w-full rounded-2xl border border-slate-200 p-4" />
-          <SubmitButton disabled={demoReadOnly} pendingText="Adding..." className="mt-3 rounded-xl bg-slate-950 px-5 py-3 font-black text-white">Add Note</SubmitButton>
+          <SubmitButton disabled={demoReadOnly} pendingText="Adding..." className="flow-button mt-3">Add Note</SubmitButton>
         </form>
       </section>
 

@@ -138,7 +138,7 @@ export default async function SettingsPage() {
         {canEditWorkspace ? (
           <SubmitButton
             pendingText="Saving Workspace..."
-            className="rounded-2xl bg-violet-700 px-6 py-3 font-black text-white transition hover:bg-violet-800"
+            className="flow-button"
           >
             Save Workspace
           </SubmitButton>
@@ -241,7 +241,7 @@ export default async function SettingsPage() {
             <SubmitButton
               disabled={demoReadOnly}
               pendingText="Saving Profile..."
-              className="rounded-2xl bg-slate-950 px-6 py-3 font-black text-white transition hover:bg-slate-800"
+              className="flow-button"
             >
               Save Profile
             </SubmitButton>
@@ -292,7 +292,7 @@ export default async function SettingsPage() {
         </div>
 
         <div className="rounded-2xl bg-gradient-to-br from-slate-950 to-slate-800 p-6 text-white shadow-xl shadow-slate-300">
-          <p className="text-sm font-black text-cyan-300">FlowPilot CRM v{APP_VERSION}</p>
+          <p className="text-sm font-black text-violet-200">FlowPilot CRM v{APP_VERSION}</p>
           <h3 className="mt-3 text-2xl font-black">Ready for your workflow</h3>
           <p className="mt-3 text-sm leading-6 text-slate-300">
             Customize the brand, seed your workspace, and deploy with the

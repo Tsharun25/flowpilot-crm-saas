@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 const features = [
   { title: "Keep your pipeline in view", text: "Track deal values, client notes and the next follow-up in one place.", icon: UsersRound },
   { title: "Hand off a won deal", text: "Turn a won opportunity into a linked project with its client context intact.", icon: BriefcaseBusiness },
-  { title: "Make the next task clear", text: "Organize work in Kanban, assign owners, and filter by priority or due date.", icon: CheckSquare2 },
-  { title: "See what the team delivered", text: "Review won revenue, open opportunities and project progress from workspace data.", icon: BarChart3 },
+  { title: "Make the next task clear", text: "Organize work in Kanban, prioritize tasks and filter by project, priority or overdue status.", icon: CheckSquare2 },
+  { title: "See what the team delivered", text: "Review won deal value, open opportunities and project progress from workspace data.", icon: BarChart3 },
 ];
 
 export default function HomePage() {
@@ -63,13 +63,23 @@ export default function HomePage() {
           </div>
         </section>
         <section className="flow-wrap flow-tour" id="product">
-          <div>
-            <p className="flow-kicker">Product tour</p>
-            <h2>Take a closer look at your pipeline.</h2>
-            <p>See where every opportunity stands, bring upcoming follow-ups to the top, and carry a won deal into project delivery.</p>
-            <Link href="/login" className="flow-button">Try the workspace</Link>
+          <p className="flow-kicker">Product tour</p>
+          <h2>Follow the work as it moves.</h2>
+          <div className="flow-tour-grid">
+            {[
+              { file: "client-pipeline", title: "Track an opportunity", text: "Check deal stage, value and the next client follow-up." },
+              { file: "project-delivery", title: "Plan delivery", text: "Open the project linked to a won deal and track completion." },
+              { file: "task-board", title: "See what’s due", text: "Scan tasks by stage, priority and due date across projects." },
+              { file: "analytics", title: "Review deal value", text: "Compare open pipeline with deals marked Won." },
+            ].map(({ file, title, text }) => (
+              <figure key={file}>
+                <Image src={`/product/${file}-round4.png`} width={1920} height={1080} sizes="(min-width: 720px) 48vw, 100vw" alt={title + " in a FlowPilot demo workspace"} />
+                <figcaption><strong>{title}</strong>{text}</figcaption>
+              </figure>
+            ))}
           </div>
-          <Image src="/product/client-pipeline-round4.png" width={1920} height={1080} sizes="(min-width: 900px) 58vw, 100vw" alt="CRM pipeline with client records grouped by opportunity stage" />
+          <p className="mt-4 text-sm text-slate-600">Screens show sample workspace data.</p>
+          <Link href="/login" className="flow-button">Try the workspace</Link>
         </section>
         <section className="flow-wrap flow-benefits" id="benefits">
           <div>

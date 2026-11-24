@@ -35,7 +35,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
       <form method="get" className="mb-6 flex flex-wrap items-end gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
         <label htmlFor="analytics-year" className="text-sm font-bold text-slate-700">Reporting year (UTC)</label>
         <select id="analytics-year" name="year" defaultValue={String(selectedYear)} className="rounded-xl border border-slate-200 px-3 py-2">{availableYears.map((year) => <option key={year} value={year}>{year}</option>)}</select>
-        <button className="rounded-xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">Apply</button>
+        <button className="flow-button">Apply</button>
       </form>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">

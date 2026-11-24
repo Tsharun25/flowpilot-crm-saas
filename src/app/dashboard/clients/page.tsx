@@ -27,7 +27,7 @@ function getStatusStyle(status: string) {
   if (status === "WON") return "bg-emerald-100 text-emerald-700";
   if (status === "LOST") return "bg-red-100 text-red-700";
   if (status === "CONTACTED") return "bg-blue-100 text-blue-700";
-  return "bg-cyan-100 text-violet-800";
+  return "bg-violet-100 text-violet-800";
 }
 
 export default async function ClientsPage({ searchParams }: { searchParams: Promise<{ q?: string; status?: string }> }) {
@@ -99,11 +99,11 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
         <select id="client-filter-status" name="status" defaultValue={status ?? ""} className="rounded-xl border border-slate-200 px-4 py-3">
           <option value="">All statuses</option><option value="LEAD">Lead</option><option value="CONTACTED">Contacted</option><option value="WON">Won</option><option value="LOST">Lost</option>
         </select>
-        <button className="rounded-xl bg-slate-950 px-5 py-3 font-bold text-white">Apply</button>
-        <Link href="/dashboard/clients" className="rounded-xl border border-slate-200 px-5 py-3 text-center font-bold">Reset</Link>
+        <button className="flow-button">Apply</button>
+        <Link href="/dashboard/clients" className="flow-button flow-button-outline">Reset</Link>
       </form>
       <div className="mb-6 flex flex-wrap justify-end gap-2">
-        <a href={`/api/export/clients?${new URLSearchParams({ ...(q ? { q } : {}), ...(status ? { status } : {}) })}`} className="rounded-xl border border-cyan-300 bg-cyan-50 px-4 py-2 text-sm font-black text-cyan-900">Export filtered CSV</a>
+        <a href={`/api/export/clients?${new URLSearchParams({ ...(q ? { q } : {}), ...(status ? { status } : {}) })}`} className="flow-button flow-button-outline">Export filtered CSV</a>
         {!demoReadOnly ? <a href="#new-client" className="flow-button">New client</a> : null}
       </div>
 
@@ -238,7 +238,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
                                   <SubmitButton
                                     disabled={demoReadOnly}
                                     pendingText="Saving..."
-                                    className="w-full rounded-xl bg-slate-950 px-3 py-2 text-xs font-black text-white"
+                                    className="flow-button w-full"
                                   >
                                     Save Changes
                                   </SubmitButton>
@@ -363,7 +363,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
             <SubmitButton
               disabled={demoReadOnly}
               pendingText="Adding Client..."
-              className="w-full rounded-2xl bg-violet-700 px-5 py-3 font-black text-white transition hover:bg-violet-800"
+              className="flow-button w-full"
             >
               Add Client
             </SubmitButton>

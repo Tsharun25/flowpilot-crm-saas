@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.9 — 2026-11-24
+
+- Standardized primary actions and CSV controls, widened task search, and improved Kanban card layout across viewport sizes.
+- Gave the landing hero a larger product preview and added a four-screen workflow tour with sample data.
+- Updated support guidance, branded the not-found page, and refreshed the marketplace gallery from the release build.
+
 ## 1.5.8 — 2026-11-24
 
 - Redesigned the public landing page, authentication screens and CRM workspace for Vibe96 round 4.

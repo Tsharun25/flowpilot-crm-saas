@@ -32,7 +32,7 @@ const columns = [
 function getStatusStyle(status: string) {
   if (status === "COMPLETED") return "bg-emerald-100 text-emerald-700";
   if (status === "ARCHIVED") return "bg-slate-200 text-slate-600";
-  return "bg-cyan-100 text-violet-800";
+  return "bg-violet-100 text-violet-800";
 }
 
 function getPriorityStyle(priority: string) {
@@ -119,7 +119,7 @@ export default async function ProjectDetailsPage({
             <p className="mt-4 max-w-3xl break-words leading-7 text-slate-500">
               {project.description || "No description added."}
             </p>
-            {project.client ? <Link href={`/dashboard/clients/${project.client.id}`} className="mt-4 inline-flex rounded-full bg-cyan-50 px-3 py-2 text-sm font-black text-cyan-900">Client: {project.client.name}</Link> : <p className="mt-4 text-sm font-bold text-slate-500">Internal project · no linked client</p>}
+            {project.client ? <Link href={`/dashboard/clients/${project.client.id}`} className="mt-4 inline-flex rounded-full bg-violet-50 px-3 py-2 text-sm font-black text-violet-900">Client: {project.client.name}</Link> : <p className="mt-4 text-sm font-bold text-slate-500">Internal project · no linked client</p>}
 
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               <div className="rounded-3xl bg-slate-50 p-5">
@@ -278,7 +278,7 @@ export default async function ProjectDetailsPage({
                                     <SubmitButton
                                       disabled={demoReadOnly}
                                       pendingText="Saving..."
-                                      className="w-full rounded-xl bg-slate-950 px-3 py-2 text-xs font-black text-white"
+                                      className="flow-button w-full"
                                     >
                                       Save Changes
                                     </SubmitButton>
@@ -392,7 +392,7 @@ export default async function ProjectDetailsPage({
               <SubmitButton
                 disabled={demoReadOnly}
                 pendingText="Adding Task..."
-                className="w-full rounded-2xl bg-violet-700 px-5 py-3 font-black text-white transition hover:bg-violet-800"
+                className="flow-button w-full"
               >
                 Add Task
               </SubmitButton>
@@ -463,7 +463,7 @@ export default async function ProjectDetailsPage({
               <SubmitButton
                 disabled={demoReadOnly}
                 pendingText="Saving..."
-                className="w-full rounded-2xl bg-slate-950 px-5 py-3 font-black text-white transition hover:bg-slate-800"
+                className="flow-button w-full"
               >
                 Save Changes
               </SubmitButton>

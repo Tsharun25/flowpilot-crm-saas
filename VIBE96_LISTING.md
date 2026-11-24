@@ -68,6 +68,6 @@ The application does not schedule the demo reset itself; that remains a manual o
 
 ## Round 4 gallery
 
-Use the PNGs in [marketplace-assets/vibe96-round4](marketplace-assets/vibe96-round4). Upload the 1920 × 1080 cover first, followed by the workspace overview, pipeline, projects, tasks, analytics, role login and admin settings screenshots. Use the separate 1080 × 1080 landing image for the square listing slot.
+Use the PNGs in [marketplace-assets/vibe96-round4](marketplace-assets/vibe96-round4). For the curated v1.5.9 upload, use the 1920 × 1080 cover first, followed by the workspace overview, pipeline, task board and admin settings screenshots. Use the separate 1080 × 1080 landing image for the square listing slot.
 
 The screenshots show a read-only workspace with synthetic data. Account and client email addresses are omitted from the captures. The cover describes the product, features and stack without web addresses, contact details or social links.
