@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 function getStatusStyle(status: string) {
   if (status === "COMPLETED") return "bg-emerald-100 text-emerald-700";
   if (status === "ARCHIVED") return "bg-slate-200 text-slate-600";
-  return "bg-cyan-100 text-cyan-700";
+  return "bg-cyan-100 text-violet-800";
 }
 
 export default async function ProjectsPage({ searchParams }: { searchParams: Promise<{ q?: string; status?: string; clientId?: string }> }) {
@@ -44,12 +44,12 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
     <div>
       <div className="mb-8 flex flex-col justify-between gap-4 xl:flex-row xl:items-end">
         <div>
-          <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">
+          <p className="text-sm font-bold uppercase tracking-wide text-violet-800">
             Projects
           </p>
-          <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+          <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
             Manage Projects
-          </h2>
+          </h1>
           <p className="mt-2 max-w-2xl text-slate-500">
             Create, track, and manage all client/internal work inside your
             workspace.
@@ -57,75 +57,16 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
         </div>
       </div>
 
-      <form method="get" className="mb-6 grid gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-[1fr_180px_220px_auto_auto]">
-        <input aria-label="Search projects" name="q" defaultValue={q} placeholder="Search project name" className="rounded-xl border border-slate-200 px-4 py-3" />
-        <select aria-label="Filter project status" name="status" defaultValue={status ?? ""} className="rounded-xl border border-slate-200 px-4 py-3"><option value="">All statuses</option><option value="ACTIVE">Active</option><option value="COMPLETED">Completed</option><option value="ARCHIVED">Archived</option></select>
-        <select aria-label="Filter project client" name="clientId" defaultValue={clientId ?? ""} className="rounded-xl border border-slate-200 px-4 py-3"><option value="">All clients</option><option value="internal">Internal / no client</option>{clients.map((client) => <option key={client.id} value={client.id}>{client.name}</option>)}</select>
+      <form method="get" className="mb-6 grid gap-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,10rem)_minmax(0,12rem)_auto_auto]">
+        <input aria-label="Search projects" name="q" defaultValue={q} placeholder="Search project name" className="min-w-0 sm:col-span-2 xl:col-span-1 rounded-xl border border-slate-200 px-4 py-3" />
+        <select aria-label="Filter project status" name="status" defaultValue={status ?? ""} className="min-w-0 rounded-xl border border-slate-200 px-4 py-3"><option value="">All statuses</option><option value="ACTIVE">Active</option><option value="COMPLETED">Completed</option><option value="ARCHIVED">Archived</option></select>
+        <select aria-label="Filter project client" name="clientId" defaultValue={clientId ?? ""} className="min-w-0 rounded-xl border border-slate-200 px-4 py-3"><option value="">All clients</option><option value="internal">Internal / no client</option>{clients.map((client) => <option key={client.id} value={client.id}>{client.name}</option>)}</select>
         <button className="rounded-xl bg-slate-950 px-5 py-3 font-bold text-white">Apply</button>
         <Link href="/dashboard/projects" className="rounded-xl border border-slate-200 px-5 py-3 text-center font-bold">Reset</Link>
       </form>
-      <div className="mb-6 flex justify-end"><a href={`/api/export/projects?${new URLSearchParams({ ...(q ? { q } : {}), ...(status ? { status } : {}), ...(clientId ? { clientId } : {}) })}`} className="rounded-xl border border-cyan-300 bg-cyan-50 px-4 py-2 text-sm font-black text-cyan-900">Export filtered CSV</a></div>
+      <div className="mb-6 flex flex-wrap justify-end gap-2"><a href={`/api/export/projects?${new URLSearchParams({ ...(q ? { q } : {}), ...(status ? { status } : {}), ...(clientId ? { clientId } : {}) })}`} className="rounded-xl border border-cyan-300 bg-cyan-50 px-4 py-2 text-sm font-black text-cyan-900">Export filtered CSV</a>{!demoReadOnly ? <a href="#new-project" className="flow-button">New project</a> : null}</div>
 
-      <section className="grid gap-6 xl:grid-cols-[420px_1fr]">
-        <form
-          action={createProject}
-          className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
-        >
-          <h3 className="text-xl font-black text-slate-950">
-            Create New Project
-          </h3>
-
-          <div className="mt-6 space-y-5">
-            <div>
-              <label
-                htmlFor="new-project-name"
-                className="mb-2 block text-sm font-bold text-slate-700"
-              >
-                Project Name
-              </label>
-              <input
-                id="new-project-name"
-                name="name"
-                required
-                placeholder="Website Redesign"
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="new-project-description"
-                className="mb-2 block text-sm font-bold text-slate-700"
-              >
-                Description
-              </label>
-              <textarea
-                id="new-project-description"
-                name="description"
-                rows={5}
-                placeholder="Short project summary..."
-                className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="new-project-client" className="mb-2 block text-sm font-bold text-slate-700">Client (optional)</label>
-              <select id="new-project-client" name="clientId" defaultValue="" className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <option value="">Internal / no client</option>
-                {clients.map((client) => <option key={client.id} value={client.id}>{client.name}</option>)}
-              </select>
-            </div>
-
-            <SubmitButton
-              disabled={demoReadOnly}
-              pendingText="Creating Project..."
-              className="w-full rounded-2xl bg-slate-950 px-5 py-3 font-black text-white transition hover:bg-slate-800"
-            >
-              Create Project
-            </SubmitButton>
-          </div>
-        </form>
-
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(19rem,25rem)]">
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="mb-5 flex items-center justify-between">
             <h3 className="text-xl font-black text-slate-950">
@@ -139,10 +80,10 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
           {projects.length === 0 ? (
             <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-10 text-center">
               <p className="text-lg font-black text-slate-950">
-                No projects yet
+                {q || status || clientId ? "No projects match these filters" : "No projects yet"}
               </p>
               <p className="mt-2 text-sm text-slate-500">
-                Create your first project from the form on the left.
+                {q || status || clientId ? "Reset the filters or try a different search." : "Use New project to plan your first delivery."}
               </p>
             </div>
           ) : (
@@ -195,7 +136,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
 
                       <div className="h-2 rounded-full bg-slate-200">
                         <div
-                          className="h-2 rounded-full bg-cyan-400"
+                          className="h-2 rounded-full bg-violet-700"
                           style={{ width: `${progress}%` }}
                         />
                       </div>
@@ -210,6 +151,65 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
             </div>
           )}
         </div>
+        <form
+          id="new-project"
+          action={createProject}
+          className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
+        >
+          <h3 className="text-xl font-black text-slate-950">
+            Create New Project
+          </h3>
+
+          <div className="mt-6 space-y-5">
+            <div>
+              <label
+                htmlFor="new-project-name"
+                className="mb-2 block text-sm font-bold text-slate-700"
+              >
+                Project Name
+              </label>
+              <input
+                id="new-project-name"
+                name="name"
+                required
+                placeholder="Website Redesign"
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-violet-500 focus:bg-white"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="new-project-description"
+                className="mb-2 block text-sm font-bold text-slate-700"
+              >
+                Description
+              </label>
+              <textarea
+                id="new-project-description"
+                name="description"
+                rows={5}
+                placeholder="Short project summary..."
+                className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-violet-500 focus:bg-white"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="new-project-client" className="mb-2 block text-sm font-bold text-slate-700">Client (optional)</label>
+              <select id="new-project-client" name="clientId" defaultValue="" className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <option value="">Internal / no client</option>
+                {clients.map((client) => <option key={client.id} value={client.id}>{client.name}</option>)}
+              </select>
+            </div>
+
+            <SubmitButton
+              disabled={demoReadOnly}
+              pendingText="Creating Project..."
+              className="w-full rounded-2xl bg-slate-950 px-5 py-3 font-black text-white transition hover:bg-slate-800"
+            >
+              Create Project
+            </SubmitButton>
+          </div>
+        </form>
       </section>
     </div>
   );

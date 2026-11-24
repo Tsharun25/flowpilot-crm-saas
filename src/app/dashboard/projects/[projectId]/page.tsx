@@ -32,7 +32,7 @@ const columns = [
 function getStatusStyle(status: string) {
   if (status === "COMPLETED") return "bg-emerald-100 text-emerald-700";
   if (status === "ARCHIVED") return "bg-slate-200 text-slate-600";
-  return "bg-cyan-100 text-cyan-700";
+  return "bg-cyan-100 text-violet-800";
 }
 
 function getPriorityStyle(priority: string) {
@@ -112,9 +112,9 @@ export default async function ProjectDetailsPage({
               {project.status}
             </span>
 
-            <h2 className="mt-4 break-words text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+            <h1 className="mt-4 break-words text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
               {project.name}
-            </h2>
+            </h1>
 
             <p className="mt-4 max-w-3xl break-words leading-7 text-slate-500">
               {project.description || "No description added."}
@@ -161,7 +161,7 @@ export default async function ProjectDetailsPage({
                 aria-valuenow={progress}
               >
                 <div
-                  className="h-3 rounded-full bg-cyan-400"
+                  className="h-3 rounded-full bg-violet-700"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -171,7 +171,7 @@ export default async function ProjectDetailsPage({
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="mb-6 flex flex-col justify-between gap-3 md:flex-row md:items-center">
               <div>
-                <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">
+                <p className="text-sm font-bold uppercase tracking-wide text-violet-800">
                   Kanban
                 </p>
                 <h3 className="mt-1 text-2xl font-black text-slate-950">
@@ -325,7 +325,7 @@ export default async function ProjectDetailsPage({
                   name="title"
                   required
                   placeholder="Design homepage wireframe"
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-violet-500 focus:bg-white"
                 />
               </div>
 
@@ -341,7 +341,7 @@ export default async function ProjectDetailsPage({
                   name="description"
                   rows={4}
                   placeholder="Short task details..."
-                  className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
+                  className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-violet-500 focus:bg-white"
                 />
               </div>
 
@@ -357,7 +357,7 @@ export default async function ProjectDetailsPage({
                     id="new-task-status"
                     name="status"
                     defaultValue="TODO"
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-violet-500 focus:bg-white"
                   >
                     <option value="TODO">Todo</option>
                     <option value="IN_PROGRESS">In Progress</option>
@@ -377,7 +377,7 @@ export default async function ProjectDetailsPage({
                     id="new-task-priority"
                     name="priority"
                     defaultValue="MEDIUM"
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-violet-500 focus:bg-white"
                   >
                     <option value="LOW">Low</option>
                     <option value="MEDIUM">Medium</option>
@@ -392,7 +392,7 @@ export default async function ProjectDetailsPage({
               <SubmitButton
                 disabled={demoReadOnly}
                 pendingText="Adding Task..."
-                className="w-full rounded-2xl bg-cyan-400 px-5 py-3 font-black text-slate-950 transition hover:bg-cyan-300"
+                className="w-full rounded-2xl bg-violet-700 px-5 py-3 font-black text-white transition hover:bg-violet-800"
               >
                 Add Task
               </SubmitButton>
@@ -419,7 +419,7 @@ export default async function ProjectDetailsPage({
                   name="name"
                   required
                   defaultValue={project.name}
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-violet-500 focus:bg-white"
                 />
               </div>
 
@@ -436,7 +436,7 @@ export default async function ProjectDetailsPage({
                   id="edit-project-status"
                   name="status"
                   defaultValue={project.status}
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-violet-500 focus:bg-white"
                 >
                   <option value="ACTIVE">Active</option>
                   <option value="COMPLETED">Completed</option>
@@ -456,7 +456,7 @@ export default async function ProjectDetailsPage({
                   name="description"
                   rows={4}
                   defaultValue={project.description || ""}
-                  className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
+                  className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-violet-500 focus:bg-white"
                 />
               </div>
 

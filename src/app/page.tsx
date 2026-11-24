@@ -1,111 +1,93 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BarChart3, BriefcaseBusiness, Check, CheckCircle2, CheckSquare2, Database, Download, Layers3, LockKeyhole, ShieldCheck, Sparkles, UsersRound } from "lucide-react";
+import { BarChart3, BriefcaseBusiness, CheckSquare2, Database, ShieldCheck, UsersRound } from "lucide-react";
+import FlowPilotBrand from "@/components/flowpilot-brand";
 import PublicFooter from "@/components/public-footer";
 
 export const metadata: Metadata = {
-  title: "FlowPilot CRM — Clients, projects and delivery in one workspace",
-  description: "A self-hosted CRM and project management starter for freelancers and small agencies, with client pipelines, linked projects, Kanban tasks and analytics.",
+  title: "FlowPilot CRM — From signed deal to delivered work",
+  description: "A self-hosted CRM and project workspace for small agencies and independent teams.",
   alternates: { canonical: "/" },
 };
 
 const features = [
-  { title: "Client pipeline", description: "Move opportunities from lead to won, record exact deal value and keep follow-ups visible.", icon: UsersRound, tone: "from-cyan-300/20 to-blue-500/10" },
-  { title: "Linked project delivery", description: "Turn a won deal into a linked project once, then keep scope, progress and ownership together.", icon: BriefcaseBusiness, tone: "from-violet-300/20 to-indigo-500/10" },
-  { title: "Kanban task control", description: "Prioritize work across Todo, In Progress, Review and Done with due-date filtering.", icon: CheckSquare2, tone: "from-emerald-300/20 to-cyan-500/10" },
-  { title: "Workspace analytics", description: "See open pipeline, won value, delivery progress and workload from live workspace data.", icon: BarChart3, tone: "from-amber-300/20 to-orange-500/10" },
-];
-
-const benefits = [
-  "One workspace instead of scattered spreadsheets",
-  "Role-aware access for owners, admins and members",
-  "Read-only public demo that visitors cannot break",
-  "CSV export with spreadsheet-injection protection",
-  "Responsive interface for desktop, tablet and mobile",
-  "Docker and Node.js deployment documentation",
+  { title: "Keep your pipeline in view", text: "Track deal values, client notes and the next follow-up in one place.", icon: UsersRound },
+  { title: "Hand off a won deal", text: "Turn a won opportunity into a linked project with its client context intact.", icon: BriefcaseBusiness },
+  { title: "Make the next task clear", text: "Organize work in Kanban, assign owners, and filter by priority or due date.", icon: CheckSquare2 },
+  { title: "See what the team delivered", text: "Review won revenue, open opportunities and project progress from workspace data.", icon: BarChart3 },
 ];
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#050814] text-white">
-      <div className="relative border-b border-white/10">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute left-[8%] top-[-16rem] size-[40rem] rounded-full bg-cyan-400/15 blur-[120px]" />
-          <div className="absolute right-[-10rem] top-[8rem] size-[34rem] rounded-full bg-blue-600/20 blur-[120px]" />
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.025)_1px,transparent_1px)] bg-[size:72px_72px] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]" />
-        </div>
-
-        <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8">
-          <Link href="/" className="flex items-center gap-3" aria-label="FlowPilot home">
-            <span className="grid size-11 place-items-center rounded-2xl bg-gradient-to-br from-cyan-300 to-blue-500 text-lg font-black text-slate-950 shadow-lg shadow-cyan-500/20">F</span>
-            <span><span className="block text-xl font-black leading-none">FlowPilot</span><span className="mt-1 block text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">CRM + Projects</span></span>
-          </Link>
-          <nav className="hidden items-center gap-8 text-sm font-bold text-slate-300 md:flex" aria-label="Main navigation">
-            <a href="#features" className="transition hover:text-white">Features</a><a href="#product" className="transition hover:text-white">Product</a><a href="#benefits" className="transition hover:text-white">Benefits</a>
-          </nav>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link href="/login" className="hidden rounded-full px-4 py-2.5 text-sm font-bold text-slate-300 transition hover:text-white sm:inline-flex">Sign in</Link>
-            <Link href="/login" className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-black text-slate-950 transition hover:bg-cyan-300 sm:px-5">Live demo <ArrowRight size={16} /></Link>
+    <div className="flow-landing">
+      <header className="flow-public-nav flow-wrap">
+        <FlowPilotBrand />
+        <nav aria-label="Main navigation">
+          <a href="#features">Features</a>
+          <a href="#product">Product tour</a>
+          <a href="#benefits">Benefits</a>
+        </nav>
+        <Link className="flow-button flow-button-outline" href="/login">Live Demo</Link>
+      </header>
+      <main>
+        <section className="flow-hero flow-wrap">
+          <div className="flow-hero-copy">
+            <p className="flow-kicker">Client operations for small teams</p>
+            <h1>From signed deal to <em>delivered work.</em></h1>
+            <p>Manage your pipeline, projects and daily tasks in one self-hosted workspace built for agencies and independent teams.</p>
+            <div className="flow-actions">
+              <Link className="flow-button" href="/login">Live Demo</Link>
+              <a className="flow-button flow-button-outline" href="#product">See the product</a>
+            </div>
+            <p className="flow-hero-note">Explore a read-only workspace with sample data.</p>
           </div>
-        </header>
-
-        <section className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-5 pb-16 pt-12 sm:px-8 sm:pb-20 sm:pt-16 lg:grid-cols-[0.92fr_1.08fr] lg:gap-12 lg:pt-20">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-cyan-200"><Sparkles size={15} /> Built for focused client work</div>
-            <h1 className="mt-6 max-w-3xl text-4xl font-black leading-[1.04] tracking-[-0.04em] sm:text-5xl lg:text-6xl">From first lead to final delivery.<span className="mt-2 block bg-gradient-to-r from-cyan-300 via-blue-300 to-violet-300 bg-clip-text text-transparent">One clear workspace.</span></h1>
-            <p className="mt-6 max-w-xl text-base leading-7 text-slate-300 sm:text-lg">FlowPilot combines CRM, linked projects, Kanban tasks and workspace analytics for freelancers and small agencies that want less admin and better visibility.</p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Link href="/login" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-300 px-6 py-4 font-black text-slate-950 shadow-xl shadow-cyan-400/20 transition hover:-translate-y-0.5 hover:bg-cyan-200">Explore the live demo <ArrowRight size={18} /></Link>
-              <Link href="/register" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/[0.06] px-6 py-4 font-black text-white backdrop-blur transition hover:border-white/30 hover:bg-white/10">Create a workspace</Link>
+          <figure className="flow-hero-preview">
+            <figcaption><span>FlowPilot workspace</span><span>Sample data</span></figcaption>
+            <Image src="/product/workspace-overview-round4.png" width={1920} height={1080} sizes="(min-width: 1000px) 58vw, 100vw" alt="Workspace overview with project and task counts, open pipeline and a won deal chart" priority />
+          </figure>
+        </section>
+        <section className="flow-features" id="features">
+          <div className="flow-wrap">
+            <p className="flow-kicker">Features</p>
+            <h2>Every step of client work,<br className="hidden sm:block" /> connected.</h2>
+            <div className="flow-feature-grid">
+              {features.map(({ title, text, icon: Icon }) => (
+                <article key={title}>
+                  <span className="flow-feature-icon"><Icon size={23} aria-hidden="true" /></span>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </article>
+              ))}
             </div>
-            <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-slate-400">
-              {["One-click role demos", "Read-only sample data", "No card required"].map((item) => <span key={item} className="inline-flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-300" />{item}</span>)}
-            </div>
-          </div>
-
-          <div className="relative">
-            <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-r from-cyan-400/20 via-blue-500/10 to-violet-500/20 blur-2xl" />
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-[#0b1122] p-2 shadow-2xl shadow-black/50 sm:p-3">
-              <div className="flex items-center justify-between px-3 py-2 text-[11px] font-bold text-slate-400"><span className="flex gap-1.5"><i className="size-2 rounded-full bg-rose-400" /><i className="size-2 rounded-full bg-amber-300" /><i className="size-2 rounded-full bg-emerald-300" /></span><span>Workspace overview</span><span className="rounded-full bg-emerald-300/10 px-2 py-1 text-emerald-300">Live data</span></div>
-              <Image src="/product/dashboard.png" alt="FlowPilot dashboard showing CRM, projects, tasks and workspace metrics" width={1920} height={1080} priority className="rounded-[1.4rem] border border-white/10" />
-            </div>
-            <div className="absolute -bottom-6 left-4 rounded-2xl border border-white/15 bg-slate-900/90 p-4 shadow-2xl backdrop-blur sm:-left-8 sm:p-5"><p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">Built-in workflow</p><p className="mt-2 flex items-center gap-2 font-black"><CheckCircle2 size={18} className="text-emerald-300" /> Won deal → linked project</p></div>
           </div>
         </section>
-      </div>
-
-      <section id="features" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24">
-        <div className="max-w-3xl"><p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">Everything stays connected</p><h2 className="mt-4 text-3xl font-black tracking-[-0.03em] sm:text-4xl">A practical operating system for client work.</h2><p className="mt-4 text-base leading-7 text-slate-400 sm:text-lg">Keep sales context, project delivery and performance reporting together without turning your workflow into a heavyweight enterprise system.</p></div>
-        <div className="mt-12 grid gap-4 md:grid-cols-2">
-          {features.map(({ title, description, icon: Icon, tone }) => <article key={title} className={`group rounded-[1.75rem] border border-white/10 bg-gradient-to-br ${tone} p-7 transition hover:-translate-y-1 hover:border-white/20 sm:p-8`}><span className="grid size-12 place-items-center rounded-2xl border border-white/10 bg-white/10 text-cyan-200"><Icon size={23} /></span><h3 className="mt-7 text-2xl font-black">{title}</h3><p className="mt-3 max-w-xl leading-7 text-slate-300">{description}</p></article>)}
-        </div>
-      </section>
-
-      <section id="product" className="border-y border-white/10 bg-white/[0.025]">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="relative"><div className="absolute inset-8 rounded-[3rem] bg-blue-500/20 blur-3xl" /><Image src="/product/crm-pipeline.png" alt="FlowPilot client pipeline with lead, contacted, won and lost stages" width={1920} height={1080} className="relative rounded-[1.75rem] border border-white/15 shadow-2xl shadow-black/40" /></div>
+        <section className="flow-wrap flow-tour" id="product">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-violet-300">See the full story</p><h2 className="mt-4 text-3xl font-black tracking-[-0.03em] sm:text-4xl">Know what is moving, what is due and what was won.</h2><p className="mt-5 text-base leading-7 text-slate-400 sm:text-lg">FlowPilot turns everyday activity into a clear workspace: client status, follow-up dates, project progress, task priority and exact USD reporting.</p>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {[
-                { icon: Layers3, title: "Connected records", text: "Clients, projects and tasks stay linked." },
-                { icon: Database, title: "Self-hosted data", text: "Run with your own MongoDB deployment." },
-                { icon: ShieldCheck, title: "Workspace isolation", text: "Server-derived scope on reads and writes." },
-                { icon: Download, title: "Safe CSV exports", text: "Take reporting data into spreadsheets." },
-              ].map(({ icon: Icon, title, text }) => <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"><Icon size={19} className="text-cyan-300" /><p className="mt-3 font-black">{title}</p><p className="mt-1 text-sm leading-6 text-slate-400">{text}</p></div>)}
-            </div>
+            <p className="flow-kicker">Product tour</p>
+            <h2>Take a closer look at your pipeline.</h2>
+            <p>See where every opportunity stands, bring upcoming follow-ups to the top, and carry a won deal into project delivery.</p>
+            <Link href="/login" className="flow-button">Try the workspace</Link>
           </div>
-        </div>
-      </section>
-
-      <section id="benefits" className="mx-auto grid max-w-7xl gap-10 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-2 lg:items-center">
-        <div><p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-300">Built to be useful</p><h2 className="mt-4 text-3xl font-black tracking-[-0.03em] sm:text-4xl">Start with a polished foundation. Keep control of your stack.</h2><p className="mt-5 text-base leading-7 text-slate-400 sm:text-lg">Use the included application as your own operating workspace or as a clear foundation for a client-focused product.</p></div>
-        <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/[0.08] to-white/[0.025] p-6 sm:p-8"><ul className="grid gap-3 sm:grid-cols-2">{benefits.map((benefit) => <li key={benefit} className="flex gap-3 rounded-2xl border border-white/10 bg-slate-950/35 p-4 text-sm font-semibold leading-6 text-slate-200"><span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-emerald-300 text-slate-950"><Check size={13} strokeWidth={3} /></span>{benefit}</li>)}</ul></div>
-      </section>
-
-      <section className="px-5 pb-20 sm:px-8 sm:pb-24"><div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-cyan-300/20 bg-gradient-to-br from-cyan-300 to-blue-500 px-6 py-12 text-center text-slate-950 shadow-2xl shadow-cyan-950/40 sm:px-12 sm:py-16"><div className="absolute -right-20 -top-32 size-80 rounded-full border-[50px] border-white/15" /><LockKeyhole className="relative mx-auto" size={28} /><h2 className="relative mx-auto mt-5 max-w-3xl text-3xl font-black tracking-[-0.03em] sm:text-4xl">Explore the real product in seconds.</h2><p className="relative mx-auto mt-4 max-w-2xl text-base font-semibold leading-7 text-slate-900/75 sm:text-lg">Choose Owner, Admin or Member on the login screen. Every demo is one click and safely read-only.</p><Link href="/login" className="relative mt-7 inline-flex items-center gap-2 rounded-2xl bg-slate-950 px-6 py-3.5 text-sm font-black text-white shadow-xl transition hover:-translate-y-0.5 hover:bg-slate-900">Open live demo <ArrowRight size={17} /></Link></div></section>
+          <Image src="/product/client-pipeline-round4.png" width={1920} height={1080} sizes="(min-width: 900px) 58vw, 100vw" alt="CRM pipeline with client records grouped by opportunity stage" />
+        </section>
+        <section className="flow-wrap flow-benefits" id="benefits">
+          <div>
+            <p className="flow-kicker">Built to self-host</p>
+            <h2>Run it on your terms.</h2>
+          </div>
+          <ul>
+            <li><Database aria-hidden="true" /><div><strong>Own your data</strong><p>Connect your own MongoDB database and export workspace records as CSV.</p></div></li>
+            <li><ShieldCheck aria-hidden="true" /><div><strong>Give each role the right access</strong><p>Owners, admins and members can work in the same workspace with role-based permissions.</p></div></li>
+          </ul>
+        </section>
+        <section className="flow-wrap flow-final">
+          <h2>Get to know FlowPilot.</h2>
+          <p>Pick a demo role and open a workspace already filled with sample projects and client records.</p>
+          <Link href="/login" className="flow-button">Live Demo</Link>
+        </section>
+      </main>
       <PublicFooter />
-    </main>
+    </div>
   );
 }

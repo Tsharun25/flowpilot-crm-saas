@@ -69,14 +69,14 @@ export default function MobileSidebar() {
   }, [open]);
 
   return (
-    <div className="xl:hidden">
+    <div className="lg:hidden">
       <button
         type="button"
         onClick={() => setOpen(true)}
         aria-label="Open navigation"
         aria-expanded={open}
         aria-controls="mobile-dashboard-navigation"
-        className="grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-slate-950 to-indigo-950 text-white shadow-lg sm:rounded-2xl"
+        className="grid size-10 shrink-0 place-items-center rounded-xl bg-violet-700 text-white shadow-lg sm:rounded-2xl"
       >
         <Menu size={18} />
       </button>
@@ -92,7 +92,7 @@ export default function MobileSidebar() {
             role="dialog"
             aria-modal="true"
             aria-label="Dashboard navigation"
-            className="h-full w-80 max-w-[calc(100vw-2rem)] overflow-y-auto bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,.16),transparent_18rem),linear-gradient(180deg,#090e20,#060914)] p-5 text-white shadow-2xl sm:p-6"
+            className="h-full w-80 max-w-[calc(100vw-2rem)] overflow-y-auto bg-[#251636] p-5 text-white shadow-2xl sm:p-6"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="mb-8 flex items-center justify-between">
@@ -130,7 +130,7 @@ export default function MobileSidebar() {
                     aria-current={active ? "page" : undefined}
                     className={`block rounded-2xl px-4 py-3 text-sm font-black transition ${
                       active
-                        ? "bg-gradient-to-r from-cyan-300 to-blue-400 text-slate-950"
+                        ? "bg-violet-200 text-violet-950"
                         : "text-slate-300 hover:bg-white/10 hover:text-white"
                     }`}
                   >

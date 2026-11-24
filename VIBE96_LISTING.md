@@ -57,7 +57,7 @@ Buyers should review the [Security Policy](SECURITY.md), [Release Audit](AUDIT_R
 
 - Category: Business & Operations / CRM
 - Suggested launch price: $149–$199
-- Live demo: https://flowpilot-crm-saas.vercel.app
+- Live demo URL: https://flowpilot-crm-saas.vercel.app/ (public landing page)
 - Demo login: use the one-click Owner, Admin, or Member buttons on the live login page; no shared password is published in the source package.
 
 Keep the demo online throughout review and while listed. Use this account only with non-sensitive sample data.
@@ -66,16 +66,8 @@ The shipped product is a self-hosted CRM/project-management starter, not a hoste
 
 The application does not schedule the demo reset itself; that remains a manual or operator-configured infrastructure task.
 
-## Screenshot plan (1920 × 1080 PNG/JPG)
+## Round 4 gallery
 
-1. Landing page hero and product preview
-2. Main dashboard with KPI cards and recent projects
-3. Projects overview
-4. Project details and four-column Kanban board
-5. CRM pipeline with lead cards and deal values
-6. Client detail with linked projects, notes, and activity
-7. Search/filter controls and dated task states
-8. Analytics dashboard with chart
-9. Workspace settings and team roles
+Use the PNGs in [marketplace-assets/vibe96-round4](marketplace-assets/vibe96-round4). Upload the 1920 × 1080 cover first, followed by the workspace overview, pipeline, projects, tasks, analytics, role login and admin settings screenshots. Use the separate 1080 × 1080 landing image for the square listing slot.
 
-Use only real screens from the live product; do not include browser extensions, personal bookmarks, credentials, or customer data. The landing-page preview contains illustrative sample figures and an in-frame disclosure; keep that disclosure visible and do not present those figures as customer results, adoption, or earnings.
+The screenshots show a read-only workspace with synthetic data. Account and client email addresses are omitted from the captures. The cover describes the product, features and stack without web addresses, contact details or social links.

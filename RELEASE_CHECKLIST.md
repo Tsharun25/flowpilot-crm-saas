@@ -1,28 +1,18 @@
-# FlowPilot CRM 1.5.7 release checklist
+# FlowPilot CRM 1.5.8 release checklist
 
-## Automated gates
+## Local release checks
 
-- [x] `npm ci`
-- [x] `npx prisma validate` and `npx prisma db push` against an isolated/backup-protected database
-- [x] `npm run verify`
-- [x] `npm audit` and `npm audit --omit=dev`
-- [x] `CONFIRM_ISOLATED_MUTATION=1 npm run audit:workflow`
-- [x] `CONFIRM_ISOLATION_MUTATION=1 npm run audit:isolation`
-- [x] `npm run audit:demo-readonly`
-- [x] `npm run audit:demo-roles` for Owner/Admin/Member one-click access and responsive landing/login checks
-- [x] `npm run audit:a11y` and `npm run audit:responsive`
-- [x] Rebuild and clean-build verify `FlowPilot-CRM-v1.5.7.zip` after the Vibe96 reviewer corrections
+- Extract the source archive into a clean directory. Run `npm ci` and `npm run verify` using an isolated MongoDB replica set.
+- Run `npm audit` and `npm audit --omit=dev`.
+- Start the production build and test the landing page, each demo role, responsive views and keyboard navigation.
+- Check the submission gallery for consistent 1920 × 1080 widescreen PNGs and a separate 1080 × 1080 landing PNG.
 
-## Owner/submission gates
+## Before resubmission
 
-- [ ] Replace generic support destination and complete seller/business/legal identity
-- [ ] Review Seller Agreement version shown at submission; current version 3.1 states 12 months of fixes/updates and 30 days of ticket replies within two business days
-- [x] Recheck current Vibe96 seller agreement and automated/human review requirements (2026-11-03; agreement 3.1, score 75+, no failing check, 65% seller share)
-- [x] Live demo observed reachable and read-only with synthetic data on 2026-11-03; keep it online throughout review/listing
-- [x] Ten final Vibe96 images generated at exactly 1920×1080 following the uploader requirement; the branded cover is first and the one-click role-demo screen is included
-- [x] Separate 1080×1080 square list image generated without contact details, URLs, or social links
-- [x] Docker/VPS route is explicitly labelled documented but runtime-unverified; test it before making a verified claim
-- [ ] Configure Resend/sender DNS/trusted origin and complete an owner-controlled real-inbox reset journey before advertising live recovery
-- [ ] Perform independent legal/license, screen-reader, Safari/Firefox and security review as appropriate
+- Deploy this release to the live demo and check the public landing page in a signed-out browser. Use the landing page URL as the listing’s Live Demo link.
+- Open Live Demo from the landing page and verify Owner, Admin and Member sign-in with synthetic data.
+- Upload the cover first, then the matching widescreen screenshots. Upload the square image in the separate landing image slot.
+- Confirm that listing copy, seller details, support and legal information reflect the deployment. Review the seller agreement shown during submission.
+- Submit the source ZIP and use the [Round 4 reviewer note](marketplace-assets/VIBE96_RESUBMISSION_NOTE_ROUND4.md).
 
-Do not label the product Vibe96-approved, fully audited, enterprise-ready, or guaranteed to generate income.
+Docker runtime and real-inbox password recovery require separate verification before advertising either as tested.

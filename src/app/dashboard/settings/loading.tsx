@@ -11,14 +11,14 @@ export default function SettingsLoading() {
         {[1, 2, 3, 4].map((item) => (
           <div
             key={item}
-            className="h-40 animate-pulse rounded-[2rem] border border-slate-200 bg-white shadow-sm"
+            className="h-40 animate-pulse rounded-2xl border border-slate-200 bg-white shadow-sm"
           />
         ))}
       </section>
 
       <section className="grid gap-6 xl:grid-cols-2">
-        <div className="h-96 animate-pulse rounded-[2rem] border border-slate-200 bg-white shadow-sm" />
-        <div className="h-96 animate-pulse rounded-[2rem] border border-slate-200 bg-white shadow-sm" />
+        <div className="h-96 animate-pulse rounded-2xl border border-slate-200 bg-white shadow-sm" />
+        <div className="h-96 animate-pulse rounded-2xl border border-slate-200 bg-white shadow-sm" />
       </section>
     </div>
   );

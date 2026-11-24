@@ -32,7 +32,7 @@ These accounts belong only to the hosted read-only demo. Buyers must not copy or
 
 ## Features
 
-FlowPilot 1.5.7 ships the focused agency workflow described below. It remains a self-hosted starter.
+FlowPilot 1.5.8 ships the focused agency workflow described below. It remains a self-hosted starter.
 
 - User registration and login
 - Password hashing with bcryptjs
@@ -219,7 +219,7 @@ After changing environment variables in Vercel, redeploy the project.
 
 Before processing real customer data, configure private production secrets, provision a supported MongoDB replica set, run the Prisma schema sync, replace the public demo credentials, and verify security, workspace isolation, accessibility, backups, and recovery in the target environment. FlowPilot is a self-hosted starter, not a security-audited or turnkey hosted service.
 
-Docker/VPS instructions are included, but the 1.5.7 release candidate has not been built in Docker in the current audit environment because the Docker CLI is unavailable. The route is documented but runtime-unverified; do not advertise it as tested until it is exercised on a Docker-capable host.
+Docker/VPS instructions are included, but the 1.5.8 release has not been built in Docker in the current audit environment because the Docker CLI is unavailable. The route is documented but runtime-unverified; do not advertise it as tested until it is exercised on a Docker-capable host.
 
 ---
 

@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { isDemoWorkspace } from "@/lib/demo-workspace";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
 import SubmitButton from "@/components/submit-button";
+import ToastForm from "@/components/toast-form";
 import { updateProfile, updateWorkspace } from "./actions";
 import { APP_VERSION } from "@/lib/version";
 
@@ -113,7 +114,7 @@ export default async function SettingsPage() {
               name="name"
               required
               defaultValue={workspace.name}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-violet-500 focus:bg-white"
             />
           ) : (
             <div className="break-all rounded-2xl border border-slate-200 bg-slate-100 px-4 py-3 font-medium text-slate-600">
@@ -137,7 +138,7 @@ export default async function SettingsPage() {
         {canEditWorkspace ? (
           <SubmitButton
             pendingText="Saving Workspace..."
-            className="rounded-2xl bg-cyan-400 px-6 py-3 font-black text-slate-950 transition hover:bg-cyan-300"
+            className="rounded-2xl bg-violet-700 px-6 py-3 font-black text-white transition hover:bg-violet-800"
           >
             Save Workspace
           </SubmitButton>
@@ -156,14 +157,11 @@ export default async function SettingsPage() {
   return (
     <div>
       <div className="mb-8">
-        <p className="text-sm font-black uppercase tracking-wide text-cyan-700">
-          Settings
-        </p>
-        <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl lg:text-4xl">
-          Workspace Settings
-        </h2>
+        <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl lg:text-4xl">
+          Workspace settings
+        </h1>
         <p className="mt-3 max-w-2xl text-slate-500">
-          Manage your profile, workspace identity, and account preferences.
+          Manage your profile, workspace identity and access.
         </p>
       </div>
 
@@ -174,9 +172,9 @@ export default async function SettingsPage() {
           return (
             <div
               key={stat.label}
-              className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm"
+              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
             >
-              <div className="grid size-12 place-items-center rounded-2xl bg-slate-950 text-white">
+              <div className="grid size-12 place-items-center rounded-2xl bg-violet-100 text-violet-800">
                 <Icon size={20} />
               </div>
 
@@ -192,15 +190,17 @@ export default async function SettingsPage() {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-2">
-        <form
+        <ToastForm
           key={user.name}
           action={updateProfile}
-          className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm"
+          successMessage="Profile updated."
+          labelledBy="profile-details-title"
+          className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
         >
           <div className="mb-6">
-            <h3 className="text-2xl font-black text-slate-950">
-              Profile Details
-            </h3>
+            <h2 id="profile-details-title" className="text-2xl font-black text-slate-950">
+              Profile details
+            </h2>
             <p className="mt-2 text-sm leading-6 text-slate-500">
               Update the name shown across your dashboard.
             </p>
@@ -219,7 +219,7 @@ export default async function SettingsPage() {
                 name="name"
                 required
                 defaultValue={user.name || ""}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-cyan-400 focus:bg-white"
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 font-medium outline-none transition focus:border-violet-500 focus:bg-white"
               />
             </div>
 
@@ -229,7 +229,7 @@ export default async function SettingsPage() {
               </p>
               <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-slate-200 bg-slate-100 px-4 py-3 text-slate-500">
                 <Mail size={18} className="shrink-0" />
-                <span className="min-w-0 break-all font-medium">
+                <span data-testid="profile-email" className="min-w-0 break-all font-medium">
                   {user.email}
                 </span>
               </div>
@@ -246,21 +246,22 @@ export default async function SettingsPage() {
               Save Profile
             </SubmitButton>
           </div>
-        </form>
+        </ToastForm>
 
         {canEditWorkspace ? (
-          <form
+          <ToastForm
             key={`${workspace.name}:${workspace.slug}`}
             action={updateWorkspace}
-            aria-labelledby="workspace-identity-title"
-            className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm"
+            successMessage="Workspace updated."
+            labelledBy="workspace-identity-title"
+            className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
           >
             {workspaceIdentityContent}
-          </form>
+          </ToastForm>
         ) : (
           <section
             aria-labelledby="workspace-identity-title"
-            className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm"
+            className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
           >
             {workspaceIdentityContent}
           </section>
@@ -268,7 +269,7 @@ export default async function SettingsPage() {
       </section>
 
       <section className="mt-6 grid gap-6 xl:grid-cols-[1fr_420px]">
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h3 className="text-2xl font-black text-slate-950">
             Account Access
           </h3>
@@ -290,7 +291,7 @@ export default async function SettingsPage() {
           </div>
         </div>
 
-        <div className="rounded-[2rem] bg-gradient-to-br from-slate-950 to-slate-800 p-6 text-white shadow-xl shadow-slate-300">
+        <div className="rounded-2xl bg-gradient-to-br from-slate-950 to-slate-800 p-6 text-white shadow-xl shadow-slate-300">
           <p className="text-sm font-black text-cyan-300">FlowPilot CRM v{APP_VERSION}</p>
           <h3 className="mt-3 text-2xl font-black">Ready for your workflow</h3>
           <p className="mt-3 text-sm leading-6 text-slate-300">

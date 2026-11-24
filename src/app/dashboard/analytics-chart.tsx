@@ -44,7 +44,7 @@ export default function AnalyticsChart({
             <XAxis dataKey="month" />
             <YAxis width={64} tickFormatter={(value) => Intl.NumberFormat("en", { notation: "compact" }).format(value)} />
             <Tooltip formatter={(value) => formatter.format(Number(value))} />
-            <Area name="Won deal value" type="monotone" dataKey="wonValue" stroke="#0891b2" fill="#67e8f9" strokeWidth={3} />
+            <Area name="Won deal value" type="monotone" dataKey="wonValue" stroke="#613ace" fill="#c9b8f7" strokeWidth={3} isAnimationActive={false} />
           </AreaChart>
         </ResponsiveContainer>
       </div>

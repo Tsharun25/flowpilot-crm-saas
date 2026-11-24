@@ -7,11 +7,13 @@ export default function ToastForm({
   children,
   successMessage,
   className = "",
+  labelledBy,
 }: {
   action: (formData: FormData) => Promise<void>;
   children: React.ReactNode;
   successMessage: string;
   className?: string;
+  labelledBy?: string;
 }) {
   async function handleSubmit(formData: FormData) {
     try {
@@ -25,7 +27,7 @@ export default function ToastForm({
   }
 
   return (
-    <form action={handleSubmit} className={className}>
+    <form action={handleSubmit} className={className} aria-labelledby={labelledBy}>
       {children}
     </form>
   );

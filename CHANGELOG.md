@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.8 — 2026-11-24
+
+- Redesigned the public landing page, authentication screens and CRM workspace for Vibe96 round 4.
+- Put the pipeline and project lists before create forms, refreshed status feedback and corrected project filter overflow on tablet.
+- Added a 1920 × 1080 product cover and screenshots, plus a 1080 × 1080 landing image.
+- Updated Next.js to 16.4.6 and pinned the patched Effect 3.22.1 release in Prisma’s configuration dependency chain.
+
 ## 1.5.7 — 2026-11-16
 
 - Reduced oversized headings and vertical spacing across the landing page, login flow, dashboard, CRM, projects, tasks, analytics and workspace settings.

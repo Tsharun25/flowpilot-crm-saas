@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, BriefcaseBusiness, CheckSquare, DollarSign, Users } from "lucide-react";
+import { BriefcaseBusiness, CheckSquare, DollarSign, Users } from "lucide-react";
 
 import { prisma } from "@/lib/prisma";
 import { getCurrentUserWithWorkspace } from "@/lib/current-user";
@@ -69,12 +69,10 @@ export default async function DashboardPage() {
     <div>
       <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
-          <p className="text-sm font-black uppercase tracking-wide text-cyan-700">
-            Overview
-          </p>
-          <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl lg:text-4xl">
-            Command Center
-          </h2>
+
+          <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl lg:text-4xl">
+            Workspace overview
+          </h1>
           <p className="mt-3 max-w-2xl text-slate-500">
             Keep client opportunities, project delivery, tasks, and deal value in one workspace.
           </p>
@@ -85,14 +83,14 @@ export default async function DashboardPage() {
             href="/dashboard/projects"
             className="rounded-full bg-slate-950 px-6 py-3 text-center font-black text-white shadow-lg shadow-slate-950/10 transition hover:bg-slate-800"
           >
-            New Project
+            View projects
           </Link>
 
           <Link
             href="/dashboard/clients"
-            className="rounded-full bg-cyan-400 px-6 py-3 text-center font-black text-slate-950 shadow-lg shadow-cyan-400/20 transition hover:bg-cyan-300"
+            className="rounded-full bg-violet-700 px-6 py-3 text-center font-black text-white shadow-lg shadow-violet-700/15 transition hover:bg-violet-800"
           >
-            Add Client
+            View clients
           </Link>
         </div>
       </div>
@@ -104,14 +102,14 @@ export default async function DashboardPage() {
           return (
             <div
               key={stat.label}
-              className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200"
+              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200"
             >
               <div className="flex items-start justify-between">
                 <div className="grid size-12 place-items-center rounded-2xl bg-slate-950 text-white">
                   <Icon size={20} />
                 </div>
 
-                <ArrowUpRight className="text-slate-300" size={20} />
+
               </div>
 
               <p className="mt-6 text-sm font-bold text-slate-500">
@@ -129,10 +127,10 @@ export default async function DashboardPage() {
       </section>
 
       <section className="mt-8 grid gap-6 xl:grid-cols-3">
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm xl:col-span-2">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm xl:col-span-2">
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <p className="text-sm font-black uppercase tracking-wide text-cyan-700">
+              <p className="text-sm font-black uppercase tracking-wide text-violet-800">
                 Analytics
               </p>
               <h3 className="mt-1 text-2xl font-black text-slate-950">
@@ -147,8 +145,8 @@ export default async function DashboardPage() {
           {crmMetrics.hasWonData ? <AnalyticsChart data={crmMetrics.monthlyWon} currency={crmMetrics.currency} /> : <div className="grid h-80 place-items-center rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center"><div><p className="font-black text-slate-950">No won deals in {crmMetrics.year}</p><p className="mt-2 text-sm text-slate-500">The chart will update when a deal is marked Won.</p></div></div>}
         </div>
 
-        <div className="rounded-[2rem] bg-gradient-to-br from-slate-950 to-slate-800 p-6 text-white shadow-xl shadow-slate-300">
-          <p className="text-sm font-black text-cyan-300">CRM Pulse</p>
+        <div className="rounded-2xl bg-[#302047] p-6 text-white shadow-sm">
+          <p className="text-sm font-black text-violet-200">CRM Pulse</p>
           <h3 className="mt-4 break-words text-2xl font-black sm:text-3xl">
             {formatMoney(crmMetrics.openPipeline)}
           </h3>
@@ -165,12 +163,12 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      <section className="mt-8 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="mb-5 flex items-center justify-between">
           <h3 className="text-2xl font-black text-slate-950">
             Recent Projects
           </h3>
-          <Link href="/dashboard/projects" className="text-sm font-black text-cyan-700">
+          <Link href="/dashboard/projects" className="text-sm font-black text-violet-800">
             View all
           </Link>
         </div>

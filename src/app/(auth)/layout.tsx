@@ -13,5 +13,5 @@ export default function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <div className="bg-slate-950">{children}<PublicFooter dark /></div>;
+  return <div className="flow-auth">{children}<PublicFooter /></div>;
 }

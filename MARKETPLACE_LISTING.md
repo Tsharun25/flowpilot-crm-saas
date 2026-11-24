@@ -24,6 +24,6 @@ Node.js 20+, npm 10+, a MongoDB replica set, private environment values, schema 
 
 Live reference: `https://flowpilot-crm-saas.vercel.app/`. The shared demo is read-only and contains synthetic data. Transactional email is not configured on that reference deployment, so its Forgot Password screen demonstrates the shipped UI and honest unavailable fallback rather than real inbox delivery.
 
-Eleven 1920×1080 screenshots are under `marketplace-assets/screenshots/`: landing page, overview, projects, project details, CRM pipeline, client details, tasks/filters, analytics, settings, Forgot Password, and Reset Password.
+The [Round 4 gallery](marketplace-assets/vibe96-round4) contains a 1920 × 1080 cover and matching product screenshots, plus a separate 1080 × 1080 landing image.
 
 The purchase is source code and documentation, not the sale of a hosted business. Marketplace approval, automated score, income and sales are not guaranteed.

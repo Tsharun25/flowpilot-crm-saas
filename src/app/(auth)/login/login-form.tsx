@@ -25,7 +25,7 @@ export default function LoginForm() {
 
       if (!result || !result.ok || result.error) {
         setError(
-          result?.error
+          result?.error && provider === "credentials"
             ? "Invalid email or password"
             : "Unable to sign in right now. Please try again.",
         );
@@ -55,14 +55,13 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="flow-sign-in space-y-5">
+      {isLoading ? <p role="status" className="flow-form-progress">Opening your workspace…</p> : null}
+      {error ? <p id="login-error" role="alert" className="flow-form-error">{error}</p> : null}
       <section aria-labelledby="demo-login-heading">
-        <div className="flex items-end justify-between gap-3">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">Instant access</p>
-            <h2 id="demo-login-heading" className="mt-1 text-lg font-black">Explore every role</h2>
-          </div>
-          <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2.5 py-1 text-xs font-bold text-emerald-200">Read-only</span>
+        <div className="flex items-center justify-between gap-3">
+          <h2 id="demo-login-heading" className="font-semibold">Explore the live demo</h2>
+          <span className="flow-demo-badge">Read-only</span>
         </div>
 
         <div className="mt-4 grid gap-2">
@@ -72,22 +71,21 @@ export default function LoginForm() {
               type="button"
               disabled={isLoading}
               onClick={() => handleDemoLogin(account.role)}
-              className="group flex w-full items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 text-left transition hover:border-cyan-300/50 hover:bg-cyan-300/10 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flow-role"
             >
               <span>
-                <span className="block text-sm font-black text-white">{account.label}</span>
-                <span className="mt-0.5 block text-xs text-slate-400 group-hover:text-slate-300">{account.description}</span>
+                <span className="block text-sm font-semibold">{account.label}</span>
+                <span className="mt-0.5 block text-sm text-slate-600">{account.description}</span>
               </span>
-              <span aria-hidden="true" className="text-cyan-300">→</span>
             </button>
           ))}
         </div>
       </section>
 
       <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
-        <span className="h-px flex-1 bg-white/10" />
-        Or use credentials
-        <span className="h-px flex-1 bg-white/10" />
+        <span className="h-px flex-1 bg-violet-100" />
+        Or sign in with email
+        <span className="h-px flex-1 bg-violet-100" />
       </div>
 
       <form
@@ -96,16 +94,6 @@ export default function LoginForm() {
         className="space-y-5"
         aria-busy={isLoading}
       >
-      {error ? (
-        <div
-          id="login-error"
-          role="alert"
-          className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200"
-        >
-          {error}
-        </div>
-      ) : null}
-
       <div>
         <label htmlFor="email" className="mb-2 block text-sm font-medium">
           Email
@@ -118,8 +106,7 @@ export default function LoginForm() {
           autoComplete="email"
           aria-invalid={Boolean(error)}
           aria-describedby={error ? "login-error" : undefined}
-          placeholder="you@example.com"
-          className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300"
+          className="flow-field"
         />
       </div>
 
@@ -136,14 +123,14 @@ export default function LoginForm() {
           aria-invalid={Boolean(error)}
           aria-describedby={error ? "login-error" : undefined}
           placeholder="••••••••"
-          className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300"
+          className="flow-field"
         />
       </div>
 
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full rounded-2xl bg-cyan-400 px-5 py-3 font-bold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-60"
+        className="flow-button w-full disabled:opacity-60"
       >
         {isLoading ? "Logging in..." : "Login"}
       </button>

@@ -85,7 +85,7 @@ export default function RegisterForm() {
         <div
           id="registration-error"
           role="alert"
-          className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+          className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-800"
         >
           {error}
         </div>
@@ -103,7 +103,7 @@ export default function RegisterForm() {
           autoComplete="name"
           aria-describedby={error ? "registration-error" : undefined}
           placeholder="Ts Harun"
-          className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300"
+          className="w-full rounded-2xl border border-violet-100 bg-violet-50 px-4 py-3 text-slate-950 outline-none transition placeholder:text-slate-500 focus:border-violet-600"
         />
       </div>
 
@@ -119,7 +119,7 @@ export default function RegisterForm() {
           autoComplete="email"
           aria-describedby={error ? "registration-error" : undefined}
           placeholder="you@example.com"
-          className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300"
+          className="w-full rounded-2xl border border-violet-100 bg-violet-50 px-4 py-3 text-slate-950 outline-none transition placeholder:text-slate-500 focus:border-violet-600"
         />
       </div>
 
@@ -137,14 +137,14 @@ export default function RegisterForm() {
           autoComplete="new-password"
           aria-describedby={error ? "registration-error" : undefined}
           placeholder="8–72 characters"
-          className="w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300"
+          className="w-full rounded-2xl border border-violet-100 bg-violet-50 px-4 py-3 text-slate-950 outline-none transition placeholder:text-slate-500 focus:border-violet-600"
         />
       </div>
 
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full rounded-2xl bg-cyan-400 px-5 py-3 font-bold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-2xl bg-violet-700 px-5 py-3 font-bold text-white transition hover:bg-violet-800 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isLoading ? "Creating account..." : "Create account"}
       </button>

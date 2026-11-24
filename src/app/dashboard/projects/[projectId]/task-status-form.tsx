@@ -36,7 +36,7 @@ export default function TaskStatusForm({
       value={currentStatus}
       disabled={isPending || disabled}
       onChange={(event) => handleChange(event.target.value as TaskStatus)}
-      className="mt-4 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:border-cyan-400 disabled:opacity-60"
+      className="mt-4 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:border-violet-500 disabled:opacity-60"
     >
       <option value="TODO">Todo</option>
       <option value="IN_PROGRESS">In Progress</option>

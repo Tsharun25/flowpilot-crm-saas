@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import FlowPilotBrand from "@/components/flowpilot-brand";
 import { usePathname } from "next/navigation";
 import {
   BarChart3,
@@ -24,22 +25,10 @@ export default function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-72 shrink-0 overflow-y-auto border-r border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,.16),transparent_18rem),linear-gradient(180deg,#090e20_0%,#060914_100%)] p-6 text-white shadow-2xl xl:block">
-      <Link href="/dashboard" className="mb-10 flex items-center gap-3">
-        <div className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-cyan-300 to-blue-500 text-xl font-black text-slate-950 shadow-lg shadow-cyan-500/20">
-          F
-        </div>
-        <div>
-          <p className="text-2xl font-black leading-none text-white">
-            FlowPilot
-          </p>
-          <p className="mt-1 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
-            CRM + Projects
-          </p>
-        </div>
-      </Link>
-
-      <nav className="space-y-2">
+    <aside className="flow-sidebar sticky top-0 hidden h-dvh w-60 shrink-0 overflow-y-auto p-5 lg:block">
+      <FlowPilotBrand href="/dashboard" />
+      <p className="flow-sidebar-label">Workspace</p>
+      <nav className="space-y-1" aria-label="Workspace navigation">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active =
@@ -52,11 +41,7 @@ export default function DashboardSidebar() {
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-black transition ${
-                active
-                  ? "bg-gradient-to-r from-cyan-300 to-blue-400 text-slate-950 shadow-lg shadow-cyan-500/15"
-                  : "text-slate-400 hover:bg-white/10 hover:text-white"
-              }`}
+              className="flow-sidebar-link"
             >
               <Icon size={18} />
               {item.label}
@@ -65,12 +50,6 @@ export default function DashboardSidebar() {
         })}
       </nav>
 
-      <div className="mt-10 rounded-3xl bg-gradient-to-br from-slate-950 to-slate-800 p-5 text-white">
-        <p className="text-sm font-black text-cyan-300">Workspace Tip</p>
-        <p className="mt-2 text-sm leading-6 text-slate-300">
-          Keep projects, tasks, and client opportunities moving from one place.
-        </p>
-      </div>
     </aside>
   );
 }

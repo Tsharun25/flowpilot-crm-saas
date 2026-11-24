@@ -21,12 +21,12 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
   return (
     <div>
       <div className="mb-8">
-        <p className="text-sm font-black uppercase tracking-wide text-cyan-700">
+        <p className="text-sm font-black uppercase tracking-wide text-violet-800">
           Analytics
         </p>
-        <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+        <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
           Business Insights
-        </h2>
+        </h1>
         <p className="mt-2 max-w-2xl text-slate-500">
           Review booked won-deal value and pipeline performance in {metrics.currency}.
         </p>
@@ -38,7 +38,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
         <button className="rounded-xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">Apply</button>
       </form>
 
-      <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h3 className="mb-6 text-2xl font-black text-slate-950">
           Won Deal Value by Month · {metrics.year} (UTC)
         </h3>

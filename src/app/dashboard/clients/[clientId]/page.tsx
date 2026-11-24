@@ -44,7 +44,7 @@ export default async function ClientDetailsPage({ params }: { params: Promise<{ 
       <Link href="/dashboard/clients" className="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold">← Back to Clients</Link>
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div><p className="text-xs font-black uppercase tracking-wide text-cyan-700">{client.status}</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">{client.name}</h2><p className="mt-2 text-sm text-slate-600 sm:text-base">{client.company || "No company"} · {client.email || "No email"}</p></div>
+          <div><p className="text-xs font-black uppercase tracking-wide text-violet-800">{client.status}</p><h1 className="mt-2 text-2xl font-black sm:text-3xl">{client.name}</h1><p className="mt-2 text-sm text-slate-600 sm:text-base">{client.company || "No company"} · {client.email || "No email"}</p></div>
           <p className="text-2xl font-black">{formatMoney(centsToDollars(getDealValueCents(client)))}</p>
         </div>
         <p className="mt-4 text-sm font-bold text-slate-600">Next follow-up: {client.nextFollowUp ? client.nextFollowUp.toISOString().slice(0, 10) + " (UTC date)" : "Not scheduled"}</p>

@@ -49,12 +49,12 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
   return (
     <div>
       <div className="mb-8">
-        <p className="text-sm font-bold uppercase tracking-wide text-cyan-700">
+        <p className="text-sm font-bold uppercase tracking-wide text-violet-800">
           Tasks
         </p>
-        <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+        <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
           Workspace Kanban
-        </h2>
+        </h1>
         <p className="mt-2 max-w-2xl text-slate-500">
           See all tasks from every project in one board.
         </p>
